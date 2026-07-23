@@ -299,7 +299,7 @@ const heroMosaic = `
             <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Гидроизоляция</span>
           </div>
           <div style="grid-area:e;position:relative;border-radius:var(--r-img);overflow:hidden">
-            <img src="assets/roofer.jpg" alt="Монтаж фальцевой кровли" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:var(--photo-filter)">
+            <img src="assets/hero-seam-house.png" alt="Дом с фальцевой кровлей на закате" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:var(--photo-filter)">
             <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Фальцевая кровля</span>
           </div>
           <div style="grid-area:f;position:relative;border-radius:var(--r-img);overflow:hidden">
