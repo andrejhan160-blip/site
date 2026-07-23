@@ -303,7 +303,7 @@ const heroMosaic = `
             <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Фальцевая кровля</span>
           </div>
           <div style="grid-area:f;position:relative;border-radius:var(--r-img);overflow:hidden">
-            <img src="assets/work-roofing.jpg" alt="Монтаж металлической кровли под ключ" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:var(--photo-filter)">
+            <img src="assets/hero-banner.png" alt="Кровля и фасад под ключ, от объекта до сдачи по договору" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;filter:var(--photo-filter)">
             <div style="position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(to top,rgba(10,10,9,0.7),transparent)"></div>
             <span style="position:absolute;left:16px;bottom:16px;font-size:13.5px;font-weight:700;color:#fff">Кровля и фасад под ключ, от объекта до сдачи по договору</span>
           </div>
