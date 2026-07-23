@@ -1,0 +1,885 @@
+#!/usr/bin/env node
+/*
+ * Static site generator for the "Stroytransregion — Dark" landing page.
+ *
+ * The source of truth is a Claude Design component (`.dc.html`) that renders
+ * through a React-based runtime. This script ports that component's data model
+ * and template into a self-contained static `index.html` (no runtime, no
+ * framework) so the page can be deployed as plain files. Interactivity
+ * (mobile menu, works filter, FAQ accordion, forms) is implemented in a small
+ * vanilla-JS bundle emitted at the bottom of the page.
+ *
+ * Run: `node build.js` -> writes ./index.html
+ */
+'use strict';
+const fs = require('fs');
+const path = require('path');
+
+/* ------------------------------------------------------------------ data -- */
+
+const contact = {
+  phone: '+7 (495) 925-99-69',
+  telHref: 'tel:+74959259969',
+  address: 'Москва, ул. Горбунова, 2',
+  max: '@stroytransregion',
+  maxHref: '#',
+};
+
+const navLinks = [
+  { label: 'Услуги', href: '#services' },
+  { label: 'Работы', href: '#works' },
+  { label: 'Как работаем', href: '#process' },
+  { label: 'Цены', href: '#prices' },
+  { label: 'Гарантия', href: '#guarantee' },
+  { label: 'Вопросы', href: '#faq' },
+];
+
+const workTypes = [
+  'Монтаж кровли под ключ', 'Ремонт или замена кровли', 'Демонтаж старой кровли или фасада',
+  'Фасадные работы', 'Водостоки и доборные элементы', 'Не знаю, нужна консультация',
+];
+
+const channelOpts = ['MAX', 'Почта', 'Звонок'];
+
+const heroBadges = ['С 2003 года', 'До 5 лет гарантии', 'Работаем по договору'];
+
+const stats = [
+  { big: '20+ лет', cap: 'на рынке кровельных и фасадных работ с 2003 года' },
+  { big: 'до 5 лет', cap: 'гарантия на выполненные работы, закреплённая в договоре' },
+  { big: '30–60 мин', cap: 'предварительный расчёт стоимости по фото объекта' },
+];
+
+const services = [
+  { title: 'Монтаж кровли под ключ',
+    desc: 'Монтируем кровлю для складов, производственных зданий, торговых и офисных объектов, частных домов и коттеджей. Подготовка основания, кровельный пирог, гидроизоляция, утепление, покрытие, водостоки и доборные элементы.',
+    label: 'Что входит', items: ['Наплавляемая', 'Мембранная', 'Профнастил', 'Металлочерепица', 'Мягкая кровля', 'Фальцевая', 'Утепление', 'Гидроизоляция'],
+    cta: 'Заказать монтаж кровли', icon: 'roof' },
+  { title: 'Ремонт и замена кровли',
+    desc: 'Устраняем протечки, повреждения покрытия, дефекты примыканий и износ кровли на коммерческих, промышленных и частных объектах. Если локальный ремонт уже не решает проблему, выполняем частичную или полную замену покрытия.',
+    label: 'Что делаем', items: ['Поиск протечек', 'Ремонт плоской кровли', 'Замена покрытия', 'Ремонт примыканий', 'Замена утеплителя', 'Герметизация узлов'],
+    cta: 'Заказать ремонт кровли', icon: 'repair' },
+  { title: 'Демонтаж старой кровли и фасада',
+    desc: 'Аккуратно демонтируем старое кровельное и фасадное покрытие на складах, производственных зданиях, коммерческих объектах, домах и коттеджах. Подготавливаем основание под новые работы и заранее согласуем вывоз мусора.',
+    label: 'Подходит, если', items: ['Кровля протекает', 'Покрытие изношено', 'Фасад разрушен', 'Утеплитель намок', 'Отделка отходит', 'Нужно обновить контур'],
+    cta: 'Рассчитать демонтаж по фото', icon: 'demo' },
+  { title: 'Фасадные работы под ключ',
+    desc: 'Выполняем фасадные работы для коммерческих зданий, складов, офисов, производственных объектов, домов и коттеджей. Подбираем технологию под состояние стен, режим эксплуатации здания, бюджет и задачу.',
+    label: 'Виды работ', items: ['Утепление', 'Штукатурка', 'Покраска', 'Сайдинг', 'Фасадные панели', 'Вентфасады', 'Ремонт швов'],
+    cta: 'Заказать вызов специалиста', icon: 'facade' },
+  { title: 'Водостоки и доборные элементы',
+    desc: 'Монтируем элементы, которые защищают кровлю, фасад и фундамент от влаги, снега и преждевременного разрушения. Правильно оформляем примыкания, карнизы, свесы, отливы и водоотвод.',
+    label: 'Что устанавливаем', items: ['Водосточные системы', 'Снегозадержатели', 'Софиты', 'Планки', 'Капельники', 'Примыкания', 'Отливы'],
+    cta: 'Подобрать вид работ', icon: 'gutter' },
+];
+
+const estimateGetsRaw = [
+  'Предварительную стоимость работ',
+  'Список необходимых материалов',
+  'Понятные этапы выполнения',
+  'Ориентир по срокам',
+  'Рекомендацию: ремонт, демонтаж, усиление основания или полная замена',
+];
+
+const worksAll = [
+  { src: 'assets/roofer.jpg',         cap: 'Монтаж фальцевой кровли',             tag: 'Кровельные', cat: 'roof' },
+  { src: 'assets/work-roofing.jpg',   cap: 'Монтаж металлической кровли',         tag: 'Кровельные', cat: 'roof' },
+  { src: 'assets/work3.jpg',          cap: 'Утепление и кровля склада',           tag: 'Кровельные', cat: 'roof' },
+  { src: 'assets/finished-house.jpg', cap: 'Кровля и фасад под ключ',             tag: 'Фасадные',   cat: 'facade' },
+  { src: 'assets/hero-house.jpg',     cap: 'Готовый объект: кровля и фасад',      tag: 'Фасадные',   cat: 'facade' },
+  { src: 'assets/work2.jpg',          cap: 'Наплавляемая гидроизоляция',          tag: 'Ремонт',     cat: 'repair' },
+  { src: 'assets/work1.jpg',          cap: 'Гидроизоляция плоской кровли',        tag: 'Ремонт',     cat: 'repair' },
+  { src: 'assets/work5.jpg',          cap: 'Гидроизоляция промышленного объекта', tag: 'Ремонт',     cat: 'repair' },
+  { src: 'assets/work4.jpg',          cap: 'Демонтаж и ремонт узла примыкания',   tag: 'Ремонт',     cat: 'repair' },
+];
+const workTabsRaw = [
+  { k: 'all',    label: 'Все работы' },
+  { k: 'roof',   label: 'Кровельные' },
+  { k: 'facade', label: 'Фасадные' },
+  { k: 'repair', label: 'Ремонт и гидроизоляция' },
+];
+
+const steps = [
+  { t: 'Заявка и фото', d: 'Оставляете заявку и присылаете фото кровли, фасада или участка демонтажа.' },
+  { t: 'Замер и смета', d: 'Выезжаем на объект, уточняем детали и фиксируем смету без скрытых доплат.' },
+  { t: 'Договор', d: 'Закрепляем объём работ, стоимость, сроки, порядок оплаты и гарантию в договоре.' },
+  { t: 'Работы и фотоотчёт', d: 'Выполняем работы по этапам и показываем скрытые узлы в фотоотчёте.' },
+  { t: 'Сдача и гарантия', d: 'Сдаём объект, даём гарантию до 5 лет и остаёмся на связи.' },
+];
+
+const benefitsRaw = [
+  { t: 'Фиксируем смету до начала работ', d: 'После замера вы получаете подробную смету по материалам, работам и дополнительным расходам. Стоимость не меняется «по ходу дела» без согласования с вами.' },
+  { t: 'Работаем по договору', d: 'В договоре фиксируем объём работ, сроки, стоимость, порядок оплаты и гарантии. Для юрлиц доступны безналичная оплата и закрывающие документы.' },
+  { t: 'Делаем фотоотчёт по этапам', d: 'Показываем скрытые работы: демонтаж, состояние основания, утепление, гидроизоляцию, обрешётку, примыкания и узлы.' },
+  { t: 'Не бросаем объект после демонтажа', d: 'Если после вскрытия обнаруживаются повреждённое основание, намокший утеплитель или скрытые дефекты, показываем проблему и согласуем работы до переделки.' },
+  { t: 'Помогаем с материалами', d: 'Подскажем, какие материалы подходят под тип объекта, площадь, бюджет и режим эксплуатации. Объясним, где экономия приведёт к протечкам и повторным расходам.' },
+  { t: 'Соблюдаем порядок на территории', d: 'Аккуратно демонтируем старую кровлю или фасад, складируем мусор и заранее обсуждаем вывоз отходов, чтобы не создавать хаос на объекте.' },
+  { t: 'Даём гарантию на работы', d: 'После завершения объекта вы получаете гарантию на работы. Если проблема связана с нашей работой, возвращаемся и устраняем.' },
+];
+
+const prices = [
+  { t: 'Монтаж кровли', u: '₽/м²' },
+  { t: 'Ремонт кровли', u: '₽' },
+  { t: 'Демонтаж старой кровли или фасада', u: '₽/м²' },
+  { t: 'Фасадные работы', u: '₽/м²' },
+  { t: 'Монтаж водостоков и доборных элементов', u: '₽/пог. м' },
+];
+
+const guaranteeRaw = [
+  { neg: 'Не начинаем работы без понятной сметы', d: 'После замера вы получаете расчёт по работам, материалам и дополнительным расходам. Видно, что входит в стоимость: демонтаж, подготовка основания, монтаж, утепление, гидроизоляция, доборные элементы, водостоки и вывоз мусора.' },
+  { neg: 'Не добавляем работы без согласования', d: 'Если после демонтажа обнаруживаются скрытые проблемы, например повреждённое основание, намокший утеплитель, слабая обрешётка или дефекты примыканий, сначала показываем это на фото, объясняем варианты и только потом согласуем дополнительные работы.' },
+  { neg: 'Не берём деньги «за воздух»', d: 'Работы разбиваются на понятные этапы. Вы видите, что уже сделано, принимаете результат и понимаете, за какой этап платите.' },
+  { neg: 'Не исчезаем после сдачи объекта', d: 'После завершения работ вы получаете гарантию до 5 лет. Если проблема возникла из-за нашей работы, возвращаемся и устраняем её.' },
+  { neg: 'Не оставляем договорённости на словах', d: 'В договоре фиксируем объём работ, стоимость, сроки, порядок оплаты и гарантийные обязательства. У вас на руках понятные условия и ответственность подрядчика.' },
+];
+
+const faq = [
+  { q: 'Можно ли рассчитать стоимость по фото?', a: 'Да. Вы можете отправить фото кровли, фасада или участка демонтажа. Мы подготовим предварительный расчёт и подскажем, какие работы могут понадобиться. Точная смета фиксируется после замера.' },
+  { q: 'Выезд специалиста платный?', a: 'Условия зависят от адреса объекта, объёма работ и удалённости. В Москве и ближайшем Подмосковье выезд часто можно согласовать бесплатно. Точные условия уточняются при обращении.' },
+  { q: 'Работаете ли с юридическими лицами?', a: 'Да. Выполняем кровельные и фасадные работы для коммерческих и промышленных объектов, можем работать по договору, с безналичной оплатой и закрывающими документами.' },
+  { q: 'Можно ли выполнять работы без остановки объекта?', a: 'В ряде случаев да. Всё зависит от типа работ, состояния кровли или фасада, доступа на объект и требований безопасности. После осмотра предложим подходящий график.' },
+  { q: 'Цена может измениться в процессе?', a: 'Без согласования с вами цена не меняется. Если после демонтажа обнаруживаются скрытые дефекты, мы показываем проблему, объясняем варианты и только после этого согласуем дополнительные работы.' },
+  { q: 'Вы работаете по договору?', a: 'Да. В договоре фиксируются объём работ, стоимость, сроки, порядок оплаты и гарантийные обязательства.' },
+  { q: 'Можно ли заказать только ремонт, а не полную замену кровли?', a: 'Да. Если проблему можно решить ремонтом, мы не будем навязывать полную замену. После осмотра объясним, какой вариант рациональнее: локальный ремонт, частичная замена или полный демонтаж.' },
+  { q: 'Вы помогаете с материалами?', a: 'Да. Подскажем, какие материалы подходят под ваш объект, бюджет и задачу. Объясним, где можно сэкономить, а где экономия может привести к протечкам, промерзанию или переделкам.' },
+  { q: 'Вы вывозите строительный мусор после демонтажа?', a: 'Да, вывоз мусора можно включить в смету. Заранее обсуждаем, что нужно демонтировать, где складировать отходы и как организовать вывоз.' },
+  { q: 'Работаете ли зимой?', a: 'Некоторые виды кровельных и фасадных работ можно выполнять зимой, но не все. Всё зависит от материала, технологии, температуры и состояния объекта. После осмотра скажем, можно ли выполнять работы сейчас.' },
+  { q: 'Сколько занимает монтаж кровли или фасада?', a: 'Срок зависит от площади, сложности конструкции, состояния основания, погоды, материалов и режима доступа. После замера называем ориентировочный срок и фиксируем этапы.' },
+  { q: 'Что делать, если крыша протекает прямо сейчас?', a: 'Оставьте заявку и отправьте фото проблемного места. Мы оценим ситуацию и подскажем, можно ли сделать временную герметизацию, локальный ремонт или нужна замена участка.' },
+];
+
+const finalBulletsRaw = [
+  'Сколько могут стоить работы на вашем объекте',
+  'Какие материалы лучше использовать',
+  'Нужен ли демонтаж или можно обойтись ремонтом',
+  'Какие скрытые проблемы стоит проверить до начала',
+  'Какие этапы войдут в смету',
+];
+
+/* --------------------------------------------------------------- helpers -- */
+
+const pad = (i) => String(i + 1).padStart(2, '0');
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const arrow = (w = 15) => `<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+// Service icons (ported from the component's svgIcon()).
+function svgIcon(type) {
+  const paths = {
+    roof: ['M3 12 12 5l9 7', 'M5.5 10.5V19h13v-8.5', 'M9.5 19v-4h5v4'],
+    repair: ['M14.6 6.2a4 4 0 0 0-5.3 5.3l-5.1 5.1 2 2 5.1-5.1a4 4 0 0 0 5.3-5.3l-2.2 2.2-2-2 2.2-2.2Z'],
+    demo: ['M3 21h18', 'M6 21V9l6-4 6 4v12', 'M10 21v-5h4v5'],
+    facade: ['M4 21V6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v15', 'M3 21h18', 'M8 8h5M8 12h5M8 16h5'],
+    gutter: ['M4 7h16l-1.6 5.2a3 3 0 0 1-2.9 2.1H8.5a3 3 0 0 1-2.9-2.1L4 7Z', 'M12 14.4V20', 'M9.5 20h5'],
+  };
+  const ps = (paths[type] || paths.roof).map((d) => `<path d="${d}"/>`).join('');
+  return `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ps}</svg>`;
+}
+
+// Decorative mesh SVG (ported from the component's buildMesh()).
+function buildMesh(w, h, cols, rows, amp, cxRatio) {
+  const cx = w * cxRatio, sig = w * 0.24;
+  const pt = (c, r) => {
+    const x = c / (cols - 1) * w;
+    const depth = r / (rows - 1);
+    const baseY = h * (0.16 + 0.78 * depth);
+    const bump = amp * Math.exp(-((x - cx) * (x - cx)) / (2 * sig * sig)) * (1 - 0.22 * depth);
+    return [x, baseY - bump];
+  };
+  const lines = [];
+  for (let r = 0; r < rows; r++) {
+    let d = '';
+    for (let c = 0; c < cols; c++) { const p = pt(c, r); d += (c ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+    lines.push(`<path d="${d}" fill="none" stroke="var(--tiff)" stroke-width="1" opacity="${(0.1 + 0.5 * (r / (rows - 1))).toFixed(2)}"/>`);
+  }
+  for (let c = 0; c < cols; c++) {
+    let d = '';
+    for (let r = 0; r < rows; r++) { const p = pt(c, r); d += (r ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+    lines.push(`<path d="${d}" fill="none" stroke="var(--tiff)" stroke-width="1" opacity="0.16"/>`);
+  }
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="display:block">${lines.join('')}</svg>`;
+}
+
+const meshWave = buildMesh(260, 150, 14, 7, 58, 0.5);
+const meshBig = buildMesh(560, 620, 15, 11, 150, 0.62);
+
+const year = new Date().getFullYear();
+
+/* ----------------------------------------------------------- partials -- */
+
+const checkCircle = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10" fill="var(--gold-soft)"/><path d="m7.5 12.2 3 3 6-6.4" stroke="var(--gold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function eyebrow(label) {
+  return `<div style="display:inline-flex;align-items:center;gap:11px;font-size:12.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:18px"><span style="width:26px;height:1px;background:var(--gold)"></span>${label}</div>`;
+}
+
+function channelChips(form) {
+  return channelOpts.map((opt, i) =>
+    `<button type="button" class="channel-chip${i === 0 ? ' is-active' : ''}" data-form="${form}" data-channel="${esc(opt)}">${esc(opt)}</button>`
+  ).join('');
+}
+
+const workTypeOptions = `<option value="">Выберите тип работ</option>` +
+  workTypes.map((w) => `<option value="${esc(w)}">${esc(w)}</option>`).join('');
+
+/* --------------------------------------------------------------- header -- */
+
+const desktopNav = `
+    <div class="nav-desktop">
+      <div style="border-bottom:1px solid var(--line)">
+        <div style="max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,40px);height:66px;display:flex;align-items:center;gap:20px">
+          <a href="#top" style="display:flex;align-items:center;flex-shrink:0"><img src="assets/logo-full.png" alt="ООО «Стройтрансрегион», ремонтируем и строим с 2003 года" style="height:38px;width:auto;display:block"></a>
+          <span style="width:1px;height:34px;background:var(--line-2)"></span>
+          <div style="font-size:12.5px;line-height:1.35;color:var(--muted);font-weight:500;max-width:210px">Кровельные и фасадные<br>работы под ключ · Москва и МО</div>
+          <span style="flex:1"></span>
+          <a href="${contact.telHref}" style="text-decoration:none;text-align:right">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)">Звоните ежедневно</div>
+            <div style="font-size:19px;font-weight:800;letter-spacing:-0.01em;color:var(--text)">${contact.phone}</div>
+          </a>
+          <a href="#estimate" class="btn-ghost" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--text);padding:12px 18px;border:1px solid var(--line-2);border-radius:var(--r-btn);white-space:nowrap;transition:border-color .15s,color .15s">Перезвоните мне</a>
+          <a href="#estimate" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:14px;padding:13px 20px;border-radius:var(--r-btn);white-space:nowrap;transition:background .15s">Рассчитать стоимость${arrow(15)}</a>
+        </div>
+      </div>
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,40px);height:50px;display:flex;align-items:center;gap:6px">
+        <nav style="display:flex;align-items:center;gap:2px">
+          ${navLinks.map((l) => `<a href="${l.href}" class="nav-link" style="text-decoration:none;font-size:14px;font-weight:600;color:var(--muted);padding:8px 14px;border-radius:8px;transition:color .15s,background .15s">${l.label}</a>`).join('')}
+        </nav>
+        <span style="flex:1"></span>
+        <div style="display:flex;align-items:center;gap:16px;font-size:12.5px;font-weight:600;color:var(--muted-2)">
+          <span>Пн–Сб · 9:00–20:00</span>
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--muted-2)"></span>
+          <a href="${contact.maxHref}" target="_blank" rel="noopener" style="text-decoration:none;color:var(--muted)">MAX ${contact.max}</a>
+        </div>
+      </div>
+    </div>`;
+
+const mobileNav = `
+    <div class="nav-mobile">
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,24px);height:62px;display:flex;align-items:center;gap:12px">
+        <a href="#top" data-close-mobile style="display:flex;align-items:center;flex-shrink:0"><img src="assets/logo-full.png" alt="ООО «Стройтрансрегион»" style="height:34px;width:auto;display:block"></a>
+        <span style="flex:1"></span>
+        <a href="${contact.telHref}" aria-label="Позвонить" style="text-decoration:none;display:grid;place-items:center;width:44px;height:44px;border-radius:11px;border:1px solid var(--line-2);color:var(--gold)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M6.5 3.5 9 4l1 4-2 1.5a12 12 0 0 0 6 6L15.5 13l4 1 .5 2.5c0 1.5-1.5 3-3.5 3C9 19.5 4.5 15 4.5 7c0-2 1.5-3.5 2-3.5Z" fill="currentColor"/></svg></a>
+        <button data-toggle-mobile aria-label="Меню" aria-expanded="false" style="display:grid;place-items:center;width:44px;height:44px;border-radius:11px;border:none;background:var(--gold);color:var(--on-gold);cursor:pointer">
+          <svg class="icon-menu" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="mobile-panel" style="display:none;border-top:1px solid var(--line);padding:12px clamp(16px,4vw,24px) 20px;background:var(--bg)">
+        <nav style="display:flex;flex-direction:column">
+          ${navLinks.map((l) => `<a href="${l.href}" data-close-mobile style="text-decoration:none;font-size:15.5px;font-weight:600;color:var(--text);padding:14px 2px;border-bottom:1px solid var(--line)">${l.label}</a>`).join('')}
+        </nav>
+        <a href="${contact.telHref}" style="text-decoration:none;display:block;margin-top:16px;font-size:20px;font-weight:800;color:var(--text)">${contact.phone}</a>
+        <a href="#estimate" data-close-mobile style="display:block;text-align:center;text-decoration:none;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15px;padding:15px;border-radius:var(--r-btn);margin-top:14px">Рассчитать стоимость по фото</a>
+      </div>
+    </div>`;
+
+const header = `
+  <header style="position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)">
+${desktopNav}
+${mobileNav}
+  </header>`;
+
+/* -------------------------------------------------------------- sections -- */
+
+const heroMosaic = `
+        <div class="hero-mosaic">
+          <div style="grid-area:a;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/work3.jpg" alt="Утепление и наплавляемая кровля склада" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--photo-filter)">
+            <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Кровля склада</span>
+          </div>
+          <div style="grid-area:b;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/work1.jpg" alt="Гидроизоляция плоской кровли" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--photo-filter)">
+            <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Плоская кровля</span>
+          </div>
+          <div style="grid-area:c;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/finished-house.jpg" alt="Кровля и фасад загородного дома под ключ" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--photo-filter)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to top,rgba(10,10,9,0.62),transparent)"></div>
+            <span style="position:absolute;left:14px;bottom:14px;font-size:12.5px;font-weight:700;color:#fff">Кровля и фасад под ключ</span>
+          </div>
+          <div style="grid-area:d;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/roof-torch.png" alt="Наплавляемая гидроизоляция кровли горелкой на закате" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 34%;filter:var(--photo-filter)">
+            <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Гидроизоляция</span>
+          </div>
+          <div style="grid-area:e;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/roofer.jpg" alt="Монтаж фальцевой кровли" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:var(--photo-filter)">
+            <span style="position:absolute;left:11px;bottom:11px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(10,10,9,0.55);backdrop-filter:blur(4px);padding:6px 11px;border-radius:999px">Фальцевая кровля</span>
+          </div>
+          <div style="grid-area:f;position:relative;border-radius:var(--r-img);overflow:hidden">
+            <img src="assets/work-roofing.jpg" alt="Монтаж металлической кровли под ключ" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:var(--photo-filter)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(to top,rgba(10,10,9,0.7),transparent)"></div>
+            <span style="position:absolute;left:16px;bottom:16px;font-size:13.5px;font-weight:700;color:#fff">Кровля и фасад под ключ, от объекта до сдачи по договору</span>
+          </div>
+        </div>`;
+
+const heroForm = `
+          <div style="flex:1 1 380px;min-width:min(100%,340px);background:var(--panel);border:1px solid var(--line-2);border-radius:clamp(14px,1.6vw,18px);padding:clamp(24px,2.4vw,30px)">
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Быстрый расчёт</div>
+            <h2 style="margin:0 0 6px;font-size:clamp(20px,2vw,24px);font-weight:800;letter-spacing:-0.015em;line-height:1.2">Узнайте стоимость работ по фото</h2>
+            <p style="margin:0 0 20px;font-size:13px;color:var(--muted);line-height:1.5">Ответим в рабочее время и подготовим предварительную смету за 30–60 минут.</p>
+            <form data-form="estimate" style="display:flex;flex-direction:column;gap:16px">
+              <label style="display:flex;flex-direction:column;gap:7px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Имя</span><input type="text" name="name" placeholder="Как к вам обращаться" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;flex-direction:column;gap:7px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Телефон <span style="color:var(--gold)">*</span></span><input type="tel" name="phone" placeholder="+7 (___) ___-__-__" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <button type="submit" class="btn-gold" style="margin-top:4px;font:inherit;cursor:pointer;border:none;background:var(--gold);color:var(--on-gold);font-weight:800;font-size:15.5px;padding:15px;border-radius:var(--r-btn);display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:background .15s">Получить расчёт по фото${arrow(17)}</button>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px">
+                <a href="${contact.telHref}" style="text-decoration:none;font-size:14px;font-weight:800;color:var(--text)">${contact.phone}</a>
+                <span style="font-size:12px;color:var(--muted-2)">или перезвоним вам</span>
+              </div>
+              <p style="margin:0;font-size:11px;line-height:1.5;color:var(--muted-2)">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных.</p>
+            </form>
+          </div>`;
+
+const heroSection = `
+    <section data-screen-label="Hero" style="padding:clamp(40px,6vw,80px) clamp(20px,4vw,40px) clamp(48px,6vw,84px)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line-2);color:var(--muted);font-weight:600;font-size:12.5px;padding:8px 15px;border-radius:999px;margin-bottom:clamp(22px,3vw,32px)">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--gold)"></span>
+          ООО «Стройтрансрегион» · на рынке с 2003 года
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,48px);align-items:flex-start;margin-bottom:clamp(24px,3vw,40px)">
+          <div style="flex:1 1 560px;min-width:min(100%,480px)">
+            <h1 style="margin:0 0 22px;font-size:clamp(30px,4.4vw,56px);line-height:1.05;font-weight:800;letter-spacing:-0.035em;text-wrap:balance">Кровельные и <span style="color:var(--gold)">фасадные работы</span> для коммерческих, промышленных и частных объектов <span style="color:var(--gold)">в Москве и МО</span></h1>
+            <p style="margin:0 0 24px;font-size:clamp(15px,1.5vw,17.5px);line-height:1.6;color:var(--muted);max-width:560px">Монтаж, ремонт и замена кровли и фасада под ключ для складов, производств, торговых и офисных зданий, домов и коттеджей. По договору, с фиксированной сметой и фотоотчётом.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${heroBadges.map((bd) => `<span style="font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--line-2);padding:8px 13px;border-radius:999px;white-space:nowrap">${bd}</span>`).join('')}
+            </div>
+          </div>
+${heroForm}
+        </div>
+${heroMosaic}
+      </div>
+    </section>`;
+
+const aboutSection = `
+    <section data-screen-label="О компании" style="padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px);border-top:1px solid var(--line);background:var(--bg-2)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="height:1px;background:var(--line);margin-bottom:clamp(36px,5vw,60px)"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(28px,5vw,72px);align-items:flex-start;margin-bottom:clamp(36px,4vw,56px)">
+          <h2 style="margin:0;flex:1 1 460px;font-size:clamp(28px,3.6vw,46px);line-height:1.08;font-weight:800;letter-spacing:-0.03em;text-wrap:balance">Надёжная кровля и фасад для объектов, которые <span style="color:var(--gold)">нельзя останавливать</span></h2>
+          <div style="flex:1 1 360px;max-width:520px">
+            <p style="margin:0 0 18px;font-size:clamp(14.5px,1.4vw,16.5px);line-height:1.65;color:var(--muted)">Для коммерческих и промышленных зданий ошибка в кровле или фасаде грозит не только протечками. Это риск порчи товара, остановки процессов, жалоб арендаторов и новых расходов на переделку.</p>
+            <p style="margin:0;font-size:clamp(14.5px,1.4vw,16.5px);line-height:1.65;color:var(--muted)">Поэтому мы <span style="color:var(--gold);font-weight:600">фиксируем смету, показываем этапы работ и работаем по договору</span>, от складов и производств до частных домов и коттеджей.</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+          <div style="position:relative;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);overflow:hidden;min-height:150px">
+            <div style="position:absolute;inset:0;opacity:0.9">${meshWave}</div>
+            <div style="position:absolute;left:20px;bottom:18px;font-size:12px;font-weight:600;color:var(--muted)">Инженерный подход<br>к каждому узлу</div>
+          </div>
+          ${stats.map((s) => `<div style="border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);padding:clamp(20px,2vw,26px);display:flex;flex-direction:column;justify-content:center;min-height:150px">
+            <div style="font-size:clamp(28px,3vw,38px);font-weight:800;letter-spacing:-0.02em;line-height:1;margin-bottom:12px">${s.big}</div>
+            <div style="font-size:13.5px;line-height:1.5;color:var(--muted)">${s.cap}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>`;
+
+const servicesSection = `
+    <section id="services" data-screen-label="Услуги" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:760px;margin-bottom:clamp(32px,4vw,52px)">
+          ${eyebrow('Услуги')}
+          <h2 style="margin:0 0 16px;font-size:clamp(26px,3.4vw,42px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Какие кровельные и фасадные работы выполняем</h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Берём на себя наружные работы для коммерческих, промышленных и частных объектов: от ремонта плоской кровли, демонтажа старого покрытия и подготовки основания до монтажа кровли, фасада, водостоков и доборных элементов.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+          ${services.map((s) => `<div class="reveal card" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:clamp(24px,2.4vw,30px);display:flex;flex-direction:column;transition:border-color .18s,transform .18s">
+            <span style="width:50px;height:50px;border-radius:13px;background:var(--gold-soft);display:grid;place-items:center;margin-bottom:20px">${svgIcon(s.icon)}</span>
+            <h3 style="margin:0 0 11px;font-size:19px;font-weight:800;letter-spacing:-0.015em;line-height:1.25">${s.title}</h3>
+            <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:var(--muted)">${s.desc}</p>
+            <div style="font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">${s.label}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px">
+              ${s.items.map((it) => `<span style="font-size:12.5px;font-weight:600;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);padding:6px 11px;border-radius:999px">${it}</span>`).join('')}
+            </div>
+            <a href="#estimate" class="btn-ghost" style="margin-top:auto;text-decoration:none;display:inline-flex;align-items:center;gap:9px;font-weight:700;font-size:14px;color:var(--text);align-self:flex-start;padding:11px 18px;border:1px solid var(--line-2);border-radius:var(--r-btn);transition:border-color .15s,color .15s">${s.cta}${arrow(15)}</a>
+          </div>`).join('')}
+          <div class="reveal" style="background:var(--gold);color:var(--on-gold);border-radius:var(--r-card);padding:clamp(26px,2.6vw,34px);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;opacity:0.7;margin-bottom:14px">Не нашли нужное?</div>
+            <h3 style="margin:0 0 12px;font-size:clamp(21px,2.2vw,26px);font-weight:800;letter-spacing:-0.02em;line-height:1.18">Получите индивидуальный расчёт вашего объекта</h3>
+            <p style="margin:0 0 22px;font-size:14px;line-height:1.55;opacity:0.82">Подготовим предварительную смету по фото за 30–60 минут, без выезда и обязательств.</p>
+            <a href="#estimate" style="text-decoration:none;display:inline-flex;align-items:center;gap:9px;background:var(--on-gold);color:var(--gold);font-weight:700;font-size:14.5px;padding:14px 22px;border-radius:var(--r-btn);align-self:flex-start">Рассчитать стоимость${arrow(16)}</a>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+const worksSection = `
+    <section id="works" data-screen-label="Наши работы" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px);background:var(--bg-2);border-top:1px solid var(--line)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:820px;margin-bottom:clamp(28px,3vw,40px)">
+          ${eyebrow('Наши работы')}
+          <h2 style="margin:0 0 16px;font-size:clamp(26px,3.4vw,42px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Как мы выполняем кровельные и фасадные работы на объектах</h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Надёжность кровли и фасада создаётся в скрытых этапах: подготовке основания, гидроизоляции, утеплении, герметизации примыканий и аккуратной сдаче объекта.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line);margin-bottom:clamp(22px,3vw,32px)">
+          ${workTabsRaw.map((t, i) => `<button class="work-tab${i === 0 ? ' is-active' : ''}" data-tab="${t.k}">${t.label}</button>`).join('')}
+        </div>
+        <div class="works-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:clamp(28px,3vw,40px)">
+          ${worksAll.map((w) => `<a href="#estimate" class="work-card" data-cat="${w.cat}" style="position:relative;text-decoration:none;border-radius:var(--r-card);overflow:hidden;min-height:340px;display:block">
+            <img src="${w.src}" alt="${esc(w.cap)}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--photo-filter);transition:transform .4s">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,9,0.82) 6%,rgba(10,10,9,0.15) 52%,rgba(10,10,9,0.35))"></div>
+            <span style="position:absolute;top:16px;left:16px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:rgba(10,10,9,0.5);backdrop-filter:blur(4px);padding:7px 12px;border-radius:999px">${w.tag}</span>
+            <div style="position:absolute;left:18px;right:18px;bottom:18px">
+              <h3 style="margin:0 0 12px;font-size:19px;font-weight:800;letter-spacing:-0.01em;color:#fff;line-height:1.25">${w.cap}</h3>
+              <span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--gold)">Рассчитать похожий объект<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </a>`).join('')}
+        </div>
+        <a href="#estimate" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:11px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15.5px;padding:16px 28px;border-radius:var(--r-btn);transition:background .15s">Получить расчёт по моему объекту${arrow(18)}</a>
+      </div>
+    </section>`;
+
+const processSection = `
+    <section id="process" data-screen-label="Как мы работаем" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:760px;margin-bottom:clamp(32px,4vw,52px)">
+          ${eyebrow('Как мы работаем')}
+          <h2 style="margin:0;font-size:clamp(26px,3.4vw,42px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Понятный порядок работ, от заявки до гарантии</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px">
+          ${steps.map((p, i) => `<div class="reveal" style="position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:clamp(24px,2.2vw,30px) clamp(24px,2.2vw,30px) clamp(28px,2.6vw,34px);overflow:hidden;display:flex;flex-direction:column">
+            <div style="font-size:13px;font-weight:800;color:var(--gold);letter-spacing:0.04em;margin-bottom:clamp(28px,4vw,52px)">${pad(i)}</div>
+            <h3 style="margin:0 0 10px;font-size:18px;font-weight:800;letter-spacing:-0.01em;line-height:1.25">${p.t}</h3>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--muted)">${p.d}</p>
+            <div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--tiff))"></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>`;
+
+const estimateSection = `
+    <section id="estimate" data-screen-label="Расчёт по фото" style="scroll-margin-top:130px;padding:clamp(20px,3vw,40px) clamp(20px,4vw,40px) clamp(52px,7vw,104px)">
+      <div style="max-width:1280px;margin:0 auto;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:clamp(16px,2vw,24px);overflow:hidden">
+        <div style="position:absolute;top:0;right:0;width:min(58%,640px);height:100%;opacity:0.5;pointer-events:none;-webkit-mask-image:linear-gradient(to left,#000 40%,transparent);mask-image:linear-gradient(to left,#000 40%,transparent)">${meshBig}</div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:clamp(28px,4vw,56px);align-items:stretch;padding:clamp(28px,4vw,56px)">
+          <div style="flex:1 1 420px;min-width:min(100%,360px)">
+            ${eyebrow('Расчёт по фото')}
+            <h2 style="margin:0 0 16px;font-size:clamp(24px,3vw,38px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Получите <span style="color:var(--gold)">предварительный расчёт</span> кровельных или фасадных работ по фото</h2>
+            <p style="margin:0 0 28px;font-size:clamp(14.5px,1.4vw,16.5px);line-height:1.62;color:var(--muted);max-width:520px">Отправьте фото кровли, фасада или участка демонтажа. Специалист оценит состояние объекта, уточнит детали и подготовит предварительную стоимость работ.</p>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted-2);margin-bottom:12px">Что вы получите</div>
+            <div style="display:flex;flex-direction:column">
+              ${estimateGetsRaw.map((g) => `<div style="display:flex;align-items:flex-start;gap:13px;padding:12px 0;border-bottom:1px solid var(--line)">${checkCircle}<span style="font-size:14.5px;font-weight:600;line-height:1.45;color:var(--text)">${g}</span></div>`).join('')}
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-top:22px;background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:15px 18px;max-width:520px">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="9" stroke="var(--gold)" stroke-width="1.7"/><path d="M12 7.5v5l3 2" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--muted)">Расчёт по фото занимает 30–60 минут. Точная смета фиксируется после замера и согласования объёма работ и условий доступа на объект.</p>
+            </div>
+          </div>
+          <div style="flex:1 1 380px;min-width:min(100%,340px);background:var(--panel-2);border:1px solid var(--line-2);border-radius:clamp(14px,1.6vw,18px);padding:clamp(24px,3vw,34px)">
+            <h3 style="margin:0 0 6px;font-size:21px;font-weight:800;letter-spacing:-0.015em">Получить расчёт стоимости</h3>
+            <p style="margin:0 0 22px;font-size:13.5px;color:var(--muted)">Ответим в рабочее время и подготовим предварительную смету.</p>
+            <form data-form="estimate" style="display:flex;flex-direction:column;gap:20px">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px">Куда отправить расчёт?</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">${channelChips('estimate')}</div>
+                <input type="hidden" name="channel" value="MAX">
+              </div>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Имя</span><input type="text" name="name" placeholder="Как к вам обращаться" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Телефон <span style="color:var(--gold)">*</span></span><input type="tel" name="phone" placeholder="+7 (___) ___-__-__" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Тип работ</span><select name="workType" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;appearance:none;cursor:pointer">${workTypeOptions}</select></label>
+              <label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" name="consent" checked style="margin-top:2px;width:18px;height:18px;accent-color:var(--gold);flex-shrink:0;cursor:pointer"><span style="font-size:12.5px;line-height:1.5;color:var(--muted)">Согласен с обработкой персональных данных и политикой конфиденциальности</span></label>
+              <button type="submit" class="btn-gold" style="font:inherit;cursor:pointer;border:none;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15.5px;padding:16px;border-radius:var(--r-btn);transition:background .15s">Получить расчёт стоимости</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+const benefitsSection = `
+    <section id="benefits" data-screen-label="Почему мы" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px);background:var(--bg-2);border-top:1px solid var(--line)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:900px;margin-bottom:clamp(32px,4vw,52px)">
+          ${eyebrow('Почему мы')}
+          <h2 style="margin:0 0 16px;font-size:clamp(25px,3.2vw,40px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Почему заказчики выбирают нас, когда <span style="color:var(--gold)">не хотят переделывать кровлю через год</span></h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Для коммерческих и промышленных зданий ошибка в кровле или фасаде грозит порчей товара, остановкой процессов, жалобами арендаторов и новыми расходами. Поэтому мы фиксируем смету, показываем этапы и работаем по договору.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px">
+          ${benefitsRaw.map((b, i) => `<div class="reveal card" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:26px 26px 28px;display:flex;flex-direction:column;transition:border-color .18s,transform .18s">
+            <span style="width:44px;height:44px;border-radius:12px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:15px;margin-bottom:18px">${pad(i)}</span>
+            <h3 style="margin:0 0 10px;font-size:17.5px;font-weight:800;letter-spacing:-0.01em;line-height:1.28">${b.t}</h3>
+            <p style="margin:0;font-size:14px;line-height:1.6;color:var(--muted)">${b.d}</p>
+          </div>`).join('')}
+          <div class="reveal" style="background:var(--gold);color:var(--on-gold);border-radius:var(--r-card);padding:28px;display:flex;flex-direction:column;justify-content:center;gap:16px">
+            <h3 style="margin:0;font-size:19px;font-weight:800;letter-spacing:-0.015em;line-height:1.25">Разберём ваш объект по этим же пунктам</h3>
+            <p style="margin:0;font-size:14px;line-height:1.55;opacity:0.82">На бесплатной консультации подскажем, что важно проверить именно у вас.</p>
+            <a href="#estimate" style="text-decoration:none;display:inline-flex;align-items:center;gap:9px;background:var(--on-gold);color:var(--gold);font-weight:700;font-size:14.5px;padding:13px 20px;border-radius:var(--r-btn);align-self:flex-start">Получить консультацию${arrow(15)}</a>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+const pricesSection = `
+    <section id="prices" data-screen-label="Цены" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:820px;margin-bottom:clamp(32px,4vw,52px)">
+          ${eyebrow('Цены')}
+          <h2 style="margin:0 0 16px;font-size:clamp(26px,3.4vw,42px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Сколько стоят кровельные и фасадные работы</h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Мы не называем цену «на глаз», чтобы потом не увеличивать смету в процессе. Сначала оцениваем тип объекта, площадь, состояние основания, объём демонтажа, сложность узлов, высоту здания и материалы. После замера фиксируем стоимость в смете и договоре.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:stretch;margin-bottom:clamp(28px,3vw,40px)">
+          <div style="flex:1 1 520px;min-width:min(100%,440px);display:flex;flex-direction:column;gap:16px">
+            <div class="reveal" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:6px clamp(22px,2.6vw,32px) 8px">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted-2);padding:20px 0 14px;border-bottom:1px solid var(--line)"><span>Вид работ</span><span>Ориентир</span></div>
+              ${prices.map((p, i) => `<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;padding:17px 0;border-bottom:1px solid var(--line)">
+                <span style="width:26px;height:26px;flex-shrink:0;border-radius:7px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;font-size:12px;font-weight:800">${pad(i)}</span>
+                <span style="font-size:15px;font-weight:600;color:var(--text);line-height:1.35">${p.t}</span>
+                <span style="flex:1;border-bottom:1px dotted var(--line-2);transform:translateY(-4px);min-width:16px"></span>
+                <span style="white-space:nowrap;font-weight:800;font-size:15px;color:var(--text)">от <span style="color:var(--gold);border-bottom:2px solid var(--gold-soft);padding:0 5px">___</span> ${p.u}</span>
+              </div>`).join('')}
+              <p style="margin:14px 0 18px;font-size:12.5px;color:var(--muted);line-height:1.55">Точные цифры заполняются после согласования прайса. Итоговая стоимость фиксируется в смете после замера.</p>
+            </div>
+            <div class="reveal" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:clamp(24px,2.6vw,30px)">
+              <div style="font-size:11.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">Факторы сметы</div>
+              <h3 style="margin:0 0 12px;font-size:18px;font-weight:800;letter-spacing:-0.015em">От чего зависит итоговая стоимость</h3>
+              <p style="margin:0;font-size:14px;line-height:1.6;color:var(--muted)">Стоимость зависит от площади объекта, типа кровли или фасада, состояния основания, выбранных материалов, высоты здания, сложности примыканий, необходимости демонтажа, вывоза мусора, сроков и условий доступа на объект.</p>
+            </div>
+          </div>
+          <div class="reveal" style="flex:1 1 340px;min-width:min(100%,300px);position:relative;border-radius:var(--r-card);overflow:hidden;min-height:clamp(420px,54vw,560px)">
+            <img src="assets/roofer.jpg" alt="Кровельщик за монтажом фальцевой кровли" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 24%;filter:var(--photo-filter)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:45%;background:linear-gradient(to top,rgba(10,10,9,0.6),transparent)"></div>
+            <div style="position:absolute;left:18px;right:18px;bottom:18px;display:flex;align-items:flex-start;gap:12px;color:#fff">
+              <span style="flex-shrink:0;width:38px;height:38px;border-radius:11px;background:rgba(198,161,91,0.9);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3 4 6.5v5c0 4.6 3.4 7.6 8 9 4.6-1.4 8-4.4 8-9v-5L12 3Z" stroke="var(--on-gold)" stroke-width="1.7" stroke-linejoin="round"/><path d="m8.8 12 2.2 2.2 4.2-4.4" stroke="var(--on-gold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <p style="margin:0;font-size:13px;line-height:1.55">Если после вскрытия находим скрытые дефекты, показываем проблему и согласуем стоимость до начала дополнительных работ.</p>
+            </div>
+          </div>
+        </div>
+        <a href="#estimate" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:11px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15.5px;padding:16px 28px;border-radius:var(--r-btn);transition:background .15s">Получить расчёт стоимости по фото${arrow(18)}</a>
+      </div>
+    </section>`;
+
+const guaranteeSection = `
+    <section id="guarantee" data-screen-label="Гарантия и договор" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px);background:var(--bg-2);border-top:1px solid var(--line)">
+      <div style="max-width:1280px;margin:0 auto">
+        <div style="max-width:900px;margin-bottom:clamp(32px,4vw,52px)">
+          ${eyebrow('Гарантия и договор')}
+          <h2 style="margin:0 0 16px;font-size:clamp(25px,3.2vw,40px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Чтобы после старта работ цена, сроки и условия <span style="color:var(--gold)">не начали «вдруг меняться»</span></h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Перед началом работ фиксируем в договоре смету, этапы, сроки, порядок оплаты и гарантию. Это особенно важно для коммерческих и промышленных объектов, где срывы мешают работе склада, офиса, производства или арендаторов.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+          <div style="flex:1 1 540px;min-width:min(100%,440px);display:flex;flex-direction:column;gap:12px">
+            ${guaranteeRaw.map((g) => `<div class="reveal card" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:22px 24px;display:flex;gap:16px;align-items:flex-start;transition:border-color .18s,transform .18s">
+              <span style="flex-shrink:0;width:40px;height:40px;border-radius:11px;background:var(--gold-soft);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3 5 6v5.5c0 4 2.9 6.9 7 8 4.1-1.1 7-4 7-8V6l-7-3Z" stroke="var(--gold)" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="var(--gold)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <h3 style="margin:0 0 6px;font-size:17px;font-weight:800;letter-spacing:-0.01em;line-height:1.25">${g.neg}</h3>
+                <p style="margin:0;font-size:14px;line-height:1.6;color:var(--muted)">${g.d}</p>
+              </div>
+            </div>`).join('')}
+          </div>
+          <div style="flex:1 1 340px;min-width:min(100%,300px);display:flex;flex-direction:column;gap:16px;position:sticky;top:130px">
+            <div class="reveal" style="position:relative;border-radius:var(--r-card);overflow:hidden;min-height:clamp(240px,30vw,300px)">
+              <img src="assets/hero-house.jpg" alt="Готовые объекты в Москве и Московской области" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:var(--photo-filter)">
+              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,9,0.75),transparent 55%)"></div>
+              <div style="position:absolute;left:16px;bottom:16px;right:16px;color:#fff">
+                <div style="font-weight:800;font-size:15px;margin-bottom:3px">Работаем по Москве и МО</div>
+                <div style="font-size:12.5px;color:rgba(255,255,255,0.8)">Коммерческие здания, склады, производства, офисы, дома и коттеджи</div>
+              </div>
+            </div>
+            <div class="reveal" style="background:var(--panel);border:1px solid var(--line-2);border-radius:var(--r-card);padding:26px">
+              <div style="font-size:clamp(32px,3.4vw,40px);font-weight:800;letter-spacing:-0.02em;line-height:1;margin-bottom:8px;color:var(--gold)">до 5 лет</div>
+              <p style="margin:0 0 18px;font-size:14px;line-height:1.55;color:var(--muted)">гарантии на выполненные работы, закреплённой в договоре.</p>
+              <a href="#estimate" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:14.5px;padding:13px 20px;border-radius:var(--r-btn);transition:background .15s">Получить условия по договору${arrow(15)}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+const faqSection = `
+    <section id="faq" data-screen-label="Вопросы и ответы" style="scroll-margin-top:130px;padding:clamp(52px,7vw,104px) clamp(20px,4vw,40px)">
+      <div style="max-width:960px;margin:0 auto">
+        <div style="margin-bottom:clamp(28px,3vw,44px)">
+          ${eyebrow('Вопросы и ответы')}
+          <h2 style="margin:0 0 16px;font-size:clamp(26px,3.4vw,42px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Ответы на вопросы перед началом работ</h2>
+          <p style="margin:0;font-size:clamp(15px,1.4vw,17px);line-height:1.6;color:var(--muted)">Собрали частые вопросы о стоимости, сроках, порядке работ, гарантии и особенностях работы на коммерческих, промышленных и частных объектах.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:clamp(28px,3vw,40px)">
+          ${faq.map((f, i) => `<div class="reveal faq-item${i === 0 ? ' is-open' : ''}" style="background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden">
+            <button class="faq-toggle" aria-expanded="${i === 0 ? 'true' : 'false'}" style="width:100%;font:inherit;text-align:left;cursor:pointer;background:none;border:none;padding:20px 22px;display:flex;align-items:center;gap:16px;color:var(--text)">
+              <span style="flex:1;font-size:clamp(15px,1.5vw,17px);font-weight:700;letter-spacing:-0.01em;line-height:1.35">${f.q}</span>
+              <span style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:var(--gold-soft);display:grid;place-items:center;color:var(--gold)">
+                <svg class="faq-icon-minus" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 12h12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                <svg class="faq-icon-plus" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+              </span>
+            </button>
+            <div class="faq-answer" style="padding:0 22px 22px"><p style="margin:0;font-size:14.5px;line-height:1.65;color:var(--muted)">${f.a}</p></div>
+          </div>`).join('')}
+        </div>
+        <a href="#estimate" class="btn-gold" style="text-decoration:none;display:inline-flex;align-items:center;gap:11px;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15.5px;padding:16px 28px;border-radius:var(--r-btn);transition:background .15s">Задать вопрос специалисту${arrow(18)}</a>
+      </div>
+    </section>`;
+
+const contactSection = `
+    <section id="contact" data-screen-label="Финальная заявка" style="scroll-margin-top:130px;padding:clamp(20px,3vw,40px) clamp(20px,4vw,40px) clamp(40px,5vw,64px)">
+      <div style="max-width:1280px;margin:0 auto;position:relative;background:var(--panel);border:1px solid var(--line-2);border-radius:clamp(16px,2vw,24px);overflow:hidden">
+        <div style="position:absolute;top:0;right:0;width:min(60%,680px);height:100%;opacity:0.42;pointer-events:none;-webkit-mask-image:linear-gradient(to left,#000 35%,transparent);mask-image:linear-gradient(to left,#000 35%,transparent)">${meshBig}</div>
+        <div style="position:relative;display:flex;flex-wrap:wrap;gap:clamp(28px,4vw,56px);align-items:flex-start;padding:clamp(28px,4vw,56px)">
+          <div style="flex:1 1 420px;min-width:min(100%,380px)">
+            ${eyebrow('Финальная заявка')}
+            <h2 style="margin:0 0 16px;font-size:clamp(24px,3.2vw,40px);line-height:1.1;font-weight:800;letter-spacing:-0.028em;text-wrap:balance">Не начинайте работы, пока не понимаете <span style="color:var(--gold)">реальную стоимость</span></h2>
+            <p style="margin:0 0 26px;font-size:clamp(14.5px,1.4vw,16.5px);line-height:1.62;color:var(--muted);max-width:560px">Одна ошибка в смете может привести к доплатам, затягиванию сроков и переделкам через сезон. Для коммерческих объектов это ещё и риск протечек, повреждения товара и остановки процессов. Отправьте фото, и мы оценим состояние, подскажем оптимальный вариант и подготовим предварительный расчёт.</p>
+            <div style="display:flex;flex-direction:column;margin-bottom:24px">
+              ${finalBulletsRaw.map((b) => `<div style="display:flex;align-items:flex-start;gap:13px;padding:12px 0;border-bottom:1px solid var(--line)">${checkCircle}<span style="font-size:14.5px;font-weight:600;line-height:1.45;color:var(--text)">${b}</span></div>`).join('')}
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:999px;padding:11px 18px;font-size:13px;font-weight:700;color:var(--text)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gold)"></span>Расчёт бесплатный и ни к чему не обязывает</div>
+          </div>
+          <div style="flex:1 1 400px;min-width:min(100%,340px);background:var(--panel-2);border:1px solid var(--line-2);border-radius:clamp(14px,1.6vw,18px);padding:clamp(24px,3vw,34px)">
+            <h3 style="margin:0 0 6px;font-size:21px;font-weight:800;letter-spacing:-0.015em">Рассчитать мой объект</h3>
+            <p style="margin:0 0 22px;font-size:13.5px;color:var(--muted)">Заполните форму, мы свяжемся и подготовим смету.</p>
+            <form data-form="final" style="display:flex;flex-direction:column;gap:20px">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px">Куда отправить расчёт?</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">${channelChips('final')}</div>
+                <input type="hidden" name="channel" value="MAX">
+              </div>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Имя</span><input type="text" name="name" placeholder="Как к вам обращаться" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Телефон <span style="color:var(--gold)">*</span></span><input type="tel" name="phone" placeholder="+7 (___) ___-__-__" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Тип работ</span><select name="workType" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;appearance:none;cursor:pointer">${workTypeOptions}</select></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:12px;font-weight:700;color:var(--muted)">Адрес или район объекта</span><input type="text" name="address" placeholder="Город, район, населённый пункт" style="font:inherit;font-size:15px;padding:11px 2px;border:none;border-bottom:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:0;transition:border-color .15s"></label>
+              <label style="display:flex;align-items:flex-start;gap:11px;cursor:pointer"><input type="checkbox" name="consent" checked style="margin-top:2px;width:18px;height:18px;accent-color:var(--gold);flex-shrink:0;cursor:pointer"><span style="font-size:12.5px;line-height:1.5;color:var(--muted)">Согласен с обработкой персональных данных и политикой конфиденциальности</span></label>
+              <button type="submit" class="btn-gold" style="font:inherit;cursor:pointer;border:none;background:var(--gold);color:var(--on-gold);font-weight:700;font-size:15.5px;padding:16px;border-radius:var(--r-btn);transition:background .15s">Рассчитать мой объект</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+const footer = `
+  <footer style="background:var(--bg-2);border-top:1px solid var(--line)">
+    <div style="max-width:1280px;margin:0 auto;padding:clamp(44px,5vw,68px) clamp(20px,4vw,40px) 30px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px">
+      <div style="max-width:340px">
+        <img src="assets/logo-full.png" alt="ООО «Стройтрансрегион»" style="height:40px;width:auto;display:block;margin-bottom:18px">
+        <p style="margin:0 0 8px;font-size:14px;color:var(--muted);line-height:1.55">Кровельные и фасадные работы под ключ для коммерческих, промышленных и частных объектов.</p>
+        <p style="margin:0;font-size:13px;font-weight:700;letter-spacing:0.02em;color:var(--muted)">Москва и Московская область</p>
+      </div>
+      <div>
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">Разделы</div>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          ${navLinks.map((l) => `<a href="${l.href}" style="text-decoration:none;font-size:14px;color:var(--muted)">${l.label}</a>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">Контакты</div>
+        <a href="${contact.telHref}" style="text-decoration:none;font-weight:800;font-size:21px;display:block;margin-bottom:8px;color:var(--text)">${contact.phone}</a>
+        <p style="margin:0 0 5px;font-size:14px;color:var(--muted)">${contact.address}</p>
+        <p style="margin:0 0 16px;font-size:13px;color:var(--muted-2)">Пн–Сб · 9:00–20:00</p>
+        <div style="display:flex;gap:8px">
+          <a href="${contact.maxHref}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text);border:1px solid var(--line-2);padding:9px 14px;border-radius:999px">MAX</a>
+          <a href="#estimate" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--on-gold);background:var(--gold);padding:9px 16px;border-radius:999px">Получить расчёт</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--line)">
+      <div style="max-width:1280px;margin:0 auto;padding:18px clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:12.5px;color:var(--muted-2)">
+        <span>© ${year} ООО «Стройтрансрегион»</span>
+        <span style="flex:1"></span>
+        <a href="#" style="text-decoration:none;color:var(--muted-2)">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </footer>`;
+
+/* ----------------------------------------------------------------- head -- */
+
+const styleBlock = `
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:#141413}
+  :root{
+    --bg:#1A1A19;--bg-2:#141413;--panel:#232220;--panel-2:#2C2A27;
+    --line:rgba(255,255,255,0.09);--line-2:rgba(255,255,255,0.17);
+    --text:#F1EFEA;--muted:#A3A099;--muted-2:#726E66;
+    --gold:#C6A15B;--gold-2:#B58E45;--gold-soft:rgba(198,161,91,0.13);--on-gold:#191510;
+    --tiff:#1BB6AE;--photo-filter:saturate(0.85) contrast(1.02) brightness(0.9);
+    --r-card:12px;--r-btn:10px;--r-img:12px;
+  }
+  ::selection{background:var(--gold);color:var(--on-gold)}
+  a{color:var(--gold)}
+  a:hover{color:var(--gold-2)}
+  input::placeholder,textarea::placeholder{color:var(--muted-2)}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold)!important;box-shadow:0 1px 0 0 var(--gold)}
+  .frame-root{background:var(--bg)}
+  @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @media (prefers-reduced-motion:no-preference){
+    @supports (animation-timeline:view()){
+      .reveal{animation:rise both linear;animation-timeline:view();animation-range:entry 2% cover 15%}
+    }
+  }
+  .hero-mosaic{display:grid;gap:12px;grid-template-columns:repeat(4,1fr);grid-template-rows:152px 152px 300px;grid-template-areas:'a b c c' 'd e c c' 'f f f f'}
+  @media (max-width:920px){
+    .hero-mosaic{grid-template-columns:repeat(2,1fr);grid-template-rows:180px 148px 148px 220px;grid-template-areas:'c c' 'a b' 'd e' 'f f'}
+  }
+  @media (max-width:540px){
+    .hero-mosaic{grid-template-columns:1fr;grid-template-rows:172px 150px 150px 150px 150px 200px;grid-template-areas:'c' 'a' 'b' 'd' 'e' 'f'}
+  }
+
+  /* Hover states (ported from the component's style-hover handlers) */
+  .btn-gold:hover{background:var(--gold-2)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .nav-link:hover{color:var(--text);background:var(--panel)}
+  .card:hover{transform:translateY(-3px);border-color:var(--line-2)}
+  .work-card:hover img{transform:scale(1.05)}
+
+  /* Responsive nav (replaces the runtime's matchMedia switch at 1080px) */
+  .nav-mobile{display:none}
+  @media (max-width:1080px){
+    .nav-desktop{display:none}
+    .nav-mobile{display:block}
+  }
+
+  /* Works filter tabs */
+  .work-tab{font:inherit;cursor:pointer;background:none;border:none;font-size:14.5px;font-weight:700;padding:14px 4px;margin-right:22px;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;color:var(--muted-2)}
+  .work-tab.is-active{color:var(--text);border-bottom-color:var(--gold)}
+  .work-card[hidden]{display:none}
+
+  /* Channel chips */
+  .channel-chip{font:inherit;cursor:pointer;font-size:13px;font-weight:700;padding:9px 15px;border-radius:999px;transition:all .15s;background:transparent;border:1px solid var(--line-2);color:var(--muted)}
+  .channel-chip.is-active{background:var(--gold-soft);border:1px solid var(--gold);color:var(--gold)}
+
+  /* FAQ accordion */
+  .faq-answer{display:none}
+  .faq-item.is-open .faq-answer{display:block}
+  .faq-icon-minus{display:none}
+  .faq-item.is-open .faq-icon-minus{display:block}
+  .faq-item.is-open .faq-icon-plus{display:none}`;
+
+/* --------------------------------------------------------------- runtime -- */
+
+const runtime = `
+(function(){
+  // Mobile menu toggle
+  var toggle = document.querySelector('[data-toggle-mobile]');
+  var panel = document.querySelector('.mobile-panel');
+  var menuIcon = document.querySelector('.icon-menu');
+  var closeIcon = document.querySelector('.icon-close');
+  function setMobile(open){
+    if(!panel) return;
+    panel.style.display = open ? 'block' : 'none';
+    if(menuIcon) menuIcon.style.display = open ? 'none' : 'block';
+    if(closeIcon) closeIcon.style.display = open ? 'block' : 'none';
+    if(toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  if(toggle){
+    toggle.addEventListener('click', function(){
+      setMobile(panel.style.display !== 'block');
+    });
+  }
+  document.querySelectorAll('[data-close-mobile]').forEach(function(el){
+    el.addEventListener('click', function(){ setMobile(false); });
+  });
+
+  // Works filter
+  var tabs = document.querySelectorAll('.work-tab');
+  var cards = document.querySelectorAll('.work-card');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var k = tab.getAttribute('data-tab');
+      tabs.forEach(function(t){ t.classList.toggle('is-active', t === tab); });
+      cards.forEach(function(c){
+        var show = (k === 'all') || (c.getAttribute('data-cat') === k);
+        if(show){ c.removeAttribute('hidden'); } else { c.setAttribute('hidden',''); }
+      });
+    });
+  });
+
+  // FAQ accordion (single open at a time)
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    var btn = item.querySelector('.faq-toggle');
+    btn.addEventListener('click', function(){
+      var willOpen = !item.classList.contains('is-open');
+      document.querySelectorAll('.faq-item').forEach(function(other){
+        other.classList.remove('is-open');
+        var b = other.querySelector('.faq-toggle');
+        if(b) b.setAttribute('aria-expanded','false');
+      });
+      if(willOpen){ item.classList.add('is-open'); btn.setAttribute('aria-expanded','true'); }
+    });
+  });
+
+  // Channel chips
+  document.querySelectorAll('.channel-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      var form = chip.getAttribute('data-form');
+      var value = chip.getAttribute('data-channel');
+      document.querySelectorAll('.channel-chip[data-form="'+form+'"]').forEach(function(c){
+        c.classList.toggle('is-active', c === chip);
+      });
+      document.querySelectorAll('form[data-form="'+form+'"] input[name="channel"]').forEach(function(input){
+        input.value = value;
+      });
+    });
+  });
+
+  // Form submit (validation + local feedback; wire up to a backend as needed)
+  document.querySelectorAll('form[data-form]').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = {};
+      Array.prototype.forEach.call(form.elements, function(el){
+        if(!el.name) return;
+        data[el.name] = el.type === 'checkbox' ? el.checked : el.value;
+      });
+      var digits = (data.phone || '').replace(/\\D/g,'');
+      if(digits.length < 5){
+        alert('Пожалуйста, укажите номер телефона, без него мы не сможем связаться с вами для расчёта.');
+        return;
+      }
+      if(form.querySelector('input[name="consent"]') && !data.consent){
+        alert('Пожалуйста, подтвердите согласие на обработку персональных данных.');
+        return;
+      }
+      console.log('Заявка с сайта ООО «Стройтрансрегион»', {
+        форма: form.getAttribute('data-form'),
+        имя: data.name, телефон: data.phone, тип_работ: data.workType,
+        адрес: data.address, канал: data.channel
+      });
+      alert('Спасибо! Мы получили заявку и свяжемся с вами для расчёта.');
+      form.reset();
+      // Restore default channel highlight
+      var f = form.getAttribute('data-form');
+      document.querySelectorAll('.channel-chip[data-form="'+f+'"]').forEach(function(c,i){
+        c.classList.toggle('is-active', i === 0);
+      });
+      var hidden = form.querySelector('input[name="channel"]');
+      if(hidden) hidden.value = 'MAX';
+    });
+  });
+})();`;
+
+/* ----------------------------------------------------------------- page -- */
+
+const html = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Кровельные и фасадные работы в Москве и МО для коммерческих, промышленных и частных объектов</title>
+<meta name="description" content="Монтаж, ремонт и замена кровли, фасадные работы, демонтаж старого покрытия и гидроизоляция для складов, производственных зданий, коммерческих объектов, домов и коттеджей в Москве и МО. Работаем по договору, фиксируем смету, даём гарантию до 5 лет.">
+<link rel="icon" type="image/png" href="assets/logo-mark.png">
+<style>${styleBlock}
+</style>
+</head>
+<body>
+  <div id="top" class="frame-root" style="min-height:100vh;font-family:Manrope,system-ui,sans-serif;color:var(--text)">
+${header}
+  <main>
+${heroSection}
+${aboutSection}
+${servicesSection}
+${worksSection}
+${processSection}
+${estimateSection}
+${benefitsSection}
+${pricesSection}
+${guaranteeSection}
+${faqSection}
+${contactSection}
+  </main>
+${footer}
+  </div>
+<script>${runtime}
+</script>
+</body>
+</html>
+`;
+
+fs.writeFileSync(path.join(__dirname, 'index.html'), html);
+console.log('Wrote index.html (' + html.length + ' bytes)');
