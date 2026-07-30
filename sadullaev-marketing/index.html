@@ -134,9 +134,24 @@
   .hero-media{position:relative;margin-top:clamp(28px,4vw,44px)}
   .hero-media>img{width:100%;height:clamp(240px,38vw,420px);object-fit:cover;border-radius:22px;
     background:var(--surface-2)}
-  .stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
-  .stats img{width:min(210px,46%);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.4);
-    background:var(--surface-2)}
+  /* оффер + пруф-статистика справа */
+  .hero-top{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    gap:clamp(22px,4vw,48px);align-items:center;margin-top:clamp(16px,3vw,28px)}
+  .hero-proof{display:grid;gap:12px;align-content:center}
+  .proof-cap{font-size:12px;color:var(--soft);margin:0 2px 2px;display:flex;align-items:center;gap:8px}
+  .proof-cap::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--lime);
+    box-shadow:0 0 0 3px rgba(168,188,70,.2);flex:none}
+  .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:15px 18px 6px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+  .stat-head{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-family:var(--f-head);
+    font-weight:700;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);
+    padding-bottom:11px;border-bottom:1px solid var(--line)}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:12px 0;
+    border-bottom:1px solid var(--line)}
+  .stat-row:last-child{border-bottom:0}
+  .stat-row b{font-family:var(--f-head);font-weight:800;font-size:21px;line-height:1;color:var(--ink)}
+  .stat-row i{display:block;font-style:normal;font-size:11px;color:var(--soft);margin-top:6px}
+  .stat-row.total b{color:var(--lime)}
 
   /* цифры */
   .figures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:clamp(28px,4vw,44px)}
@@ -299,6 +314,7 @@
     .figures{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
     .grid{grid-template-columns:1fr}
     .deal{grid-template-columns:1fr}
+    .hero-top{grid-template-columns:1fr}
     .deal img{max-width:340px}
     .card{min-height:0}
     .nav-toggle{display:inline-flex}
@@ -342,22 +358,38 @@
 
   <!-- ── 1. Обложка ─────────────────────────── -->
   <section class="hero" id="hero">
-    <h1 class="reveal">Получайте <span class="lime">100+ тёплых лидов</span> на недвижимость по всему миру</h1>
-    <p class="hero-sub reveal">Запускаю систему, которая даёт тёплые заявки и сделки в первый месяц.
-      Актуально для рынков: Бали, Таиланд, Дубай, Турция, Кипр, Греция, Оман, Грузия.</p>
-    <a class="badge reveal" href="#princ">Что делает мой подход прибыльным для агентств недвижимости →</a>
-    <p class="hero-note reveal">Например, в последнем проекте привёл 247 заявок по $10,
-      а клиент закрыл 3 сделки с чеком от $400 000.</p>
+    <div class="hero-top">
+      <div class="hero-offer">
+        <h1 class="reveal">Получайте <span class="lime">100+ тёплых лидов</span> на недвижимость по всему миру</h1>
+        <p class="hero-sub reveal">Запускаю систему, которая даёт тёплые заявки и сделки в первый месяц.
+          Актуально для рынков: Бали, Таиланд, Дубай, Турция, Кипр, Греция, Оман, Грузия.</p>
+        <a class="badge reveal" href="#princ">Что делает мой подход прибыльным для агентств недвижимости →</a>
+        <p class="hero-note reveal">Например, в последнем проекте привёл 247 заявок по $10,
+          а клиент закрыл 3 сделки с чеком от $400 000.</p>
+      </div>
+
+      <!-- Пруф: реальные цифры из рекламного кабинета (по скринам клиента).
+           Хочешь живые скриншоты — положи их в img/ и замени этот блок на <img>. -->
+      <div class="hero-proof reveal" aria-label="Статистика из рекламного кабинета: лиды и цена за лид">
+        <p class="proof-cap">Данные из рекламного кабинета Meta&nbsp;Ads</p>
+        <figure class="stat-card">
+          <figcaption class="stat-head"><span>Результат</span><span>Цена за результат</span></figcaption>
+          <div class="stat-row"><span><b>41</b><i>Лиды на Facebook</i></span><span><b>11,31&nbsp;$</b><i>за лид</i></span></div>
+          <div class="stat-row"><span><b>170</b><i>Лиды на Facebook</i></span><span><b>18,81&nbsp;$</b><i>за лид</i></span></div>
+          <div class="stat-row total"><span><b>211</b><i>Лиды на Facebook</i></span><span><b>17,35&nbsp;$</b><i>за лид</i></span></div>
+        </figure>
+        <figure class="stat-card">
+          <figcaption class="stat-head"><span>Результат</span><span>Цена за результат</span></figcaption>
+          <div class="stat-row"><span><b>216</b><i>Лиды на Facebook</i></span><span><b>8,64&nbsp;$</b><i>за лид</i></span></div>
+          <div class="stat-row"><span><b>53</b><i>Лиды на Facebook</i></span><span><b>18,22&nbsp;$</b><i>за лид</i></span></div>
+          <div class="stat-row total"><span><b>269</b><i>Лиды на Facebook</i></span><span><b>10,53&nbsp;$</b><i>за лид</i></span></div>
+        </figure>
+      </div>
+    </div>
 
     <div class="hero-media reveal">
       <img src="img/hero.jpg" width="1160" height="420" alt="Вилла, один из продвигаемых объектов"
            fetchpriority="high" decoding="async">
-      <div class="stats">
-        <img src="img/stat-1.png" width="210" height="140" loading="lazy" decoding="async"
-             alt="Статистика рекламного кабинета: лиды и цена за результат">
-        <img src="img/stat-2.png" width="210" height="140" loading="lazy" decoding="async"
-             alt="Статистика рекламного кабинета: лиды и цена за результат">
-      </div>
     </div>
 
     <div class="figures reveal">
