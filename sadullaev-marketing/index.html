@@ -230,6 +230,14 @@
   .logo-wall{margin-top:clamp(26px,4vw,44px);border:1px solid var(--line);border-radius:var(--r);
     overflow:hidden;background:var(--surface)}
 
+  /* отзывы / скрины клиентов */
+  .reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));
+    gap:14px;align-items:start}
+  .review{margin:0}
+  .review img{width:100%;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);
+    box-shadow:0 14px 34px rgba(0,0,0,.28);transition:transform .18s}
+  .review:hover img{transform:translateY(-3px)}
+
   /* обо мне */
   .about{display:grid;grid-template-columns:minmax(0,360px) 1fr;gap:clamp(24px,4vw,56px);align-items:start}
   .about img{border-radius:20px;width:100%;background:var(--surface-2)}
@@ -339,6 +347,7 @@
       <a href="#deals">Сделки</a>
       <a href="#cases">Кейсы</a>
       <a href="#steps">Как работаем</a>
+      <a href="#reviews">Отзывы</a>
       <a href="#tariffs">Тарифы</a>
       <a class="nav-cta" href="#final">Написать</a>
     </nav>
@@ -520,6 +529,29 @@
     <div class="logo-wall reveal">
       <img src="img/logos.jpg" width="1160" height="220" loading="lazy" decoding="async"
            alt="Логотипы клиентов: Golden Visa Property, Bali Invest Club, Realate Pro, IBG Property, Leader Real Estate, Metrics Development Thailand, Mavato">
+    </div>
+  </section>
+
+  <!-- ── 6.5 Отзывы / скрины довольных клиентов ─ -->
+  <section id="reviews">
+    <div class="rule"></div>
+    <div class="sec-head reveal">
+      <h2><span class="lime">«Мы это сделали»</span> — клиенты пишут сами</h2>
+      <p>Живые сообщения из переписок: брони, депозиты и закрытые сделки от заявок, которые я привёл.</p>
+    </div>
+    <div class="reviews-grid">
+      <figure class="review reveal">
+        <img src="img/review-1.png" width="452" height="389" loading="lazy" decoding="async"
+             alt="Сообщение клиента: выход на бронь, объект Kammora Villas, бюджет $350 000">
+      </figure>
+      <figure class="review reveal">
+        <img src="img/review-2.jpg" width="415" height="494" loading="lazy" decoding="async"
+             alt="Переписка с клиентом: «Мы на сделке» — подтверждение, что это лид">
+      </figure>
+      <figure class="review reveal">
+        <img src="img/review-3.png" width="452" height="329" loading="lazy" decoding="async"
+             alt="Переписка с клиентом: «Сделали продажу»">
+      </figure>
     </div>
   </section>
 
