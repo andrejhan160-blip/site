@@ -141,17 +141,8 @@
   .proof-cap{font-size:12px;color:var(--soft);margin:0 2px 2px;display:flex;align-items:center;gap:8px}
   .proof-cap::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--lime);
     box-shadow:0 0 0 3px rgba(168,188,70,.2);flex:none}
-  .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-    padding:15px 18px 6px;box-shadow:0 14px 34px rgba(0,0,0,.28)}
-  .stat-head{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-family:var(--f-head);
-    font-weight:700;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--soft);
-    padding-bottom:11px;border-bottom:1px solid var(--line)}
-  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:12px 0;
-    border-bottom:1px solid var(--line)}
-  .stat-row:last-child{border-bottom:0}
-  .stat-row b{font-family:var(--f-head);font-weight:800;font-size:21px;line-height:1;color:var(--ink)}
-  .stat-row i{display:block;font-style:normal;font-size:11px;color:var(--soft);margin-top:6px}
-  .stat-row.total b{color:var(--lime)}
+  .stat-shot{width:100%;border:1px solid var(--line);border-radius:12px;
+    box-shadow:0 14px 34px rgba(0,0,0,.28);background:var(--surface-2)}
 
   /* цифры */
   .figures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:clamp(28px,4vw,44px)}
@@ -368,22 +359,14 @@
           а клиент закрыл 3 сделки с чеком от $400 000.</p>
       </div>
 
-      <!-- Пруф: реальные цифры из рекламного кабинета (по скринам клиента).
-           Хочешь живые скриншоты — положи их в img/ и замени этот блок на <img>. -->
-      <div class="hero-proof reveal" aria-label="Статистика из рекламного кабинета: лиды и цена за лид">
+      <!-- Скриншоты статистики. Файлы: img/stat-1.png и img/stat-2.png.
+           Пропорции ~470×266 (как в кабинете). До добавления — тёмные блоки. -->
+      <div class="hero-proof reveal">
         <p class="proof-cap">Данные из рекламного кабинета Meta&nbsp;Ads</p>
-        <figure class="stat-card">
-          <figcaption class="stat-head"><span>Результат</span><span>Цена за результат</span></figcaption>
-          <div class="stat-row"><span><b>41</b><i>Лиды на Facebook</i></span><span><b>11,31&nbsp;$</b><i>за лид</i></span></div>
-          <div class="stat-row"><span><b>170</b><i>Лиды на Facebook</i></span><span><b>18,81&nbsp;$</b><i>за лид</i></span></div>
-          <div class="stat-row total"><span><b>211</b><i>Лиды на Facebook</i></span><span><b>17,35&nbsp;$</b><i>за лид</i></span></div>
-        </figure>
-        <figure class="stat-card">
-          <figcaption class="stat-head"><span>Результат</span><span>Цена за результат</span></figcaption>
-          <div class="stat-row"><span><b>216</b><i>Лиды на Facebook</i></span><span><b>8,64&nbsp;$</b><i>за лид</i></span></div>
-          <div class="stat-row"><span><b>53</b><i>Лиды на Facebook</i></span><span><b>18,22&nbsp;$</b><i>за лид</i></span></div>
-          <div class="stat-row total"><span><b>269</b><i>Лиды на Facebook</i></span><span><b>10,53&nbsp;$</b><i>за лид</i></span></div>
-        </figure>
+        <img class="stat-shot" src="img/stat-1.png" width="470" height="266" loading="lazy" decoding="async"
+             alt="Статистика Meta Ads: 211 лидов, средняя цена лида 17,35 $">
+        <img class="stat-shot" src="img/stat-2.png" width="470" height="266" loading="lazy" decoding="async"
+             alt="Статистика Meta Ads: 269 лидов, средняя цена лида 10,53 $">
       </div>
     </div>
 
