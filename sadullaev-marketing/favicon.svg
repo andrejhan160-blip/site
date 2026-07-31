@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <rect width="64" height="64" rx="14" fill="#151515"/>
-  <text x="32" y="33" fill="#A8BC46" font-family="Manrope, Arial, sans-serif" font-weight="800"
+  <text x="32" y="33" fill="#C6F135" font-family="Manrope, Arial, sans-serif" font-weight="800"
         font-size="36" text-anchor="middle" dominant-baseline="central">S</text>
 </svg>

@@ -65,7 +65,7 @@
     --bg:#151515; --surface:#1C1C1A; --surface-2:#232320; --grey:#4A4A47;
     --line:rgba(242,242,238,.13);
     --ink:#F2F2EE; --soft:#8E8F87;
-    --lime:#A8BC46; --red:#B63531;
+    --lime:#C6F135; --red:#B63531;
     --f-head:'Manrope',system-ui,sans-serif;
     --f-body:'Inter',system-ui,sans-serif;
     --pad:clamp(18px,5vw,64px); --r:16px;
@@ -126,10 +126,16 @@
   .hero{padding-top:clamp(40px,6vw,72px)}
   .hero h1{font-size:clamp(28px,4vw,50px);max-width:18ch;text-wrap:balance}
   .hero-sub{color:var(--soft);max-width:52ch;font-size:clamp(15.5px,1.6vw,18px);margin:24px 0 32px}
-  .badge{display:inline-block;background:var(--lime);color:#151515;font-family:var(--f-head);
+  .badge-row{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;background:var(--lime);color:#151515;font-family:var(--f-head);
     font-weight:700;font-size:14.5px;line-height:1.3;padding:14px 20px;border-radius:10px;
     max-width:360px;text-transform:none;text-decoration:none;transition:transform .15s}
   .badge:hover{transform:translateY(-2px)}
+  .badge-arrow{display:inline-flex;align-items:center;justify-content:center;flex:none;width:58px;
+    border:1.5px solid var(--line);border-radius:10px;color:var(--ink);text-decoration:none;
+    transition:border-color .15s,color .15s,transform .15s,background .15s}
+  .badge-arrow svg{width:22px;height:22px}
+  .badge-arrow:hover{border-color:var(--lime);color:#151515;background:var(--lime);transform:translateY(-2px)}
   .hero-note{color:var(--soft);font-size:14px;margin:18px 0 0;max-width:46ch}
   .hero-media{position:relative;margin-top:clamp(28px,4vw,44px)}
   .hero-media>img{width:100%;height:clamp(240px,38vw,420px);object-fit:cover;border-radius:22px;
@@ -140,7 +146,7 @@
   .hero-proof{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-content:center}
   .proof-cap{font-size:12px;color:var(--soft);margin:0 2px 2px;display:flex;align-items:center;gap:8px}
   .proof-cap::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--lime);
-    box-shadow:0 0 0 3px rgba(168,188,70,.2);flex:none}
+    box-shadow:0 0 0 3px rgba(198,241,53,.2);flex:none}
   .stat-shot{width:100%;border:1px solid var(--line);border-radius:10px;
     box-shadow:0 8px 20px rgba(0,0,0,.2);background:var(--surface-2)}
 
@@ -216,7 +222,7 @@
   .step{display:grid;grid-template-columns:76px minmax(0,1fr);gap:clamp(14px,2vw,28px);
     background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
     padding:clamp(22px,3vw,32px);transition:border-color .18s,transform .18s}
-  .step:hover{border-color:rgba(168,188,70,.4);transform:translateY(-2px)}
+  .step:hover{border-color:rgba(198,241,53,.4);transform:translateY(-2px)}
   .step .n{font-family:var(--f-head);font-weight:800;font-size:clamp(34px,4.5vw,52px);
     line-height:.9;color:var(--lime)}
   .step h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700}
@@ -252,7 +258,7 @@
   .tariffs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
   .tf{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;
     display:flex;flex-direction:column;transition:border-color .18s,transform .18s}
-  .tf:hover{border-color:rgba(168,188,70,.4);transform:translateY(-3px)}
+  .tf:hover{border-color:rgba(198,241,53,.4);transform:translateY(-3px)}
   .tf-head{background:var(--lime);color:#151515;padding:24px 22px}
   .tf-head h3{font-size:24px;letter-spacing:-.01em}
   .tf-head p{margin:8px 0 0;font-size:13.5px;color:rgba(21,21,21,.75)}
@@ -265,7 +271,7 @@
     background:var(--lime);
     -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 11.5 3 8l1.2-1.2 2.3 2.3L11.8 4l1.2 1.2z' fill='%23000'/%3E%3C/svg%3E") center/contain no-repeat;
     mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 11.5 3 8l1.2-1.2 2.3 2.3L11.8 4l1.2 1.2z' fill='%23000'/%3E%3C/svg%3E") center/contain no-repeat}
-  .tf li.excl{background:rgba(168,188,70,.13);box-shadow:inset 3px 0 0 var(--lime);font-weight:500;color:var(--ink)}
+  .tf li.excl{background:rgba(198,241,53,.13);box-shadow:inset 3px 0 0 var(--lime);font-weight:500;color:var(--ink)}
   .tf .price{margin:0 16px 20px;background:var(--red);color:#fff;border-radius:10px;
     text-align:center;padding:15px;font-family:var(--f-head);font-weight:800;font-size:22px;
     text-decoration:none;display:block;transition:transform .15s,filter .15s}
@@ -314,6 +320,13 @@
     .grid{grid-template-columns:1fr}
     .deal{grid-template-columns:1fr}
     .hero-top{grid-template-columns:minmax(0,1fr)}
+    /* скрины статистики: компактная стопка внахлёст возле кнопки */
+    .hero-proof{display:block;max-width:320px;margin-top:8px}
+    .hero-proof .proof-cap{margin-bottom:16px}
+    .hero-proof .stat-shot{max-width:258px;display:block}
+    .hero-proof .stat-shot:first-of-type{transform:rotate(-2.5deg);position:relative;z-index:2}
+    .hero-proof .stat-shot:last-of-type{transform:rotate(2.5deg);position:relative;z-index:1;
+      margin-top:-64px;margin-left:52px}
     .deal img{max-width:340px}
     .card{min-height:0}
     .nav-toggle{display:inline-flex}
@@ -363,7 +376,12 @@
         <h1 class="reveal">Получайте <span class="lime">100+ тёплых лидов</span> на недвижимость по всему миру</h1>
         <p class="hero-sub reveal">Запускаю систему, которая даёт тёплые заявки и сделки в первый месяц.
           Актуально для рынков: Бали, Таиланд, Дубай, Турция, Кипр, Греция, Оман, Грузия.</p>
-        <a class="badge reveal" href="#princ">Что делает мой подход прибыльным для агентств недвижимости →</a>
+        <div class="badge-row reveal">
+          <a class="badge" href="#princ">Что делает мой подход прибыльным для агентств недвижимости</a>
+          <a class="badge-arrow" href="#princ" aria-label="Смотреть подробнее ниже">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </a>
+        </div>
         <p class="hero-note reveal">Например, в последнем проекте привёл 247 заявок по $10,
           а клиент закрыл 3 сделки с чеком от $400 000.</p>
       </div>
@@ -401,7 +419,7 @@
     <div class="princ">
       <div>
         <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#A8BC46" stroke-width="2" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
             <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
             <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
           </svg>
@@ -410,7 +428,7 @@
             Вам приходят только контакты, с которыми реально можно работать отделу продаж.</p>
         </div>
         <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#A8BC46" stroke-width="2" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
             <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
           </svg>
           <h3>Полное погружение</h3>
@@ -419,7 +437,7 @@
             а именно тех клиентов, кто ищет ваш продукт.</p>
         </div>
         <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#A8BC46" stroke-width="2" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
             <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
           </svg>
           <h3>Прозрачность и честность</h3>
