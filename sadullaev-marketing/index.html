@@ -175,6 +175,27 @@
     background:linear-gradient(90deg,rgba(198,241,53,.55),var(--lime));
     box-shadow:0 0 10px rgba(198,241,53,.4)}
 
+  /* стандартный способ (боли) — карточки с призрачными цифрами */
+  .oldway{text-align:center}
+  .oldway .sec-head h2{margin-inline:auto;max-width:30ch}
+  .ow-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:left}
+  .ow{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--r);padding:26px;min-height:200px;display:flex;align-items:flex-start}
+  .ow p{color:var(--soft);font-size:15px;margin:0;position:relative;z-index:1}
+  .ow .n{position:absolute;right:10px;bottom:-34px;font-family:var(--f-head);font-weight:800;
+    font-size:170px;line-height:1;color:rgba(242,242,238,.055);z-index:0;user-select:none;pointer-events:none}
+  .ow.hot{background:var(--lime);border-color:var(--lime)}
+  .ow.hot p{color:#151515;font-weight:500}
+  .ow.hot .n{color:rgba(21,21,21,.12)}
+  .ow-note{display:inline-flex;gap:14px;align-items:center;margin-top:26px;
+    border:1px solid rgba(198,241,53,.45);border-radius:12px;padding:16px 22px;text-align:left;
+    max-width:660px}
+  .ow-note .bang{flex:none;width:34px;height:34px;border-radius:50%;background:var(--lime);
+    color:#151515;font-weight:800;font-family:var(--f-head);display:flex;align-items:center;
+    justify-content:center;font-size:19px;box-shadow:0 0 14px rgba(198,241,53,.4)}
+  .ow-note p{margin:0;font-size:14.5px;color:var(--soft)}
+  .ow-note b{color:var(--ink);font-weight:600}
+
   /* принципы: зигзаг текст/фото */
   .pr-ic{width:38px;height:38px;margin-bottom:14px}
   .zz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);
@@ -345,6 +366,8 @@
     .about{grid-template-columns:1fr}
     .zz{grid-template-columns:1fr}
     .zz.rev img{order:-1}
+    .ow-grid{grid-template-columns:1fr}
+    .ow{min-height:0}
     .tariffs{grid-template-columns:1fr}
     .figures{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
     .grid{grid-template-columns:1fr}
@@ -438,6 +461,32 @@
       <div class="fig"><b data-count="7">7</b><i>рынков</i><span class="fig-bar" style="--w:64%"></span></div>
       <div class="fig"><b data-count="4500" data-suffix="+">4 500+</b><i>заявок</i><span class="fig-bar" style="--w:96%"></span></div>
       <div class="fig"><b data-count="3">3</b><i>рекламных канала</i><span class="fig-bar" style="--w:58%"></span></div>
+    </div>
+  </section>
+
+  <!-- ── 1.5 Стандартный способ (боли) ──────── -->
+  <section class="oldway" id="oldway">
+    <div class="sec-head reveal">
+      <h2>Как выглядит <span class="lime">стандартный способ</span> поиска клиентов в недвижимости</h2>
+    </div>
+    <div class="ow-grid">
+      <div class="ow hot reveal"><span class="n" aria-hidden="true">1</span>
+        <p>Покупаете лиды у агрегаторов и обзваниваете холодную базу.
+          Сотни звонков ради пары встреч.</p>
+      </div>
+      <div class="ow reveal"><span class="n" aria-hidden="true">2</span>
+        <p>Запускаете рекламу «в лоб»: один оффер на все рынки, спам-рассылки
+          и сторис без стратегии и связок под продукт.</p>
+      </div>
+      <div class="ow reveal"><span class="n" aria-hidden="true">3</span>
+        <p>Заявки есть, а сделок нет: в базе «смотрящие» и туристы.
+          До покупки доходит 1–2%, отдел продаж выгорает.</p>
+      </div>
+    </div>
+    <div class="ow-note reveal">
+      <span class="bang" aria-hidden="true">!</span>
+      <p><b>При такой системе бюджет сгорает быстрее, чем появляются сделки.</b>
+        На стабильный поток покупателей уходят годы.</p>
     </div>
   </section>
 
