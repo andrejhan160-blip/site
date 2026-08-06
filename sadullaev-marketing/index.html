@@ -177,13 +177,14 @@
 
   /* принципы: editorial statement (ч/б объект + стейтмент + карточки-статы) */
   .princ-sec{text-align:center;position:relative}
-  .ps-visual{position:relative;width:min(470px,76%);margin:0 auto}
-  .ps-visual::before{content:"";position:absolute;left:50%;top:36%;width:135%;height:135%;
+  .ps-visual{position:relative;width:min(620px,88%);margin:0 auto}
+  .ps-visual::before{content:"";position:absolute;left:50%;top:40%;width:110%;height:120%;
     transform:translate(-50%,-50%);pointer-events:none;
-    background:radial-gradient(closest-side,rgba(242,242,238,.13),transparent 70%);filter:blur(30px)}
+    background:radial-gradient(closest-side,rgba(242,242,238,.12),transparent 70%);filter:blur(34px)}
+  /* маска завершает растворение ВНУТРИ картинки — никаких жёстких углов */
   .ps-visual img{position:relative;width:100%;filter:grayscale(1) contrast(1.06) brightness(.9);
-    -webkit-mask-image:radial-gradient(78% 78% at 50% 42%,#000 38%,transparent 73%);
-    mask-image:radial-gradient(78% 78% at 50% 42%,#000 38%,transparent 73%)}
+    -webkit-mask-image:radial-gradient(47% 52% at 50% 46%,#000 30%,transparent 86%);
+    mask-image:radial-gradient(47% 52% at 50% 46%,#000 30%,transparent 86%)}
   .ps-statement{position:relative;z-index:2;margin:clamp(-52px,-6vw,-26px) auto 0;
     font-size:clamp(30px,4.8vw,58px);line-height:1.03;letter-spacing:-.02em;
     text-shadow:0 8px 30px rgba(21,21,21,.85)}
