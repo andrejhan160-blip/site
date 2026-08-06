@@ -175,16 +175,17 @@
     background:linear-gradient(90deg,rgba(198,241,53,.55),var(--lime));
     box-shadow:0 0 10px rgba(198,241,53,.4)}
 
-  /* принципы */
-  .princ{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(20px,3vw,44px);align-items:start}
-  .pr{border-top:1px solid var(--line);padding:24px 0}
-  .pr:first-child{border-top:0;padding-top:0}
+  /* принципы: зигзаг текст/фото */
   .pr-ic{width:38px;height:38px;margin-bottom:14px}
-  .pr h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700}
-  .pr p{color:var(--soft);font-size:15px;margin:12px 0 0}
-  .princ-media{display:grid;gap:12px;min-width:0}
-  .princ-media img{border-radius:var(--r);height:clamp(180px,22vw,250px);object-fit:cover;width:100%;
+  .zz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);
+    align-items:center;padding:clamp(20px,3vw,30px) 0;border-top:1px solid var(--line)}
+  .zz:first-of-type{border-top:0;padding-top:0}
+  .zz img{width:100%;height:clamp(200px,24vw,300px);object-fit:cover;border-radius:var(--r);
     background:var(--surface-2)}
+  .zz h3,.zz-full h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700}
+  .zz p{color:var(--soft);font-size:15px;margin:12px 0 0;max-width:52ch}
+  .zz-full{border-top:1px solid var(--line);padding-top:clamp(20px,3vw,30px)}
+  .zz-full p{color:var(--soft);font-size:15px;margin:12px 0 0;max-width:70ch}
 
   /* сделки */
   .deal{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(18px,3vw,40px);
@@ -341,7 +342,9 @@
   .reveal.in{opacity:1;transform:none}
 
   @media (max-width:980px){
-    .princ,.about{grid-template-columns:1fr}
+    .about{grid-template-columns:1fr}
+    .zz{grid-template-columns:1fr}
+    .zz.rev img{order:-1}
     .tariffs{grid-template-columns:1fr}
     .figures{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
     .grid{grid-template-columns:1fr}
@@ -444,42 +447,40 @@
     <div class="sec-head reveal">
       <h2><span class="lime">Работаем по-взрослому:</span> честно, системно, без иллюзий</h2>
     </div>
-    <div class="princ">
+    <div class="zz reveal">
       <div>
-        <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-            <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
-            <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
-          </svg>
-          <h3>Гарантия качества</h3>
-          <p>Все заявки проходят фильтрацию по качеству: номер, интерес, намерение купить.
-            Вам приходят только контакты, с которыми реально можно работать отделу продаж.</p>
-        </div>
-        <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-            <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
-          </svg>
-          <h3>Полное погружение</h3>
-          <p>Для элитных вилл, студий у моря и апартаментов в центре работают разные связки.
-            Я выстраиваю стратегию так, чтобы вы получали не поток случайных заявок,
-            а именно тех клиентов, кто ищет ваш продукт.</p>
-        </div>
-        <div class="pr reveal">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-            <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
-          </svg>
-          <h3>Прозрачность и честность</h3>
-          <p>Все цифры у вас на ладони. Стоимость заявки, конверсия в звонок, встречу и сделку.
-            Никаких «примерно» или «похоже работает». Только конкретные показатели,
-            которые мы обсуждаем каждую неделю.</p>
-        </div>
+        <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
+          <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
+          <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
+        </svg>
+        <h3>Гарантия качества</h3>
+        <p>Все заявки проходят фильтрацию по качеству: номер, интерес, намерение купить.
+          Вам приходят только контакты, с которыми реально можно работать отделу продаж.</p>
       </div>
-      <div class="princ-media reveal">
-        <img src="img/prop-1.jpg" width="1400" height="778" loading="lazy" decoding="async"
-             alt="Резиденция у моря — объект из рекламной кампании">
-        <img src="img/prop-2.jpg" width="1400" height="778" loading="lazy" decoding="async"
-             alt="Спальня с видом на океан — интерьер объекта из рекламной кампании">
+      <img src="img/prop-1.jpg" width="1400" height="778" loading="lazy" decoding="async"
+           alt="Резиденция у моря — объект из рекламной кампании">
+    </div>
+    <div class="zz rev reveal">
+      <img src="img/prop-2.jpg" width="1400" height="778" loading="lazy" decoding="async"
+           alt="Спальня с видом на океан — интерьер объекта из рекламной кампании">
+      <div>
+        <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
+          <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
+        </svg>
+        <h3>Полное погружение</h3>
+        <p>Для элитных вилл, студий у моря и апартаментов в центре работают разные связки.
+          Я выстраиваю стратегию так, чтобы вы получали не поток случайных заявок,
+          а именно тех клиентов, кто ищет ваш продукт.</p>
       </div>
+    </div>
+    <div class="zz-full reveal">
+      <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
+        <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
+      </svg>
+      <h3>Прозрачность и честность</h3>
+      <p>Все цифры у вас на ладони. Стоимость заявки, конверсия в звонок, встречу и сделку.
+        Никаких «примерно» или «похоже работает». Только конкретные показатели,
+        которые мы обсуждаем каждую неделю.</p>
     </div>
   </section>
 
