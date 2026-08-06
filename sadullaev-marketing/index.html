@@ -175,23 +175,29 @@
     background:linear-gradient(90deg,rgba(198,241,53,.55),var(--lime));
     box-shadow:0 0 10px rgba(198,241,53,.4)}
 
-  /* принципы: 3 карточки с призрачными цифрами (по референсу) */
-  .pr-ic{width:38px;height:38px;margin-bottom:14px}
-  .princ-sec{text-align:center}
+  /* принципы: премиальные стеклянные карточки */
+  .pr-ic{width:38px;height:38px}
+  .princ-sec{text-align:center;position:relative}
   .princ-sec .sec-head h2{margin-inline:auto;max-width:30ch}
-  .pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:left}
-  .pcard{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);
-    border-radius:var(--r);padding:26px;display:flex;flex-direction:column}
-  .pcard h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700;
-    position:relative;z-index:3}
-  .pcard p{color:var(--soft);font-size:15px;margin:12px 0 0;position:relative;z-index:3}
-  .pcard .pr-ic{position:relative;z-index:3}
-  .pcard img{width:calc(100% + 52px);max-width:none;margin:22px -26px -26px;margin-top:auto;
-    height:150px;object-fit:cover;position:relative;z-index:1;background:var(--surface-2)}
-  .pcard.hot{background:var(--lime);border-color:var(--lime)}
-  .pcard.hot h3{color:#151515}
-  .pcard.hot p{color:rgba(21,21,21,.78)}
-  .pcard.hot .pr-ic{stroke:#151515}
+  /* мягкое свечение за карточками, чтобы «стекло» читалось */
+  .princ-sec::before{content:"";position:absolute;left:50%;top:56%;width:min(820px,86%);height:380px;
+    transform:translate(-50%,-50%);pointer-events:none;
+    background:radial-gradient(closest-side,rgba(198,241,53,.12),transparent 72%);filter:blur(34px)}
+  .pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:left;
+    position:relative}
+  .pcard{position:relative;border-radius:20px;padding:28px;min-height:clamp(280px,30vw,380px);
+    display:flex;flex-direction:column;
+    background:linear-gradient(165deg,rgba(242,242,238,.075),rgba(242,242,238,.015) 62%);
+    border:1px solid rgba(242,242,238,.13);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    transition:transform .18s,border-color .18s}
+  .pcard:hover{transform:translateY(-3px);border-color:rgba(198,241,53,.4)}
+  .pcard .ic{width:56px;height:56px;border-radius:15px;background:#fff;display:flex;
+    align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .pcard .ic .pr-ic{width:30px;height:30px;margin:0}
+  .pcard h3{font-size:20px;text-transform:none;letter-spacing:-.01em;font-weight:700;
+    margin-top:auto;padding-top:26px}
+  .pcard p{color:var(--soft);font-size:15px;margin:12px 0 0}
   .pnote{display:inline-flex;gap:14px;align-items:center;margin-top:26px;
     border:1px solid rgba(198,241,53,.45);border-radius:12px;padding:16px 22px;text-align:left;
     max-width:660px}
@@ -355,6 +361,8 @@
   @media (max-width:980px){
     .about{grid-template-columns:1fr}
     .pcards{grid-template-columns:1fr}
+    .pcard{min-height:0}
+    .pcard h3{margin-top:0;padding-top:22px}
     .lw{grid-template-columns:repeat(2,minmax(0,1fr))}
     .lw-tile{height:92px;padding:14px 18px}
     .tariffs{grid-template-columns:1fr}
@@ -458,36 +466,38 @@
       <h2><span class="lime">Работаем по-взрослому:</span> честно, системно, без иллюзий</h2>
     </div>
     <div class="pcards">
-      <div class="pcard hot reveal">
-        <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-          <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
-          <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
-        </svg>
+      <div class="pcard reveal">
+        <span class="ic" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
+            <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
+            <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
+          </svg>
+        </span>
         <h3>Гарантия качества</h3>
         <p>Все заявки проходят фильтрацию по качеству: номер, интерес, намерение купить.
           Вам приходят только контакты, с которыми реально можно работать отделу продаж.</p>
       </div>
       <div class="pcard reveal">
-        <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-          <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
-        </svg>
+        <span class="ic" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
+            <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
+          </svg>
+        </span>
         <h3>Полное погружение</h3>
         <p>Для элитных вилл, студий у моря и апартаментов в центре работают разные связки.
           Я выстраиваю стратегию так, чтобы вы получали не поток случайных заявок,
           а именно тех клиентов, кто ищет ваш продукт.</p>
-        <img src="img/prop-1.jpg" width="1400" height="778" loading="lazy" decoding="async"
-             alt="Резиденция у моря — объект из рекламной кампании">
       </div>
       <div class="pcard reveal">
-        <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#C6F135" stroke-width="2" aria-hidden="true">
-          <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
-        </svg>
+        <span class="ic" aria-hidden="true">
+          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
+            <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
+          </svg>
+        </span>
         <h3>Прозрачность и честность</h3>
         <p>Все цифры у вас на ладони. Стоимость заявки, конверсия в звонок, встречу и сделку.
           Никаких «примерно» или «похоже работает». Только конкретные показатели,
           которые мы обсуждаем каждую неделю.</p>
-        <img src="img/prop-2.jpg" width="1400" height="778" loading="lazy" decoding="async"
-             alt="Спальня с видом на океан — интерьер объекта из рекламной кампании">
       </div>
     </div>
     <div class="pnote reveal">
