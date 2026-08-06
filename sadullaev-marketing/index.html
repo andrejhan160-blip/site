@@ -266,16 +266,44 @@
     border:1px solid var(--line);border-radius:999px;padding:5px 11px}
   .empty{grid-column:1/-1;padding:40px 0;color:var(--soft);font-size:14.5px}
 
-  /* шаги */
-  .steps{display:grid;gap:12px}
-  .step{display:grid;grid-template-columns:76px minmax(0,1fr);gap:clamp(14px,2vw,28px);
-    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-    padding:clamp(22px,3vw,32px);transition:border-color .18s,transform .18s}
-  .step:hover{border-color:rgba(198,241,53,.4);transform:translateY(-2px)}
-  .step .n{font-family:var(--f-head);font-weight:800;font-size:clamp(34px,4.5vw,52px);
-    line-height:.9;color:var(--lime)}
-  .step h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700}
-  .step p{color:var(--soft);font-size:15px;margin:12px 0 0;max-width:64ch}
+  /* шаги: орбитальная схема (карточки по углам + линии к светящемуся ядру) */
+  .steps-sec{text-align:center}
+  .steps-sec .sec-head{margin-bottom:0}
+  .steps-sec .sec-head h2{margin-inline:auto}
+  .steps-sub{color:var(--soft);max-width:46ch;margin:16px auto 0}
+  .steps-cta{display:inline-flex;align-items:center;gap:9px;margin:26px auto 0;
+    background:var(--lime);color:#151515;font-family:var(--f-head);font-weight:800;
+    font-size:13.5px;letter-spacing:.04em;text-transform:uppercase;padding:14px 26px;
+    border-radius:12px;text-decoration:none;transition:transform .15s;
+    box-shadow:0 0 24px rgba(198,241,53,.25)}
+  .steps-cta:hover{transform:translateY(-2px)}
+  .flow{position:relative;display:grid;
+    grid-template-columns:minmax(0,1fr) clamp(150px,24vw,360px) minmax(0,1fr);
+    grid-template-rows:auto auto;gap:20px 0;margin-top:clamp(32px,5vw,56px);
+    text-align:left;align-items:center}
+  .fs1{grid-column:1;grid-row:1}
+  .fs2{grid-column:3;grid-row:1}
+  .fs3{grid-column:1;grid-row:2}
+  .fs4{grid-column:3;grid-row:2}
+  .flow-center{grid-column:2;grid-row:1/span 2;position:relative;height:100%;min-height:340px;
+    pointer-events:none}
+  .flow-center::before{content:"";position:absolute;left:50%;top:50%;width:min(430px,170%);
+    aspect-ratio:1;transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(198,241,53,.3),rgba(198,241,53,.07) 46%,transparent 68%);
+    filter:blur(16px)}
+  .flow-center svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .flow-center path{fill:none;stroke:var(--lime);stroke-width:2;stroke-linecap:round;
+    vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 6px rgba(198,241,53,.75))}
+  .flow-center circle{fill:var(--lime);filter:drop-shadow(0 0 5px rgba(198,241,53,.9))}
+  .fstep{background:linear-gradient(165deg,rgba(242,242,238,.06),rgba(242,242,238,.015));
+    border:1px solid rgba(242,242,238,.14);border-radius:18px;padding:24px 26px;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:transform .18s,border-color .18s}
+  .fstep:hover{transform:translateY(-3px);border-color:rgba(198,241,53,.4)}
+  .fstep .num{font-family:var(--f-head);font-weight:800;font-size:15px;color:var(--lime);
+    letter-spacing:.08em}
+  .fstep h3{font-size:19px;text-transform:none;letter-spacing:-.01em;font-weight:700;margin-top:8px}
+  .fstep p{color:var(--soft);font-size:14.5px;margin:10px 0 0}
 
   /* доверие */
   .trust{text-align:center}
@@ -368,6 +396,9 @@
     .scards{grid-template-columns:1fr}
     .scard{min-height:0}
     .scard p{padding-top:26px}
+    .flow{grid-template-columns:1fr;gap:12px}
+    .fs1,.fs2,.fs3,.fs4{grid-column:auto;grid-row:auto}
+    .flow-center{display:none}
     .lw{grid-template-columns:repeat(2,minmax(0,1fr))}
     .lw-tile{height:92px;padding:14px 18px}
     .tariffs{grid-template-columns:1fr}
@@ -565,27 +596,48 @@
   </section>
 
   <!-- ── 5. 4 шага ──────────────────────────── -->
-  <section id="steps">
-    <div class="rule"></div>
+  <section class="steps-sec" id="steps">
     <div class="sec-head reveal"><h2>4 шага к системному маркетингу</h2></div>
-    <div class="steps">
-      <div class="step reveal"><span class="n">01</span><div>
+    <p class="steps-sub reveal">Понятная методология: от первой встречи до масштабирования
+      и стабильного потока сделок.</p>
+    <a class="steps-cta reveal" href="#final">Обсудить проект
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+
+    <div class="flow">
+      <div class="fstep fs1 reveal">
+        <span class="num">01</span>
         <h3>Заявка на встречу</h3>
-        <p>Обсуждаем ваш бизнес: какие объекты нужно продать, кто ваша аудитория и где сейчас
-          уходят клиенты. Ставим конкретные цели и фиксируем цифры, которых будем достигать.</p></div></div>
-      <div class="step reveal"><span class="n">02</span><div>
+        <p>Обсуждаем ваш бизнес: какие объекты нужно продать, кто ваша аудитория и где
+          сейчас уходят клиенты. Фиксируем цели и цифры.</p>
+      </div>
+      <div class="fstep fs2 reveal">
+        <span class="num">02</span>
         <h3>Маркетинг и запуск рекламы</h3>
-        <p>Разрабатываю стратегию под ваши проекты: сегментация, офферы, медиаплан.
-          Далее запускаю кампании так, чтобы первые заявки пошли в течение нескольких дней.</p></div></div>
-      <div class="step reveal"><span class="n">03</span><div>
+        <p>Стратегия под ваши проекты: сегментация, офферы, медиаплан. Первые заявки —
+          в течение нескольких дней после запуска.</p>
+      </div>
+      <div class="flow-center reveal" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M0 25 H12 C28 25 28 50 44 50"/>
+          <path d="M0 75 H12 C28 75 28 50 44 50"/>
+          <path d="M100 25 H88 C72 25 72 50 56 50"/>
+          <path d="M100 75 H88 C72 75 72 50 56 50"/>
+          <circle cx="44" cy="50" r="1.6"/>
+          <circle cx="56" cy="50" r="1.6"/>
+        </svg>
+      </div>
+      <div class="fstep fs3 reveal">
+        <span class="num">03</span>
         <h3>Аналитика и оптимизация</h3>
         <p>Каждую неделю вы видите цифры: стоимость заявки, конверсию в звонок и встречу.
-          Если что-то не работает — меняем сразу, а не через месяц.</p></div></div>
-      <div class="step reveal"><span class="n">04</span><div>
-        <h3>Масштабирование и увеличение продаж</h3>
-        <p>Когда показатели выходят в нужные цифры, расширяю охваты: увеличиваем бюджет,
-          тестируем дополнительные рынки и подключаем новые площадки. Это даёт больше заявок
-          без потери качества и позволяет быстрее закрывать сделки.</p></div></div>
+          Не работает — меняем сразу, а не через месяц.</p>
+      </div>
+      <div class="fstep fs4 reveal">
+        <span class="num">04</span>
+        <h3>Масштабирование и продажи</h3>
+        <p>Показатели вышли в цель — расширяем охваты: бюджет, новые рынки и площадки.
+          Больше заявок без потери качества.</p>
+      </div>
     </div>
   </section>
 
