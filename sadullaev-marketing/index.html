@@ -175,37 +175,41 @@
     background:linear-gradient(90deg,rgba(198,241,53,.55),var(--lime));
     box-shadow:0 0 10px rgba(198,241,53,.4)}
 
-  /* принципы: премиальные стеклянные карточки */
-  .pr-ic{width:38px;height:38px}
+  /* принципы: editorial statement (ч/б объект + стейтмент + карточки-статы) */
   .princ-sec{text-align:center;position:relative}
-  .princ-sec .sec-head h2{margin-inline:auto;max-width:30ch}
-  /* мягкое свечение за карточками, чтобы «стекло» читалось */
-  .princ-sec::before{content:"";position:absolute;left:50%;top:56%;width:min(820px,86%);height:380px;
+  .ps-visual{position:relative;width:min(470px,76%);margin:0 auto}
+  .ps-visual::before{content:"";position:absolute;left:50%;top:36%;width:135%;height:135%;
     transform:translate(-50%,-50%);pointer-events:none;
-    background:radial-gradient(closest-side,rgba(198,241,53,.12),transparent 72%);filter:blur(34px)}
-  .pcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:left;
-    position:relative}
-  .pcard{position:relative;border-radius:20px;padding:28px;min-height:clamp(280px,30vw,380px);
-    display:flex;flex-direction:column;
-    background:linear-gradient(165deg,rgba(242,242,238,.075),rgba(242,242,238,.015) 62%);
-    border:1px solid rgba(242,242,238,.13);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    transition:transform .18s,border-color .18s}
-  .pcard:hover{transform:translateY(-3px);border-color:rgba(198,241,53,.4)}
-  .pcard .ic{width:56px;height:56px;border-radius:15px;background:#fff;display:flex;
-    align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.35)}
-  .pcard .ic .pr-ic{width:30px;height:30px;margin:0}
-  .pcard h3{font-size:20px;text-transform:none;letter-spacing:-.01em;font-weight:700;
-    margin-top:auto;padding-top:26px}
-  .pcard p{color:var(--soft);font-size:15px;margin:12px 0 0}
-  .pnote{display:inline-flex;gap:14px;align-items:center;margin-top:26px;
-    border:1px solid rgba(198,241,53,.45);border-radius:12px;padding:16px 22px;text-align:left;
-    max-width:660px}
-  .pnote .bang{flex:none;width:34px;height:34px;border-radius:50%;background:var(--lime);
-    color:#151515;font-weight:800;font-family:var(--f-head);display:flex;align-items:center;
-    justify-content:center;font-size:18px;box-shadow:0 0 14px rgba(198,241,53,.4)}
-  .pnote p{margin:0;font-size:14.5px;color:var(--soft)}
-  .pnote b{color:var(--ink);font-weight:600}
+    background:radial-gradient(closest-side,rgba(242,242,238,.13),transparent 70%);filter:blur(30px)}
+  .ps-visual img{position:relative;width:100%;filter:grayscale(1) contrast(1.06) brightness(.9);
+    -webkit-mask-image:radial-gradient(78% 78% at 50% 42%,#000 38%,transparent 73%);
+    mask-image:radial-gradient(78% 78% at 50% 42%,#000 38%,transparent 73%)}
+  .ps-statement{position:relative;z-index:2;margin:clamp(-52px,-6vw,-26px) auto 0;
+    font-size:clamp(30px,4.8vw,58px);line-height:1.03;letter-spacing:-.02em;
+    text-shadow:0 8px 30px rgba(21,21,21,.85)}
+  .ps-statement .lime{display:block}
+  .ps-notes{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,8vw,150px);max-width:880px;
+    margin:28px auto 0;text-align:left}
+  .ps-notes .tag{display:block;font-family:var(--f-head);font-weight:700;font-size:10.5px;
+    letter-spacing:.24em;color:var(--soft);margin-bottom:8px}
+  .ps-notes p{margin:0;font-size:12.5px;line-height:1.6;color:var(--soft)}
+  .ps-editorial{max-width:44ch;margin:clamp(32px,5vw,52px) auto;font-family:var(--f-head);
+    font-weight:700;text-transform:uppercase;font-size:clamp(15px,1.9vw,21px);line-height:1.5;
+    letter-spacing:.015em}
+  .ps-editorial .dim{color:var(--soft)}
+  .scards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;text-align:left}
+  .scard{position:relative;border-radius:18px;padding:24px;min-height:clamp(190px,21vw,240px);
+    display:flex;flex-direction:column;border:1px solid var(--line);
+    background:linear-gradient(170deg,#21211F,#161615);transition:transform .18s,border-color .18s}
+  .scard:hover{transform:translateY(-3px);border-color:rgba(242,242,238,.28)}
+  .scard b{font-family:var(--f-head);font-weight:800;font-size:clamp(32px,3.6vw,44px);line-height:1;
+    color:var(--ink)}
+  .scard .idx{position:absolute;top:20px;right:20px;font-family:var(--f-head);font-weight:700;
+    font-size:10.5px;letter-spacing:.24em;color:var(--soft)}
+  .scard p{color:var(--soft);font-size:13.5px;line-height:1.55;margin:0;margin-top:auto;
+    max-width:32ch;padding-top:20px}
+  .scard::after{content:"";position:absolute;right:20px;bottom:20px;width:6px;height:6px;
+    border-radius:50%;background:var(--lime);box-shadow:0 0 9px rgba(198,241,53,.7)}
 
   /* сделки */
   .deal{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(18px,3vw,40px);
@@ -360,9 +364,9 @@
 
   @media (max-width:980px){
     .about{grid-template-columns:1fr}
-    .pcards{grid-template-columns:1fr}
-    .pcard{min-height:0}
-    .pcard h3{margin-top:0;padding-top:22px}
+    .scards{grid-template-columns:1fr}
+    .scard{min-height:0}
+    .scard p{padding-top:26px}
     .lw{grid-template-columns:repeat(2,minmax(0,1fr))}
     .lw-tile{height:92px;padding:14px 18px}
     .tariffs{grid-template-columns:1fr}
@@ -462,48 +466,44 @@
 
   <!-- ── 2. Принципы ────────────────────────── -->
   <section class="princ-sec" id="princ">
-    <div class="sec-head reveal">
-      <h2><span class="lime">Работаем по-взрослому:</span> честно, системно, без иллюзий</h2>
+    <div class="ps-visual reveal" aria-hidden="true">
+      <img src="img/prop-1.jpg" width="1400" height="778" loading="lazy" decoding="async" alt="">
     </div>
-    <div class="pcards">
-      <div class="pcard reveal">
-        <span class="ic" aria-hidden="true">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
-            <path d="M6 19 20 8l14 11v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/>
-            <circle cx="16" cy="24" r="2.4"/><circle cx="24" cy="30" r="2.4"/><path d="M25 22 15 32"/>
-          </svg>
-        </span>
-        <h3>Гарантия качества</h3>
-        <p>Все заявки проходят фильтрацию по качеству: номер, интерес, намерение купить.
-          Вам приходят только контакты, с которыми реально можно работать отделу продаж.</p>
+    <h2 class="ps-statement reveal">Многие льют лиды.<span class="lime">Я даю сделки.</span></h2>
+    <div class="ps-notes reveal">
+      <div>
+        <span class="tag">[ 1 ]</span>
+        <p>Покупные базы и общие агрегаторы дают «смотрящих» — до сделки доходит
+          1–2% таких заявок.</p>
       </div>
-      <div class="pcard reveal">
-        <span class="ic" aria-hidden="true">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
-            <path d="M6 17 20 7l14 10v16H6z"/><path d="M20 15v11M17 18h5a2 2 0 0 1 0 4h-4a2 2 0 0 0 0 4h5"/>
-          </svg>
-        </span>
-        <h3>Полное погружение</h3>
-        <p>Для элитных вилл, студий у моря и апартаментов в центре работают разные связки.
-          Я выстраиваю стратегию так, чтобы вы получали не поток случайных заявок,
-          а именно тех клиентов, кто ищет ваш продукт.</p>
-      </div>
-      <div class="pcard reveal">
-        <span class="ic" aria-hidden="true">
-          <svg class="pr-ic" viewBox="0 0 40 40" fill="none" stroke="#151515" stroke-width="2.2">
-            <path d="M5 35V16h9V6h12v10h9v19z"/><path d="M9 21h3M9 27h3M28 21h3M28 27h3M18 20h4M18 26h4M18 32h4"/>
-          </svg>
-        </span>
-        <h3>Прозрачность и честность</h3>
-        <p>Все цифры у вас на ладони. Стоимость заявки, конверсия в звонок, встречу и сделку.
-          Никаких «примерно» или «похоже работает». Только конкретные показатели,
-          которые мы обсуждаем каждую неделю.</p>
+      <div>
+        <span class="tag">[ 2 ]</span>
+        <p>Красивые отчёты часто не отвечают на главный вопрос — откуда именно
+          придёт сделка и её деньги.</p>
       </div>
     </div>
-    <div class="pnote reveal">
-      <span class="bang" aria-hidden="true">✓</span>
-      <p><b>Так вы получаете не поток случайных контактов,</b> а людей с деньгами
-        и намерением купить.</p>
+    <p class="ps-editorial reveal">На Бали и в Дубае легко влюбиться
+      <span class="dim">в красивую презентацию.</span> Сложнее — получать
+      <span class="lime">заявки, которые доходят до сделки.</span></p>
+    <div class="scards">
+      <div class="scard reveal">
+        <span class="idx">[ 1 ]</span>
+        <b>100%</b>
+        <p>заявок проходят фильтрацию по качеству: номер, интерес, намерение купить.
+          Отделу продаж — только живые контакты.</p>
+      </div>
+      <div class="scard reveal">
+        <span class="idx">[ 2 ]</span>
+        <b>7</b>
+        <p>рынков — и под каждый продукт своя связка: элитные виллы, студии у моря
+          и апартаменты в центре продаются по-разному.</p>
+      </div>
+      <div class="scard reveal">
+        <span class="idx">[ 3 ]</span>
+        <b>0</b>
+        <p>«примерно» в отчётах: стоимость заявки, конверсия в звонок, встречу
+          и сделку — конкретные цифры каждую неделю.</p>
+      </div>
     </div>
   </section>
 
