@@ -151,6 +151,38 @@
     box-shadow:0 10px 26px rgba(0,0,0,.28), 0 0 26px rgba(198,241,53,.3);
     transition:box-shadow .25s}
   .stat-shot:hover{box-shadow:0 12px 30px rgba(0,0,0,.32), 0 0 38px rgba(198,241,53,.5)}
+  /* CRM-дашборд миграционного агентства */
+  .crm{border:1px solid rgba(198,241,53,.35);border-radius:14px;overflow:hidden;
+    background:linear-gradient(170deg,#1E1E1C,#161615);
+    box-shadow:0 10px 26px rgba(0,0,0,.28), 0 0 26px rgba(198,241,53,.25)}
+  .crm-top{display:flex;align-items:center;gap:9px;padding:12px 16px;
+    border-bottom:1px solid var(--line);font-family:var(--f-head);font-weight:700;
+    font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+  .crm-top .dots{display:flex;gap:5px}
+  .crm-top .dots i{width:8px;height:8px;border-radius:50%;background:rgba(242,242,238,.16)}
+  .crm-top .dots i:first-child{background:var(--lime);box-shadow:0 0 6px rgba(198,241,53,.8)}
+  .crm-top em{font-style:normal;margin-left:auto;color:rgba(142,143,135,.8);letter-spacing:.08em}
+  .crm-body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+    gap:16px;padding:14px 16px 16px;text-align:left}
+  .crm h4{font-family:var(--f-head);font-weight:700;font-size:10.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--soft);margin:0 0 10px}
+  .crm-list{display:grid;gap:9px}
+  .crm-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;
+    align-items:center;font-size:13px;color:var(--ink)}
+  .crm-row b{font-family:var(--f-head);font-weight:800;font-size:13.5px;color:var(--lime)}
+  .crm-row .bar{grid-column:1/-1;height:4px;border-radius:2px;background:rgba(242,242,238,.08);
+    overflow:hidden}
+  .crm-row .bar i{display:block;height:100%;width:var(--w,50%);border-radius:2px;
+    background:linear-gradient(90deg,rgba(198,241,53,.5),var(--lime))}
+  .crm-cards{display:grid;gap:8px}
+  .crm-card{background:rgba(242,242,238,.045);border:1px solid var(--line);border-radius:10px;
+    padding:10px 12px}
+  .crm-card .nm{font-size:12.5px;font-weight:600;color:var(--ink)}
+  .crm-card .pr{font-size:11.5px;color:var(--soft);margin-top:3px}
+  .crm-card .st{display:inline-block;margin-top:8px;font-family:var(--f-head);font-weight:700;
+    font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;
+    border-radius:999px;background:rgba(198,241,53,.14);color:var(--lime)}
+  .crm-card .st.hot{background:var(--lime);color:#151515;box-shadow:0 0 10px rgba(198,241,53,.4)}
 
   /* цифры */
   .figures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:clamp(28px,4vw,44px)}
@@ -399,13 +431,7 @@
     .grid{grid-template-columns:1fr}
     .deal{grid-template-columns:1fr}
     .hero-top{grid-template-columns:minmax(0,1fr)}
-    /* скрины статистики: компактная стопка внахлёст возле кнопки */
-    .hero-proof{display:block;max-width:320px;margin-top:8px}
-    .hero-proof .proof-cap{margin-bottom:16px}
-    .hero-proof .stat-shot{max-width:258px;display:block}
-    .hero-proof .stat-shot:first-of-type{transform:rotate(-2.5deg);position:relative;z-index:2}
-    .hero-proof .stat-shot:last-of-type{transform:rotate(2.5deg);position:relative;z-index:1;
-      margin-top:-64px;margin-left:52px}
+    .hero-proof{margin-top:8px}
     .deal img{max-width:340px}
     .card{min-height:0}
     .nav-toggle{display:inline-flex}
@@ -464,14 +490,48 @@
           оформили пакеты услуг на суммы от $1 200 до $6 000.</p>
       </div>
 
-      <!-- Скриншоты статистики. Файлы: img/stat-1.png и img/stat-2.png.
-           Пропорции ~470×266 (как в кабинете). До добавления — тёмные блоки. -->
+      <!-- CRM-дашборд: ближе к бизнесу клиента, чем скрины рекламного кабинета -->
       <div class="hero-proof reveal">
-        <p class="proof-cap">Данные из рекламного кабинета Meta&nbsp;Ads</p>
-        <img class="stat-shot" src="img/stat-1.png" width="458" height="258" loading="lazy" decoding="async"
-             alt="Статистика Meta Ads: 211 лидов, средняя цена лида 17,35 $">
-        <img class="stat-shot" src="img/stat-2.png" width="468" height="266" loading="lazy" decoding="async"
-             alt="Статистика Meta Ads: 269 лидов, средняя цена лида 10,53 $">
+        <p class="proof-cap">Не скрины рекламного кабинета — живая CRM агентства</p>
+        <div class="crm" role="img" aria-label="Дашборд CRM миграционного агентства: новые заявки по странам и карточки клиентов">
+          <div class="crm-top">
+            <span class="dots"><i></i><i></i><i></i></span>
+            CRM · Дашборд агентства
+            <em>за 7 дней</em>
+          </div>
+          <div class="crm-body">
+            <div>
+              <h4>Новые заявки</h4>
+              <div class="crm-list">
+                <div class="crm-row"><span>Франция</span><b data-count="17">17</b><span class="bar"><i style="--w:100%"></i></span></div>
+                <div class="crm-row"><span>Греция</span><b data-count="14">14</b><span class="bar"><i style="--w:82%"></i></span></div>
+                <div class="crm-row"><span>Португалия</span><b data-count="12">12</b><span class="bar"><i style="--w:71%"></i></span></div>
+                <div class="crm-row"><span>ОАЭ</span><b data-count="9">9</b><span class="bar"><i style="--w:53%"></i></span></div>
+                <div class="crm-row"><span>Испания</span><b data-count="8">8</b><span class="bar"><i style="--w:47%"></i></span></div>
+              </div>
+            </div>
+            <div>
+              <h4>Клиенты</h4>
+              <div class="crm-cards">
+                <div class="crm-card">
+                  <div class="nm">Мария К.</div>
+                  <div class="pr">ВНЖ · Франция</div>
+                  <span class="st hot">Оплатила пакет</span>
+                </div>
+                <div class="crm-card">
+                  <div class="nm">Андрей П.</div>
+                  <div class="pr">Golden Visa · Португалия</div>
+                  <span class="st">Созвон сегодня</span>
+                </div>
+                <div class="crm-card">
+                  <div class="nm">Elena S.</div>
+                  <div class="pr">Бизнес-виза · ОАЭ</div>
+                  <span class="st">Сбор документов</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
