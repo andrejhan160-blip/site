@@ -376,8 +376,6 @@
   .btn:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
   .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .human{color:var(--soft);font-size:15px;max-width:44ch;margin:32px auto 0}
-  .final img{border-radius:20px;margin-top:clamp(26px,4vw,42px);width:100%;
-    height:clamp(240px,34vw,400px);object-fit:cover;object-position:center 30%;background:var(--surface-2)}
 
   footer{padding:34px 0 56px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
     font-size:12.5px;color:var(--soft);border-top:1px solid var(--line)}
@@ -599,7 +597,6 @@
     </div>
 
     <div class="ctl"><span class="label">Рынок</span><span id="mkt" style="display:contents"></span></div>
-    <div class="ctl"><span class="label">Канал</span><span id="chn" style="display:contents"></span></div>
     <p class="count" id="count" role="status" aria-live="polite"></p>
     <div class="grid" id="grid"></div>
   </section>
@@ -792,8 +789,6 @@
     </div>
     <p class="human reveal">Я маркетолог, но ещё муж и отец. В работе для меня важно то же,
       что и в жизни — стабильность, честность и результат.</p>
-    <img src="img/family.jpg" width="1160" height="400" loading="lazy" decoding="async"
-         alt="Евгений с семьёй">
   </section>
 
   <footer>
@@ -919,7 +914,7 @@ const CASES = [
 ];
 
 /* ── рендер и фильтры ─────────────────────── */
-const state = { market:"Все", channel:"Все" };
+const state = { market:"Все" };
 const uniq = k => ["Все", ...[...new Set(CASES.map(c => c[k]))]];
 const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const hasLink = c => c.url && c.url !== "#";
@@ -936,9 +931,7 @@ function chips(box, key){
 }
 
 function draw(){
-  const list = CASES.filter(c =>
-    (state.market === "Все" || c.market === state.market) &&
-    (state.channel === "Все" || c.channel === state.channel));
+  const list = CASES.filter(c => state.market === "Все" || c.market === state.market);
 
   const grid = document.getElementById("grid");
   grid.innerHTML = list.length ? "" :
@@ -966,7 +959,6 @@ function draw(){
   document.getElementById("count").textContent =
     "Показано " + list.length + " из " + CASES.length;
   chips(document.getElementById("mkt"), "market");
-  chips(document.getElementById("chn"), "channel");
 }
 
 document.getElementById("yr").textContent = new Date().getFullYear();
