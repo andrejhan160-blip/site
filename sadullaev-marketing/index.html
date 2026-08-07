@@ -19,7 +19,7 @@
      └─────────────────────────────────────────────────────────────────┘ -->
 <link rel="canonical" href="https://SITE_URL/">
 <meta property="og:title" content="Получайте 100+ тёплых лидов на недвижимость по всему миру">
-<meta property="og:description" content="Тёплые заявки и сделки в первый месяц. 16 проектов, 4 500+ заявок, сделки на $300K, $560K, $650K.">
+<meta property="og:description" content="Тёплые заявки и сделки в первый месяц. 18 проектов, 4 500+ заявок, сделки на $300K, $560K, $650K.">
 <meta property="og:image" content="https://SITE_URL/cover.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="Sadullaev Marketing">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Получайте 100+ тёплых лидов на недвижимость по всему миру">
-<meta name="twitter:description" content="Тёплые заявки и сделки в первый месяц. 16 проектов, 4 500+ заявок.">
+<meta name="twitter:description" content="Тёплые заявки и сделки в первый месяц. 18 проектов, 4 500+ заявок.">
 <meta name="twitter:image" content="https://SITE_URL/cover.jpg">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <!-- контент виден даже без JS (краулеры, отключённый JS): отменяем скрытие reveal -->
@@ -492,8 +492,8 @@
     </div>
 
     <div class="figures reveal">
-      <div class="fig"><b data-count="16">16</b><i>проектов</i><span class="fig-bar" style="--w:82%"></span></div>
-      <div class="fig"><b data-count="7">7</b><i>рынков</i><span class="fig-bar" style="--w:64%"></span></div>
+      <div class="fig"><b data-count="18">18</b><i>проектов</i><span class="fig-bar" style="--w:82%"></span></div>
+      <div class="fig"><b data-count="8">8</b><i>рынков</i><span class="fig-bar" style="--w:64%"></span></div>
       <div class="fig"><b data-count="4500" data-suffix="+">4 500+</b><i>заявок</i><span class="fig-bar" style="--w:96%"></span></div>
       <div class="fig"><b data-count="3">3</b><i>рекламных канала</i><span class="fig-bar" style="--w:58%"></span></div>
     </div>
@@ -816,9 +816,15 @@
 const CASES = [
   { code:"BLI", market:"Бали", channel:"Meta Ads",
     name:"578 заявок на покупку вилл для Bali Invest Club",
-    sub:"Две языковые кампании, Reels и текстово-графические креативы",
+    sub:"Facebook & Instagram, две языковые кампании и Reels",
     metric:"578", label:"заявок",
     url:"https://telegra.ph/578-zayavok-na-pokupku-vill-na-Bali-iz-Facebook--Instagram-dlya-Bali-Invest-Club-10-09" },
+
+  { code:"DXB", market:"Дубай", channel:"Meta Ads",
+    name:"234 лида и 76 квалов за 3 месяца для агентства Mavato",
+    sub:"Покупка недвижимости в Дубае",
+    metric:"76", label:"квалов",
+    url:"https://telegra.ph/234-lida-i-105-kvalov-za-3-mesyaca-na-pokupku-nedvizhimosti-v-Dubae-dlya-agentstva-Mavato-07-31" },
 
   { code:"DXB", market:"Дубай", channel:"Meta Ads",
     name:"748 заявок на премиальную недвижимость в Дубае",
@@ -832,17 +838,23 @@ const CASES = [
     metric:"792", label:"лида",
     url:"https://telegra.ph/792-lida-na-pokupku-nedvizhimosti-na-Bali-dlya-Estadel-Bali-cherez-Meta-Ads-i-sajt-04-17" },
 
+  { code:"THA", market:"Таиланд", channel:"Meta Ads",
+    name:"222 лида и 69 квалифицированных для агентства Mavato",
+    sub:"Покупка недвижимости в Таиланде, 3 месяца",
+    metric:"69", label:"квалов",
+    url:"https://telegra.ph/222-lida-i-69-kvalificirovannyh-lida-za-3-mesyaca-na-pokupku-nedvizhimosti-v-Tailande-dlya-agentstva-Mavato-07-31" },
+
+  { code:"AYT", market:"Турция", channel:"Meta Ads",
+    name:"112 заявок на покупку недвижимости в Турции",
+    sub:"Стоимость заявки $6,30",
+    metric:"$6,30", label:"за заявку",
+    url:"https://telegra.ph/Samye-svezhie-kejsy-po-rabote-s-agentstvami-nedvizhimosti-i-zastrojshchiki-10-31" },
+
   { code:"DXB", market:"Дубай", channel:"Meta Ads",
     name:"366 заявок и 3 депозита для Preference Properties",
     sub:"Бюджет $3 085, стоимость лида $7,79",
     metric:"3", label:"депозита",
     url:"https://telegra.ph/366-zayavok-dlya-agentstva-nedvizhimosti-Preference-Properties-v-Dubae-i-3-depozita-10-31" },
-
-  { code:"HKT", market:"Пхукет", channel:"Meta Ads",
-    name:"281 заявка и продажа с чеком $350 000",
-    sub:"Связка Reels и реклама для агентства недвижимости",
-    metric:"$350K", label:"чек сделки",
-    url:"https://telegra.ph/281-zayavok-i-1-prodazha-s-chekom-350000-s-pomoshchyu-svyazki-rilsreklama-dlya-agentstva-nedvizhimosti-na-Phukete-10-10" },
 
   { code:"BLI", market:"Бали", channel:"Meta Ads",
     name:"363 лида для застройщика на проект The Heights",
@@ -850,43 +862,11 @@ const CASES = [
     metric:"363", label:"лида",
     url:"https://telegra.ph/363-lida-dlya-zastrojshchika-iz-Bali-na-proekt-The-Heights--kreativy-s-renderami-i-spikerom-04-18" },
 
-  { code:"DXB", market:"Дубай", channel:"Meta Ads",
-    name:"126 лидов и 1 депозит для агентства недвижимости в Дубае",
-    sub:"",
-    metric:"126", label:"лидов",
-    url:"https://telegra.ph/126-lidov-i-1-depozit-dlya-agentstva-nedvizhimosti-v-Dubae-07-19" },
-
-  { code:"BLI", market:"Бали", channel:"Google / YouTube",
-    name:"136 заявок для Bali Invest Club с YouTube-рекламы",
-    sub:"Google Ads, видеокампании",
-    metric:"136", label:"заявок",
-    url:"https://telegra.ph/136-zayavok-dlya-Bali-Invest-Club-s-pomoshchyu-YouTube-reklamy-cherez-Google-Ads-10-05" },
-
-  { code:"CYP", market:"Кипр", channel:"Meta Ads",
-    name:"130 лидов для агентства недвижимости Cyprus Gold",
-    sub:"",
-    metric:"130", label:"лидов",
-    url:"https://telegra.ph/130-lidov-dlya-agentstva-nedvizhimosti-Cyprus-Gold-na-Kipre-05-09" },
-
-  /* ⚠ TODO: подставь верный URL кейса (сейчас карточка показывается как «скоро»). */
-  { code:"AYT", market:"Турция", channel:"Meta Ads",
-    name:"112 заявок на покупку недвижимости в Турции",
-    sub:"Стоимость заявки $6,30",
-    metric:"$6,30", label:"за заявку",
-    url:"#" },
-
-  /* ⚠ TODO: подставь верный URL кейса (сейчас карточка показывается как «скоро»). */
-  { code:"HKT", market:"Пхукет", channel:"Яндекс Директ",
-    name:"97 заявок из Яндекс Директа для агентства на Пхукете",
-    sub:"Стоимость заявки 2 341 ₽",
-    metric:"97", label:"заявок",
-    url:"#" },
-
-  { code:"BLI", market:"Бали", channel:"Meta Ads",
-    name:"Маркетинг и лидогенерация для резиденции Bali Bliss",
-    sub:"Заявки на покупку апартаментов для застройщика",
-    metric:"—", label:"застройщик",
-    url:"https://telegra.ph/Zayavki-na-pokupku-apartamentov-na-Bali-dlya-developera-05-09" },
+  { code:"HKT", market:"Пхукет", channel:"Meta Ads",
+    name:"281 заявка и продажа с чеком $350 000",
+    sub:"Связка Reels и реклама для агентства недвижимости",
+    metric:"$350K", label:"чек сделки",
+    url:"https://telegra.ph/281-zayavok-i-1-prodazha-s-chekom-350000-s-pomoshchyu-svyazki-rilsreklama-dlya-agentstva-nedvizhimosti-na-Phukete-10-10" },
 
   { code:"ESP", market:"Испания", channel:"Видеоразбор",
     name:"300 заявок для агентства недвижимости в Испании",
@@ -899,6 +879,36 @@ const CASES = [
     sub:"Разбор на видео",
     metric:"300+", label:"заявок",
     url:"https://youtu.be/tVhmAx60fGI" },
+
+  { code:"BLI", market:"Бали", channel:"Google / YouTube",
+    name:"136 заявок для Bali Invest Club с YouTube-рекламы",
+    sub:"Google Ads, видеокампании",
+    metric:"136", label:"заявок",
+    url:"https://telegra.ph/136-zayavok-dlya-Bali-Invest-Club-s-pomoshchyu-YouTube-reklamy-cherez-Google-Ads-10-05" },
+
+  { code:"DXB", market:"Дубай", channel:"Meta Ads",
+    name:"126 лидов и 1 депозит для агентства недвижимости в Дубае",
+    sub:"",
+    metric:"126", label:"лидов",
+    url:"https://telegra.ph/126-lidov-i-1-depozit-dlya-agentstva-nedvizhimosti-v-Dubae-07-19" },
+
+  { code:"CYP", market:"Кипр", channel:"Meta Ads",
+    name:"130 лидов для агентства недвижимости Cyprus Gold",
+    sub:"",
+    metric:"130", label:"лидов",
+    url:"https://telegra.ph/130-lidov-dlya-agentstva-nedvizhimosti-Cyprus-Gold-na-Kipre-05-09" },
+
+  { code:"BLI", market:"Бали", channel:"Meta Ads",
+    name:"Маркетинг и лидогенерация для резиденции Bali Bliss",
+    sub:"Заявки на покупку апартаментов для застройщика",
+    metric:"—", label:"застройщик",
+    url:"https://telegra.ph/Zayavki-na-pokupku-apartamentov-na-Bali-dlya-developera-05-09" },
+
+  { code:"HKT", market:"Пхукет", channel:"Яндекс Директ",
+    name:"97 заявок из Яндекс Директа для агентства на Пхукете",
+    sub:"Стоимость заявки 2 341 ₽",
+    metric:"97", label:"заявок",
+    url:"https://telegra.ph/289-zayavok-v-voronku-po-cene-589r-i-3-prodazhi-s-chekom-200k-dlya-Associacii-developerov-i-stroitelej-03-27" },
 
   { code:"HKT", market:"Пхукет", channel:"Видеоразбор",
     name:"200 заявок и 2 продажи для IBG Property",
