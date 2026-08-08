@@ -262,6 +262,11 @@
   .c-metric{font-family:var(--f-head);font-weight:800;font-size:26px;line-height:1;color:var(--lime)}
   .c-metric u{display:block;text-decoration:none;font-family:var(--f-body);font-weight:400;
     font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-top:8px}
+  .c-yt{display:inline-flex;align-items:center;justify-content:center;flex:none;
+    transition:transform .18s,filter .18s}
+  .c-yt svg{width:34px;height:24px;display:block;
+    filter:drop-shadow(0 4px 12px rgba(255,0,0,.35))}
+  .card:hover .c-yt{transform:scale(1.09);filter:brightness(1.06)}
   .c-arrow{font-size:20px;color:var(--soft);transition:transform .18s,color .18s}
   .card:hover .c-arrow{transform:translateX(4px);color:var(--lime)}
   .c-soon{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);
@@ -923,6 +928,7 @@ const state = { market:"Все" };
 const uniq = k => ["Все", ...[...new Set(CASES.map(c => c[k]))]];
 const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const hasLink = c => c.url && c.url !== "#";
+const isYT = u => /youtu\.be|youtube\.com/.test(u);
 
 function chips(box, key){
   box.innerHTML = "";
@@ -956,7 +962,10 @@ function draw(){
       '</span>' +
       '<span class="c-bot">' +
         '<span class="c-metric">' + esc(c.metric) + '<u>' + esc(c.label) + '</u></span>' +
-        (link ? '<span class="c-arrow">→</span>' : '<span class="c-soon">Скоро</span>') +
+        (link ? (isYT(c.url)
+            ? '<span class="c-yt" aria-hidden="true"><svg viewBox="0 0 28 20"><rect width="28" height="20" rx="5.5" fill="#FF0000"/><path d="M11.4 5.9v8.2l6.9-4.1z" fill="#fff"/></svg></span>'
+            : '<span class="c-arrow">→</span>')
+          : '<span class="c-soon">Скоро</span>') +
       '</span>';
     grid.appendChild(el);
   });

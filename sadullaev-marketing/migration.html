@@ -254,6 +254,11 @@
   .c-metric{font-family:var(--f-head);font-weight:800;font-size:26px;line-height:1;color:var(--lime)}
   .c-metric u{display:block;text-decoration:none;font-family:var(--f-body);font-weight:400;
     font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-top:8px}
+  .c-yt{display:inline-flex;align-items:center;justify-content:center;flex:none;
+    transition:transform .18s,filter .18s}
+  .c-yt svg{width:34px;height:24px;display:block;
+    filter:drop-shadow(0 4px 12px rgba(255,0,0,.35))}
+  .card:hover .c-yt{transform:scale(1.09);filter:brightness(1.06)}
   .c-arrow{font-size:20px;color:var(--soft);transition:transform .18s,color .18s}
   .card:hover .c-arrow{transform:translateX(4px);color:var(--lime)}
   .c-soon{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);
@@ -569,7 +574,7 @@
         </span>
         <span class="c-bot">
           <span class="c-metric">120+<u>заявок</u></span>
-          <span class="c-arrow">→</span>
+          <span class="c-yt" aria-hidden="true"><svg viewBox="0 0 28 20"><rect width="28" height="20" rx="5.5" fill="#FF0000"/><path d="M11.4 5.9v8.2l6.9-4.1z" fill="#fff"/></svg></span>
         </span>
       </a>
       <a class="card reveal" href="https://youtu.be/zpHm88WxB24" target="_blank" rel="noopener">
@@ -581,7 +586,7 @@
         </span>
         <span class="c-bot">
           <span class="c-metric">EURO LIFE<u>разбор кейса</u></span>
-          <span class="c-arrow">→</span>
+          <span class="c-yt" aria-hidden="true"><svg viewBox="0 0 28 20"><rect width="28" height="20" rx="5.5" fill="#FF0000"/><path d="M11.4 5.9v8.2l6.9-4.1z" fill="#fff"/></svg></span>
         </span>
       </a>
       <a class="card reveal" href="https://www.youtube.com/watch?v=1n1ooT1yBgk" target="_blank" rel="noopener">
@@ -593,7 +598,7 @@
         </span>
         <span class="c-bot">
           <span class="c-metric">204<u>заявки</u></span>
-          <span class="c-arrow">→</span>
+          <span class="c-yt" aria-hidden="true"><svg viewBox="0 0 28 20"><rect width="28" height="20" rx="5.5" fill="#FF0000"/><path d="M11.4 5.9v8.2l6.9-4.1z" fill="#fff"/></svg></span>
         </span>
       </a>
     </div>
