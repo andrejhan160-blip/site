@@ -177,7 +177,7 @@
   .ps-visual img{position:relative;width:100%;filter:grayscale(1) contrast(1.06) brightness(.9);
     -webkit-mask-image:radial-gradient(47% 52% at 50% 46%,#000 30%,transparent 86%);
     mask-image:radial-gradient(47% 52% at 50% 46%,#000 30%,transparent 86%)}
-  .ps-statement{position:relative;z-index:2;margin:0 auto;
+  .ps-statement{position:relative;z-index:2;margin:clamp(-52px,-6vw,-26px) auto 0;
     font-size:clamp(30px,4.8vw,58px);line-height:1.03;letter-spacing:-.02em;
     text-shadow:0 8px 30px rgba(21,21,21,.85)}
   .ps-statement .lime{display:block}
@@ -484,6 +484,9 @@
 
   <!-- ── 2. Принципы ────────────────────────── -->
   <section class="princ-sec" id="princ">
+    <div class="ps-visual reveal" aria-hidden="true">
+      <img src="img/mig-visual.jpg" width="1400" height="846" loading="lazy" decoding="async" alt="">
+    </div>
     <h2 class="ps-statement reveal">Многие просто льют лиды,<span class="lime">а я строю систему продаж.</span></h2>
     <div class="ps-notes reveal">
       <div>
