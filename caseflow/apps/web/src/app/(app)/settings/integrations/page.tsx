@@ -44,11 +44,24 @@ export default async function IntegrationsPage() {
     <>
       <PageHeader
         title="Настройки"
-        description="CaseFlow остаётся источником правды для кабинета, документов и истории. Из CRM читаются только те поля, которые вы сопоставили."
+        description="CaseFlow работает сам по себе. Интеграция нужна только тем, кто ведёт сделки в CRM."
       />
       <SettingsNav />
 
       <div className="max-w-4xl space-y-5">
+        {!bitrix?.isActive ? (
+          <Card className="border-dashed px-6 py-5">
+            <p className="text-sm font-medium">CRM подключать не обязательно</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-[var(--color-ink-muted)]">
+              Дела, этапы, документы, сроки, задачи, переписка и кабинет клиента живут в CaseFlow и работают
+              без всякой интеграции. Подключение нужно в одном случае: вы уже ведёте сделки в CRM и хотите,
+              чтобы смена стадии там сама переводила дело на нужный этап здесь. Даже тогда CaseFlow остаётся
+              источником правды для кабинета, документов и истории — из CRM читаются только те поля, которые
+              вы сопоставите.
+            </p>
+          </Card>
+        ) : null}
+
         <Card>
           <CardHeader>
             <div>

@@ -27,6 +27,8 @@ export interface Organization {
   primaryColor: string;
   supportEmail: string | null;
   portalWelcomeText: string | null;
+  /** Есть ли активное подключение к CRM. Отсутствует в ответе /auth/me. */
+  crmConnected?: boolean;
 }
 
 export interface Profile {

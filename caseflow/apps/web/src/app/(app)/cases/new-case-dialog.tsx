@@ -12,10 +12,13 @@ export function NewCaseDialog({
   clients,
   templates,
   team,
+  crmConnected = false,
 }: {
   clients: ClientListRow[];
   templates: WorkflowTemplateSummary[];
   team: TeamMember[];
+  /** Без подключённой CRM поле сделки не показывается: оно ни о чём не говорит. */
+  crmConnected?: boolean;
 }) {
   return (
     <FormDialog
@@ -74,9 +77,11 @@ export function NewCaseDialog({
             ))}
           </Select>
         </Field>
-        <Field label="ID сделки в CRM" hint="Свяжет дело со сделкой в Битрикс24.">
-          <Input name="externalCrmEntityId" />
-        </Field>
+        {crmConnected ? (
+          <Field label="ID сделки в CRM" hint="Свяжет дело со сделкой в Битрикс24.">
+            <Input name="externalCrmEntityId" />
+          </Field>
+        ) : null}
       </div>
 
       <Field label="Описание">

@@ -10,7 +10,14 @@ import { Progress } from '@/components/ui/progress';
 import { CaseStatusBadge } from '@/components/ui/status';
 import { api } from '@/lib/api';
 import { canManage, requireStaff } from '@/lib/session';
-import type { CaseListRow, ClientListRow, Paginated, TeamMember, WorkflowTemplateSummary } from '@/lib/types';
+import type {
+  CaseListRow,
+  ClientListRow,
+  Organization,
+  Paginated,
+  TeamMember,
+  WorkflowTemplateSummary,
+} from '@/lib/types';
 import { CASE_STATUS_LABELS, countOf } from '@/lib/i18n';
 import { formatRelative } from '@/lib/utils';
 import { NewCaseDialog } from './new-case-dialog';
@@ -33,11 +40,12 @@ export default async function CasesPage({
     if (value) query.set(key, value);
   }
 
-  const [cases, templates, team, clients] = await Promise.all([
+  const [cases, templates, team, clients, organization] = await Promise.all([
     api<Paginated<CaseListRow>>(`/cases?${query.toString()}`),
     api<WorkflowTemplateSummary[]>('/workflow-templates'),
     api<TeamMember[]>('/organization/users'),
     api<Paginated<ClientListRow>>('/clients?pageSize=100'),
+    api<Organization>('/organization'),
   ]);
 
   const stageNames = [...new Set(templates.flatMap((template) => template.stages.map((stage) => stage.name)))];
@@ -49,7 +57,12 @@ export default async function CasesPage({
         description="Все процессы команды и этап, на котором каждый стоит."
         actions={
           canManage(profile.role) ? (
-            <NewCaseDialog clients={clients.items} templates={templates} team={team} />
+            <NewCaseDialog
+              clients={clients.items}
+              templates={templates}
+              team={team}
+              crmConnected={organization.crmConnected ?? false}
+            />
           ) : undefined
         }
       />

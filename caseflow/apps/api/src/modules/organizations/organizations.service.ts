@@ -9,22 +9,29 @@ export class OrganizationsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async get(auth: AuthContext) {
-    return this.prisma.organization.findUniqueOrThrow({
-      where: { id: auth.organizationId },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        logoUrl: true,
-        customDomain: true,
-        timezone: true,
-        primaryColor: true,
-        supportEmail: true,
-        portalWelcomeText: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const [organization, activeCrm] = await Promise.all([
+      this.prisma.organization.findUniqueOrThrow({
+        where: { id: auth.organizationId },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          logoUrl: true,
+          customDomain: true,
+          timezone: true,
+          primaryColor: true,
+          supportEmail: true,
+          portalWelcomeText: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.crmConnection.count({ where: { organizationId: auth.organizationId, isActive: true } }),
+    ]);
+
+    // Флаг, а не сами доступы: интерфейс должен знать только, есть ли CRM,
+    // чтобы не показывать поля, которые компании без неё ни о чём не говорят.
+    return { ...organization, crmConnected: activeCrm > 0 };
   }
 
   async update(auth: AuthContext, input: UpdateOrganizationInput) {
