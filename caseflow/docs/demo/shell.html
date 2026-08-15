@@ -1,0 +1,80 @@
+<title>Кабинеты CaseFlow</title>
+
+<div class="cf-wrap">
+  <header class="cf-masthead">
+    <p class="cf-eyebrow">CaseFlow · интерактивная витрина</p>
+    <h1>Два кабинета одного дела</h1>
+    <p>
+      Слева от стекла — миграционная компания «Глобал Миграция», справа — её клиент Иван Петров,
+      подающий на вид на жительство во Франции. Оба кабинета смотрят на одно дело, но видят разное:
+      сотрудник ведёт процесс, клиент видит свой прогресс и то, что нужно сделать. Здесь всё работает:
+      запросите документ — он появится у клиента; загрузите файл — он встанет в очередь на проверку.
+    </p>
+    <div class="cf-tags">
+      <span class="cf-tag">Next.js 15</span>
+      <span class="cf-tag">NestJS 11</span>
+      <span class="cf-tag">PostgreSQL + Prisma</span>
+      <span class="cf-tag">прогресс по формуле продукта</span>
+    </div>
+  </header>
+
+  <div class="cf-switch" role="tablist" aria-label="Выбор кабинета">
+    <button type="button" class="is-active" data-cabinet="company" role="tab" aria-selected="true">Кабинет компании</button>
+    <button type="button" data-cabinet="client" role="tab" aria-selected="false">Кабинет клиента</button>
+    <button type="button" class="cf-reset" data-action="reset">Сбросить демо</button>
+  </div>
+
+  <section class="cf-stage is-active" id="cf-stage-company">
+    <p class="cf-hint-line">
+      <strong>Что попробовать.</strong> «Запросить документ» — он тут же появится у клиента в разделе «Запросы».
+      На вкладке «Документы» примите или отклоните тот, что на проверке: отказ без причины система не пропустит,
+      а причину клиент увидит целиком. «Сменить этап» — таймлайн и прогресс пересчитаются в обоих кабинетах.
+      В «Настройках» поменяйте цвет — перекрасятся оба.
+    </p>
+    <div class="cf-device">
+      <div class="cf-device-bar">
+        <span class="cf-dot-window"></span><span class="cf-dot-window"></span><span class="cf-dot-window"></span>
+        <span class="cf-url">app.globalmigration.example</span>
+      </div>
+      <div class="cf-viewport" id="cf-company"></div>
+    </div>
+  </section>
+
+  <section class="cf-stage" id="cf-stage-client">
+    <p class="cf-hint-line">
+      <strong>Что попробовать.</strong> Загрузите документ вместо отклонённого полиса — выберите любой файл,
+      он встанет как версия 2 со статусом «На проверке» и появится в очереди сотрудника. Отметьте запрос
+      выполненным, напишите сообщение — всё это увидит вторая сторона.
+    </p>
+    <div class="cf-device cf-device--phone">
+      <div class="cf-device-bar">
+        <span class="cf-dot-window"></span><span class="cf-dot-window"></span><span class="cf-dot-window"></span>
+        <span class="cf-url">app.globalmigration.example/portal</span>
+      </div>
+      <div class="cf-viewport" data-device="phone"><div id="cf-client"></div></div>
+    </div>
+  </section>
+
+  <footer class="cf-foot">
+    <p><strong>Что здесь настоящее.</strong> Правила предметной области: прогресс считается формулой из
+    продукта (40% — продвижение по этапам, 60% — комплектность документов; документ на проверке идёт за
+    половину), отказ требует причины, замена документа приходит новой версией и не затирает предыдущую,
+    каждое действие пишется в историю дела и превращается в уведомление второй стороне. Тексты, статусы и
+    состав экранов — те же, что в приложении.</p>
+
+    <p><strong>Что это технически.</strong> Витрина воспроизводит интерфейс на чистом JavaScript, чтобы он
+    работал одной страницей без сервера. Это не собранное приложение: там React, серверные компоненты и
+    запросы к API. Совпадают дизайн-система, тексты и правила — не код.</p>
+    <p><strong>Чего здесь нет.</strong> Сервера, базы и файлового хранилища: состояние живёт в памяти
+    вкладки и обнуляется при перезагрузке. Выбранный файл никуда не уходит — берутся только имя и размер,
+    сам он остаётся у вас. Нет входа по ссылке, разграничения прав, изоляции организаций и синхронизации с
+    CRM: в работающем сервисе всё это есть и проверено тестами, но статическая страница показать их не может.</p>
+    <p><strong>Данные демонстрационные, но не выдуманные.</strong> Дело Ивана Петрова повторяет сид:
+    девять этапов, 16 требований к документам, 12 принято, 1 на проверке, 1 отклонён с причиной,
+    2 не загружено — те же 63% на старте.</p>
+  </footer>
+</div>
+
+<div id="cf-modal" hidden></div>
+<div class="cf-toast" id="cf-toast" role="status" aria-live="polite"></div>
+<input type="file" id="cf-file" hidden accept=".pdf,.jpg,.jpeg,.png,.heic,.webp,.doc,.docx" />
