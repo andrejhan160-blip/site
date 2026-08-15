@@ -58,7 +58,7 @@ const envSchema = z.object({
     .transform((v) => v === 'true'),
 
   RATE_LIMIT_TTL_SECONDS: z.coerce.number().int().positive().default(60),
-  RATE_LIMIT_LIMIT: z.coerce.number().int().positive().default(120),
+  RATE_LIMIT_LIMIT: z.coerce.number().int().positive().default(600),
   AUTH_RATE_LIMIT: z.coerce.number().int().positive().default(10),
 });
 

@@ -47,3 +47,11 @@ They were substituted with thematically-matching photos from the same project
 (industrial waterproofing, a finished house, and torch-down waterproofing
 respectively), keeping every image reference valid. Swap in the originals if you
 have them.
+
+---
+
+## Also in this repository
+
+- [`caseflow/`](./caseflow) — **CaseFlow**, a multi-tenant client operations
+  platform (Next.js + NestJS + PostgreSQL). Unrelated to this landing page; see
+  its own README for setup.

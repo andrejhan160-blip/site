@@ -1,0 +1,84 @@
+@import 'tailwindcss';
+
+/*
+ * CaseFlow design tokens. The palette is deliberately quiet: one accent, a
+ * neutral scale and a small set of status colours. Screens should read like a
+ * document, not like a CRM grid.
+ */
+@theme {
+  --color-canvas: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f4f7;
+  --color-border: #e4e7ec;
+  --color-border-strong: #d0d5dd;
+
+  --color-ink: #101828;
+  --color-ink-muted: #667085;
+  --color-ink-subtle: #98a2b3;
+
+  --color-accent: #1f6feb;
+  --color-accent-hover: #1a5fd0;
+  --color-accent-soft: #eaf1fe;
+
+  --color-success: #067647;
+  --color-success-soft: #e7f6ec;
+  --color-warning: #b54708;
+  --color-warning-soft: #fef6e7;
+  --color-danger: #b42318;
+  --color-danger-soft: #fdeceb;
+  --color-info: #175cd3;
+  --color-info-soft: #eff4ff;
+
+  --radius-card: 16px;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The organization's primary colour overrides the accent at runtime. */
+  [data-branded] {
+    --color-accent: var(--brand-primary, #1f6feb);
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .card-shadow {
+    box-shadow:
+      0 1px 2px rgb(16 24 40 / 0.04),
+      0 1px 3px rgb(16 24 40 / 0.06);
+  }
+
+  .card-shadow-lg {
+    box-shadow:
+      0 4px 6px -2px rgb(16 24 40 / 0.03),
+      0 12px 16px -4px rgb(16 24 40 / 0.08);
+  }
+}

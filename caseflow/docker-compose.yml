@@ -1,0 +1,44 @@
+# Local infrastructure for CaseFlow. The apps run on the host (npm run dev).
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: caseflow
+      POSTGRES_PASSWORD: caseflow
+      POSTGRES_DB: caseflow
+    ports:
+      - '5432:5432'
+    volumes:
+      - caseflow-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U caseflow']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # S3-compatible storage. Set STORAGE_DRIVER=s3 in apps/api/.env to use it.
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: caseflow
+      MINIO_ROOT_PASSWORD: caseflow-secret
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - caseflow-objects:/data
+
+volumes:
+  caseflow-db:
+  caseflow-objects:

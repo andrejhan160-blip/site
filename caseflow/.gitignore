@@ -8,4 +8,4 @@ coverage/
 .env.local
 .env.*.local
 .DS_Store
-storage/
+apps/api/storage/

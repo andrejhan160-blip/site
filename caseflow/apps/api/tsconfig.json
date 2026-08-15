@@ -11,7 +11,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
+    // Build state lives with the build config (tsconfig.build.json); the
+    // type-check pass stays stateless so it can never mark an unbuilt
+    // project as up to date and skip emitting.
+    "incremental": false,
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,

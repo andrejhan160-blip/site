@@ -1,4 +1,4 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
@@ -19,7 +19,6 @@ async function bootstrap(): Promise<void> {
   // Bitrix24 posts form-encoded webhook bodies.
   app.useBodyParser('urlencoded', { extended: true, limit: '1mb' });
   app.useBodyParser('json', { limit: '1mb' });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
   app.enableCors({
     origin: config
