@@ -1,0 +1,27 @@
+{
+  "name": "caseflow",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CaseFlow — Client Operations Platform for document-heavy professional services",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:api": "npm run dev -w @caseflow/api",
+    "dev:web": "npm run dev -w @caseflow/web",
+    "build": "npm run build -w @caseflow/api && npm run build -w @caseflow/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:generate": "npm run db:generate -w @caseflow/api",
+    "db:migrate": "npm run db:migrate -w @caseflow/api",
+    "db:deploy": "npm run db:deploy -w @caseflow/api",
+    "db:seed": "npm run db:seed -w @caseflow/api",
+    "db:reset": "npm run db:reset -w @caseflow/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
