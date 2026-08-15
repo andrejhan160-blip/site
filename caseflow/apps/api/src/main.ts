@@ -1,3 +1,5 @@
+// Must be first: Nest reads constructor types from the emitted decorator metadata.
+import 'reflect-metadata';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
