@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: { default: 'CaseFlow', template: '%s · CaseFlow' },
-  description: 'Client operations platform for document-heavy professional services.',
+  description: 'Платформа клиентских процессов для компаний, которые ведут долгие дела с документами.',
 };
 
 export const viewport: Viewport = {
@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body>{children}</body>
     </html>
   );

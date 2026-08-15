@@ -42,9 +42,9 @@ export async function logout(): Promise<void> {
 // --- Clients -----------------------------------------------------------------
 
 const clientSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Enter a valid email'),
+  firstName: z.string().min(1, 'Укажите имя'),
+  lastName: z.string().min(1, 'Укажите фамилию'),
+  email: z.string().email('Введите корректный адрес почты'),
 });
 
 export async function createClient(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -68,7 +68,7 @@ export async function createClient(_prev: ActionState, formData: FormData): Prom
       },
     });
     revalidatePath('/clients');
-  }, 'Client created');
+  }, 'Клиент создан');
 }
 
 // --- Cases -------------------------------------------------------------------
@@ -77,7 +77,7 @@ export async function createCase(_prev: ActionState, formData: FormData): Promis
   const clientId = optional(formData.get('clientId'));
   const workflowTemplateId = optional(formData.get('workflowTemplateId'));
   if (!clientId || !workflowTemplateId) {
-    return { ok: false, message: 'Choose a client and a workflow' };
+    return { ok: false, message: 'Выберите клиента и воркфлоу' };
   }
 
   let createdId: string | null = null;
@@ -115,13 +115,13 @@ export async function updateCase(_prev: ActionState, formData: FormData): Promis
     });
     revalidatePath(`/cases/${caseId}`);
     revalidatePath('/cases');
-  }, 'Case updated');
+  }, 'Дело обновлено');
 }
 
 export async function changeStage(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const stageId = optional(formData.get('stageId'));
-  if (!stageId) return { ok: false, message: 'Choose a stage' };
+  if (!stageId) return { ok: false, message: 'Выберите этап' };
 
   return run(async () => {
     await api(`/cases/${caseId}/stage`, {
@@ -130,7 +130,7 @@ export async function changeStage(_prev: ActionState, formData: FormData): Promi
     });
     revalidatePath(`/cases/${caseId}`);
     revalidatePath('/dashboard');
-  }, 'Stage updated');
+  }, 'Этап изменён');
 }
 
 // --- Documents ---------------------------------------------------------------
@@ -138,7 +138,7 @@ export async function changeStage(_prev: ActionState, formData: FormData): Promi
 export async function requestDocument(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const name = optional(formData.get('name'));
-  if (!name) return { ok: false, message: 'Give the document a name' };
+  if (!name) return { ok: false, message: 'Укажите название документа' };
 
   return run(async () => {
     await api(`/cases/${caseId}/document-requests`, {
@@ -155,13 +155,13 @@ export async function requestDocument(_prev: ActionState, formData: FormData): P
     });
     revalidatePath(`/cases/${caseId}`);
     revalidatePath('/dashboard');
-  }, 'Document requested');
+  }, 'Запрос отправлен');
 }
 
 export async function uploadDocument(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const file = formData.get('file');
-  if (!(file instanceof File) || file.size === 0) return { ok: false, message: 'Choose a file to upload' };
+  if (!(file instanceof File) || file.size === 0) return { ok: false, message: 'Выберите файл для загрузки' };
 
   const requirementId = optional(formData.get('requirementId'));
   const portal = flag(formData.get('portal'));
@@ -177,7 +177,7 @@ export async function uploadDocument(_prev: ActionState, formData: FormData): Pr
     });
     revalidatePath(portal ? '/portal' : `/cases/${caseId}`);
     revalidatePath(portal ? '/portal/documents' : '/dashboard');
-  }, 'Document uploaded');
+  }, 'Документ загружен');
 }
 
 export async function reviewDocument(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -187,7 +187,7 @@ export async function reviewDocument(_prev: ActionState, formData: FormData): Pr
   const rejectionReason = optional(formData.get('rejectionReason'));
 
   if (decision === 'REJECT' && !rejectionReason) {
-    return { ok: false, message: 'A rejection reason is required — the client sees it' };
+    return { ok: false, message: 'Укажите причину отказа — её увидит клиент' };
   }
 
   return run(async () => {
@@ -197,7 +197,7 @@ export async function reviewDocument(_prev: ActionState, formData: FormData): Pr
     });
     revalidatePath(`/cases/${caseId}`);
     revalidatePath('/dashboard');
-  }, decision === 'APPROVE' ? 'Document approved' : 'Document rejected');
+  }, decision === 'APPROVE' ? 'Документ принят' : 'Документ отклонён');
 }
 
 // --- Requests, tasks, messages ----------------------------------------------
@@ -205,7 +205,7 @@ export async function reviewDocument(_prev: ActionState, formData: FormData): Pr
 export async function createRequest(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const title = optional(formData.get('title'));
-  if (!title) return { ok: false, message: 'Give the request a title' };
+  if (!title) return { ok: false, message: 'Укажите заголовок запроса' };
 
   return run(async () => {
     await api(`/cases/${caseId}/requests`, {
@@ -219,7 +219,7 @@ export async function createRequest(_prev: ActionState, formData: FormData): Pro
       },
     });
     revalidatePath(`/cases/${caseId}`);
-  }, 'Request sent');
+  }, 'Запрос отправлен');
 }
 
 export async function completeRequest(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -230,7 +230,7 @@ export async function completeRequest(_prev: ActionState, formData: FormData): P
     revalidatePath('/portal/requests');
     const caseId = optional(formData.get('caseId'));
     if (caseId) revalidatePath(`/cases/${caseId}`);
-  }, 'Request completed');
+  }, 'Запрос выполнен');
 }
 
 export async function cancelRequest(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -239,13 +239,13 @@ export async function cancelRequest(_prev: ActionState, formData: FormData): Pro
   return run(async () => {
     await api(`/requests/${requestId}/cancel`, { method: 'POST' });
     revalidatePath(`/cases/${caseId}`);
-  }, 'Request cancelled');
+  }, 'Запрос отменён');
 }
 
 export async function createTask(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const title = optional(formData.get('title'));
-  if (!title) return { ok: false, message: 'Give the task a title' };
+  if (!title) return { ok: false, message: 'Укажите заголовок задачи' };
 
   return run(async () => {
     await api(`/cases/${caseId}/tasks`, {
@@ -259,7 +259,7 @@ export async function createTask(_prev: ActionState, formData: FormData): Promis
       },
     });
     revalidatePath(`/cases/${caseId}`);
-  }, 'Task created');
+  }, 'Задача создана');
 }
 
 export async function setTaskStatus(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -276,7 +276,7 @@ export async function setTaskStatus(_prev: ActionState, formData: FormData): Pro
 export async function sendMessage(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const caseId = String(formData.get('caseId'));
   const body = optional(formData.get('body'));
-  if (!body) return { ok: false, message: 'Write a message first' };
+  if (!body) return { ok: false, message: 'Сначала напишите сообщение' };
   const portal = flag(formData.get('portal'));
 
   return run(async () => {
@@ -291,17 +291,17 @@ export async function sendMessage(_prev: ActionState, formData: FormData): Promi
 // --- Workflow templates ------------------------------------------------------
 
 const templateSchema = z.object({
-  name: z.string().trim().min(1, 'Give the workflow a name'),
+  name: z.string().trim().min(1, 'Укажите название воркфлоу'),
   description: z.string().trim().optional(),
   isActive: z.boolean(),
   stages: z
     .array(
       z.object({
-        name: z.string().trim().min(1, 'Every stage needs a name'),
+        name: z.string().trim().min(1, 'У каждого этапа должно быть название'),
         description: z.string().trim().optional(),
         requirements: z.array(
           z.object({
-            name: z.string().trim().min(1, 'Every document needs a name'),
+            name: z.string().trim().min(1, 'У каждого документа должно быть название'),
             instructions: z.string().trim().optional(),
             required: z.boolean(),
             deadlineDays: z.number().int().min(0).max(3650).nullable(),
@@ -309,7 +309,7 @@ const templateSchema = z.object({
         ),
       }),
     )
-    .min(1, 'A workflow needs at least one stage'),
+    .min(1, 'В воркфлоу нужен хотя бы один этап'),
 });
 
 export async function saveWorkflowTemplate(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -318,7 +318,7 @@ export async function saveWorkflowTemplate(_prev: ActionState, formData: FormDat
     parsed = templateSchema.parse(JSON.parse(String(formData.get('template'))));
   } catch (error) {
     const message =
-      error instanceof z.ZodError ? error.issues[0].message : 'The workflow could not be read';
+      error instanceof z.ZodError ? error.issues[0].message : 'Не удалось прочитать воркфлоу';
     return { ok: false, message };
   }
 
@@ -346,7 +346,7 @@ export async function archiveWorkflowTemplate(_prev: ActionState, formData: Form
     await api(`/workflow-templates/${templateId}`, { method: 'DELETE' });
     revalidatePath('/workflows');
     revalidatePath(`/workflows/${templateId}`);
-  }, 'Workflow archived');
+  }, 'Воркфлоу отправлен в архив');
 }
 
 // --- Settings ----------------------------------------------------------------
@@ -367,13 +367,13 @@ export async function updateOrganization(_prev: ActionState, formData: FormData)
     });
     revalidatePath('/settings');
     revalidatePath('/portal');
-  }, 'Branding saved');
+  }, 'Оформление сохранено');
 }
 
 export async function inviteTeamMember(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const name = optional(formData.get('name'));
   const email = optional(formData.get('email'));
-  if (!name || !email) return { ok: false, message: 'Name and email are required' };
+  if (!name || !email) return { ok: false, message: 'Укажите имя и почту' };
 
   return run(async () => {
     await api('/organization/users', {
@@ -381,7 +381,7 @@ export async function inviteTeamMember(_prev: ActionState, formData: FormData): 
       body: { name, email, role: optional(formData.get('role')) ?? 'SPECIALIST' },
     });
     revalidatePath('/settings/team');
-  }, 'Team member added');
+  }, 'Сотрудник добавлен');
 }
 
 export async function updateTeamMember(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -396,7 +396,7 @@ export async function updateTeamMember(_prev: ActionState, formData: FormData): 
       },
     });
     revalidatePath('/settings/team');
-  }, 'Team member updated');
+  }, 'Данные сотрудника обновлены');
 }
 
 export async function saveCrmConnection(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -416,7 +416,7 @@ export async function saveCrmConnection(_prev: ActionState, formData: FormData):
       },
     });
     revalidatePath('/settings/integrations');
-  }, 'Integration saved');
+  }, 'Интеграция сохранена');
 }
 
 export async function testCrmConnection(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -452,7 +452,7 @@ export async function saveStageMappings(_prev: ActionState, formData: FormData):
       body: { mappings },
     });
     revalidatePath('/settings/integrations');
-  }, 'Stage mapping saved');
+  }, 'Сопоставление сохранено');
 }
 
 export async function markNotificationsRead(): Promise<void> {

@@ -80,7 +80,7 @@ export class ClientsService {
         },
       },
     });
-    if (!client) throw new NotFoundException('Client not found');
+    if (!client) throw new NotFoundException('Клиент не найден');
 
     const recentActivity = await this.prisma.event.findMany({
       where: { organizationId: auth.organizationId, case: { clientId: client.id } },
@@ -101,7 +101,7 @@ export class ClientsService {
     const existing = await this.prisma.client.findFirst({
       where: { organizationId: auth.organizationId, email: input.email },
     });
-    if (existing) throw new ConflictException('A client with this email already exists');
+    if (existing) throw new ConflictException('Клиент с такой почтой уже есть');
 
     const { createPortalAccess, ...data } = input;
 
@@ -136,7 +136,7 @@ export class ClientsService {
       where: { id, organizationId: auth.organizationId },
       data: input,
     });
-    if (updated.count === 0) throw new NotFoundException('Client not found');
+    if (updated.count === 0) throw new NotFoundException('Клиент не найден');
 
     if (input.firstName || input.lastName || input.email) {
       const client = await this.prisma.client.findFirstOrThrow({

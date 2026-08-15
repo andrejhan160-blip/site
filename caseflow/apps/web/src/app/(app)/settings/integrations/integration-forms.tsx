@@ -15,8 +15,8 @@ export function ConnectionForm({ connection }: { connection: Connection | undefi
   return (
     <form action={formAction} className="space-y-5">
       <Field
-        label="Inbound webhook URL"
-        hint="Bitrix24 → Developer resources → Other → Inbound webhook. Grant the crm scope and paste the URL here."
+        label="Адрес входящего вебхука"
+        hint="Битрикс24 → Разработчикам → Другое → Входящий вебхук. Выдайте право crm и вставьте адрес сюда."
       >
         <Input
           name="inboundWebhookUrl"
@@ -27,15 +27,15 @@ export function ConnectionForm({ connection }: { connection: Connection | undefi
       </Field>
       {connection?.hasCredentials ? (
         <p className="-mt-3 text-xs text-[var(--color-success)]">
-          Credentials are stored ({connection.configuredKeys.join(', ')}). Leave the field blank to keep them.
+          Доступы сохранены ({connection.configuredKeys.join(', ')}). Оставьте поле пустым, чтобы их не менять.
         </p>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Portal address">
+        <Field label="Адрес портала">
           <Input name="baseUrl" type="url" defaultValue={connection?.baseUrl ?? ''} placeholder="https://yourcompany.bitrix24.eu" />
         </Field>
-        <Field label="Fields to sync" hint="Comma separated. Only these are read from the deal.">
+        <Field label="Поля для синхронизации" hint="Через запятую. Только они читаются из сделки.">
           <Input
             name="syncedFields"
             defaultValue={connection?.syncedFields.join(', ') ?? 'TITLE, STAGE_ID, ASSIGNED_BY_ID, CONTACT_ID'}
@@ -45,11 +45,11 @@ export function ConnectionForm({ connection }: { connection: Connection | undefi
 
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" name="isActive" defaultChecked={connection?.isActive ?? false} className="h-4 w-4 rounded" />
-        Integration active — inbound webhooks are processed
+        Интеграция включена — входящие вебхуки обрабатываются
       </label>
 
       <div className="flex items-center gap-3">
-        <SubmitButton pendingLabel="Saving…">Save connection</SubmitButton>
+        <SubmitButton pendingLabel="Сохраняем…">Сохранить подключение</SubmitButton>
         {state.message ? (
           <p className={state.ok ? 'text-sm text-[var(--color-success)]' : 'text-sm text-[var(--color-danger)]'}>
             {state.message}
@@ -66,8 +66,8 @@ export function TestConnectionButton({ connectionId }: { connectionId: string })
   return (
     <form action={formAction} className="flex items-center gap-3">
       <input type="hidden" name="connectionId" value={connectionId} />
-      <SubmitButton variant="secondary" size="sm" pendingLabel="Testing…">
-        Test connection
+      <SubmitButton variant="secondary" size="sm" pendingLabel="Проверяем…">
+        Проверить подключение
       </SubmitButton>
       {state.message ? (
         <span className={state.ok ? 'text-sm text-[var(--color-success)]' : 'text-sm text-[var(--color-danger)]'}>
@@ -90,8 +90,8 @@ export function StageMappingForm({
   if (connection.mappings.length === 0) {
     return (
       <p className="text-sm text-[var(--color-ink-muted)]">
-        No pipeline stages have been imported yet. Save the connection and run a test to pull them in, or add
-        mappings through the API.
+        Стадии воронки ещё не загружены. Сохраните подключение и запустите проверку, либо добавьте сопоставления
+        через API.
       </p>
     );
   }
@@ -104,16 +104,16 @@ export function StageMappingForm({
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-[var(--color-border)] text-left text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">
-              <th className="py-2 pr-4 font-medium">Bitrix pipeline</th>
-              <th className="py-2 pr-4 font-medium">Bitrix stage</th>
-              <th className="py-2 font-medium">CaseFlow workflow stage</th>
+              <th className="py-2 pr-4 font-medium">Воронка Битрикса</th>
+              <th className="py-2 pr-4 font-medium">Стадия Битрикса</th>
+              <th className="py-2 font-medium">Этап в CaseFlow</th>
             </tr>
           </thead>
           <tbody>
             {connection.mappings.map((mapping) => (
               <tr key={mapping.id} className="border-b border-[var(--color-border)] last:border-0">
                 <td className="py-3 pr-4 text-[var(--color-ink-muted)]">
-                  {mapping.pipelineName ?? `Pipeline ${mapping.pipelineId}`}
+                  {mapping.pipelineName ?? `Воронка ${mapping.pipelineId}`}
                 </td>
                 <td className="py-3 pr-4">
                   <span className="font-medium">{mapping.externalStageName ?? mapping.externalStageId}</span>
@@ -135,7 +135,7 @@ export function StageMappingForm({
                     defaultValue={mapping.templateStageId ?? ''}
                     className="h-9 text-[13px]"
                   >
-                    <option value="">Do not change the stage</option>
+                    <option value="">Не менять этап</option>
                     {templates.map((template) => (
                       <optgroup key={template.id} label={template.name}>
                         {template.stages.map((stage) => (
@@ -154,7 +154,7 @@ export function StageMappingForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <SubmitButton pendingLabel="Saving…">Save mapping</SubmitButton>
+        <SubmitButton pendingLabel="Сохраняем…">Сохранить сопоставление</SubmitButton>
         {state.message ? (
           <p className={state.ok ? 'text-sm text-[var(--color-success)]' : 'text-sm text-[var(--color-danger)]'}>
             {state.message}

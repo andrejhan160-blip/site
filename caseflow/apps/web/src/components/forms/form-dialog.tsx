@@ -47,7 +47,7 @@ export function FormDialog({
           ) : null}
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-              Cancel
+              Отмена
             </Button>
             <SubmitButton pendingLabel={pendingLabel}>{submitLabel}</SubmitButton>
           </div>

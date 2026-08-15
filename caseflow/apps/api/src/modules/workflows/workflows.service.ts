@@ -31,7 +31,7 @@ export class WorkflowsService {
       where: { id, organizationId: auth.organizationId },
       include: templateInclude,
     });
-    if (!template) throw new NotFoundException('Workflow template not found');
+    if (!template) throw new NotFoundException('Воркфлоу не найден');
     return template;
   }
 

@@ -19,53 +19,54 @@ const str = (ctx: NotificationTemplateContext, key: string, fallback = ''): stri
 };
 
 /**
- * Channel-agnostic copy. Renderers return plain text; each channel decides how
- * to present it (email body, in-app card, and later Telegram/SMS).
+ * Тексты, не зависящие от канала. Рендерер возвращает обычный текст; каждый
+ * канал сам решает, как его показать — письмом, карточкой в приложении, а позже
+ * сообщением в Telegram или SMS.
  */
 export const NOTIFICATION_TEMPLATES: Record<string, TemplateRenderer> = {
   'auth.magic-link': (ctx) => ({
-    subject: `Your ${ctx.organizationName} sign-in link`,
-    body: `Hi ${ctx.recipientName},\n\nUse the link below to sign in. It expires in ${str(ctx, 'ttlMinutes', '15')} minutes and can be used once.\n\n${ctx.actionUrl}\n\nIf you did not request this, you can ignore this email.`,
+    subject: `Ссылка для входа — ${ctx.organizationName}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nВойдите по ссылке ниже. Она действует ${str(ctx, 'ttlMinutes', '15')} мин. и сработает один раз.\n\n${ctx.actionUrl}\n\nЕсли вы не запрашивали вход — просто не переходите по ссылке.`,
   }),
   'document.requested': (ctx) => ({
-    subject: `New document request: ${str(ctx, 'requirementName')}`,
-    body: `Hi ${ctx.recipientName},\n\n${ctx.organizationName} needs "${str(ctx, 'requirementName')}" for your case "${str(ctx, 'caseTitle')}".${str(ctx, 'deadline') ? `\n\nDeadline: ${str(ctx, 'deadline')}` : ''}\n\nOpen your portal to upload it:\n${ctx.actionUrl}`,
+    subject: `Нужен документ: ${str(ctx, 'requirementName')}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nДля дела «${str(ctx, 'caseTitle')}» компании ${ctx.organizationName} нужен документ «${str(ctx, 'requirementName')}».${str(ctx, 'deadline') ? `\n\nСрок: ${str(ctx, 'deadline')}` : ''}\n\nЗагрузить можно в личном кабинете:\n${ctx.actionUrl}`,
   }),
   'document.uploaded': (ctx) => ({
-    subject: `Document uploaded: ${str(ctx, 'filename')}`,
-    body: `${str(ctx, 'clientName')} uploaded "${str(ctx, 'filename')}" for case "${str(ctx, 'caseTitle')}". It is waiting for review.\n\n${ctx.actionUrl}`,
+    subject: `Загружен документ: ${str(ctx, 'filename')}`,
+    body: `${str(ctx, 'clientName')} загрузил файл «${str(ctx, 'filename')}» по делу «${str(ctx, 'caseTitle')}». Документ ждёт проверки.\n\n${ctx.actionUrl}`,
   }),
   'document.approved': (ctx) => ({
-    subject: `Document approved: ${str(ctx, 'filename')}`,
-    body: `Hi ${ctx.recipientName},\n\nYour document "${str(ctx, 'filename')}" was approved.\n\n${ctx.actionUrl}`,
+    subject: `Документ принят: ${str(ctx, 'filename')}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nВаш документ «${str(ctx, 'filename')}» принят.\n\n${ctx.actionUrl}`,
   }),
   'document.rejected': (ctx) => ({
-    subject: `Document needs to be re-uploaded: ${str(ctx, 'filename')}`,
-    body: `Hi ${ctx.recipientName},\n\nYour document "${str(ctx, 'filename')}" could not be accepted.\n\nReason: ${str(ctx, 'rejectionReason')}\n\nPlease upload a replacement:\n${ctx.actionUrl}`,
+    subject: `Нужно загрузить заново: ${str(ctx, 'filename')}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nДокумент «${str(ctx, 'filename')}» принять не удалось.\n\nПричина: ${str(ctx, 'rejectionReason')}\n\nЗагрузите, пожалуйста, замену:\n${ctx.actionUrl}`,
   }),
   'request.created': (ctx) => ({
-    subject: `New request: ${str(ctx, 'requestTitle')}`,
-    body: `Hi ${ctx.recipientName},\n\n${ctx.organizationName} has a new request for you: "${str(ctx, 'requestTitle')}".${str(ctx, 'deadline') ? `\n\nDeadline: ${str(ctx, 'deadline')}` : ''}\n\n${ctx.actionUrl}`,
+    subject: `Новый запрос: ${str(ctx, 'requestTitle')}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nУ компании ${ctx.organizationName} к вам новый запрос: «${str(ctx, 'requestTitle')}».${str(ctx, 'deadline') ? `\n\nСрок: ${str(ctx, 'deadline')}` : ''}\n\n${ctx.actionUrl}`,
   }),
   'request.completed': (ctx) => ({
-    subject: `Request completed: ${str(ctx, 'requestTitle')}`,
-    body: `"${str(ctx, 'requestTitle')}" was completed for case "${str(ctx, 'caseTitle')}".\n\n${ctx.actionUrl}`,
+    subject: `Запрос выполнен: ${str(ctx, 'requestTitle')}`,
+    body: `Запрос «${str(ctx, 'requestTitle')}» по делу «${str(ctx, 'caseTitle')}» выполнен.\n\n${ctx.actionUrl}`,
   }),
   'stage.changed': (ctx) => ({
-    subject: `Your case moved to ${str(ctx, 'stageName')}`,
-    body: `Hi ${ctx.recipientName},\n\nCase "${str(ctx, 'caseTitle')}" moved to stage "${str(ctx, 'stageName')}".\n\n${ctx.actionUrl}`,
+    subject: `Дело перешло на этап «${str(ctx, 'stageName')}»`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nДело «${str(ctx, 'caseTitle')}» перешло на этап «${str(ctx, 'stageName')}».\n\n${ctx.actionUrl}`,
   }),
   'message.received': (ctx) => ({
-    subject: `New message about ${str(ctx, 'caseTitle')}`,
-    body: `${str(ctx, 'senderName')} wrote:\n\n${str(ctx, 'excerpt')}\n\n${ctx.actionUrl}`,
+    subject: `Новое сообщение по делу «${str(ctx, 'caseTitle')}»`,
+    body: `${str(ctx, 'senderName')} пишет:\n\n${str(ctx, 'excerpt')}\n\n${ctx.actionUrl}`,
   }),
   'deadline.approaching': (ctx) => ({
-    subject: `Deadline approaching: ${str(ctx, 'itemName')}`,
-    body: `Hi ${ctx.recipientName},\n\n"${str(ctx, 'itemName')}" is due ${str(ctx, 'deadline')}.\n\n${ctx.actionUrl}`,
+    subject: `Приближается срок: ${str(ctx, 'itemName')}`,
+    body: `Здравствуйте, ${ctx.recipientName}!\n\nСрок по «${str(ctx, 'itemName')}» — ${str(ctx, 'deadline')}.\n\n${ctx.actionUrl}`,
   }),
   'deadline.missed': (ctx) => ({
-    subject: `Deadline missed: ${str(ctx, 'itemName')}`,
-    body: `"${str(ctx, 'itemName')}" on case "${str(ctx, 'caseTitle')}" passed its deadline on ${str(ctx, 'deadline')}.\n\n${ctx.actionUrl}`,
+    subject: `Пропущен срок: ${str(ctx, 'itemName')}`,
+    body: `Срок по «${str(ctx, 'itemName')}» в деле «${str(ctx, 'caseTitle')}» прошёл ${str(ctx, 'deadline')}.\n\n${ctx.actionUrl}`,
   }),
 };
 
@@ -93,7 +94,7 @@ function toHtml(subject: string, body: string, ctx: NotificationTemplateContext)
     .map((paragraph) => `<p style="margin:0 0 16px;line-height:1.6">${escapeHtml(paragraph).replace(/\n/g, '<br/>')}</p>`)
     .join('');
   const button = ctx.actionUrl
-    ? `<p style="margin:24px 0"><a href="${escapeHtml(String(ctx.actionUrl))}" style="background:${escapeHtml(accent)};color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block">Open CaseFlow</a></p>`
+    ? `<p style="margin:24px 0"><a href="${escapeHtml(String(ctx.actionUrl))}" style="background:${escapeHtml(accent)};color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block">Открыть CaseFlow</a></p>`
     : '';
-  return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#f6f7f9;padding:32px"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:32px"><h1 style="font-size:20px;margin:0 0 20px">${escapeHtml(subject)}</h1>${paragraphs}${button}<p style="color:#8a8f98;font-size:12px;margin-top:32px">Sent by ${escapeHtml(str(ctx, 'organizationName'))} via CaseFlow</p></div></body></html>`;
+  return `<!doctype html><html lang="ru"><body style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#f6f7f9;padding:32px"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:16px;padding:32px"><h1 style="font-size:20px;margin:0 0 20px">${escapeHtml(subject)}</h1>${paragraphs}${button}<p style="color:#8a8f98;font-size:12px;margin-top:32px">Отправлено компанией ${escapeHtml(str(ctx, 'organizationName'))} через CaseFlow</p></div></body></html>`;
 }

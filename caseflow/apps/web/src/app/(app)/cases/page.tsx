@@ -11,10 +11,11 @@ import { CaseStatusBadge } from '@/components/ui/status';
 import { api } from '@/lib/api';
 import { canManage, requireStaff } from '@/lib/session';
 import type { CaseListRow, ClientListRow, Paginated, TeamMember, WorkflowTemplateSummary } from '@/lib/types';
+import { CASE_STATUS_LABELS, countOf } from '@/lib/i18n';
 import { formatRelative } from '@/lib/utils';
 import { NewCaseDialog } from './new-case-dialog';
 
-export const metadata: Metadata = { title: 'Cases' };
+export const metadata: Metadata = { title: 'Дела' };
 
 const FILTER_KEYS = ['search', 'status', 'assignedUserId', 'workflowTemplateId', 'stageName', 'clientId', 'overdue', 'page'];
 
@@ -44,8 +45,8 @@ export default async function CasesPage({
   return (
     <>
       <PageHeader
-        title="Cases"
-        description="Every process your team is running, with the stage it is sitting in."
+        title="Дела"
+        description="Все процессы команды и этап, на котором каждый стоит."
         actions={
           canManage(profile.role) ? (
             <NewCaseDialog clients={clients.items} templates={templates} team={team} />
@@ -54,48 +55,48 @@ export default async function CasesPage({
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <SearchField placeholder="Search case, client or CRM id" />
+        <SearchField placeholder="Поиск по делу, клиенту или ID сделки" />
         <FilterSelect
           name="status"
-          label="Status"
+          label="Статус"
           options={[
-            { value: 'ACTIVE', label: 'Active' },
-            { value: 'ON_HOLD', label: 'On hold' },
-            { value: 'COMPLETED', label: 'Completed' },
-            { value: 'CANCELLED', label: 'Cancelled' },
+            { value: 'ACTIVE', label: CASE_STATUS_LABELS.ACTIVE },
+            { value: 'ON_HOLD', label: CASE_STATUS_LABELS.ON_HOLD },
+            { value: 'COMPLETED', label: CASE_STATUS_LABELS.COMPLETED },
+            { value: 'CANCELLED', label: CASE_STATUS_LABELS.CANCELLED },
           ]}
         />
         <FilterSelect
           name="assignedUserId"
-          label="Employee"
+          label="Сотрудник"
           options={team.map((member) => ({ value: member.id, label: member.name }))}
         />
         <FilterSelect
           name="workflowTemplateId"
-          label="Workflow"
+          label="Воркфлоу"
           options={templates.map((template) => ({ value: template.id, label: template.name }))}
         />
         <FilterSelect
           name="stageName"
-          label="Stage"
+          label="Этап"
           options={stageNames.map((name) => ({ value: name, label: name }))}
         />
         <FilterSelect
           name="clientId"
-          label="Client"
+          label="Клиент"
           options={clients.items.map((client) => ({
             value: client.id,
             label: `${client.firstName} ${client.lastName}`,
           }))}
         />
-        <FilterSelect name="overdue" label="Overdue" options={[{ value: 'true', label: 'Overdue only' }]} />
+        <FilterSelect name="overdue" label="Просрочка" options={[{ value: 'true', label: 'Только просроченные' }]} />
       </div>
 
       <Card className="overflow-hidden">
         {cases.items.length === 0 ? (
           <EmptyState
-            title="No cases match"
-            description="Adjust the filters, or open a new case for a client."
+            title="Ничего не найдено"
+            description="Измените фильтры или откройте новое дело для клиента."
           />
         ) : (
           <ul>
@@ -109,13 +110,13 @@ export default async function CasesPage({
                     <p className="truncate font-medium">{item.title}</p>
                     <p className="mt-0.5 truncate text-xs text-[var(--color-ink-muted)]">
                       {item.client.firstName} {item.client.lastName}
-                      {item.externalCrmEntityId ? ` · CRM #${item.externalCrmEntityId}` : ''}
-                      {` · updated ${formatRelative(item.lastActivityAt)}`}
+                      {item.externalCrmEntityId ? ` · сделка №${item.externalCrmEntityId}` : ''}
+                      {` · обновлено ${formatRelative(item.lastActivityAt)}`}
                     </p>
                   </div>
 
                   <span className="rounded-full bg-[var(--color-surface-muted)] px-2.5 py-1 text-xs font-medium text-[var(--color-ink-muted)]">
-                    {item.currentStage?.name ?? 'No stage'}
+                    {item.currentStage?.name ?? 'Без этапа'}
                   </span>
 
                   <CaseStatusBadge status={item.status} />
@@ -129,7 +130,7 @@ export default async function CasesPage({
                         </span>
                       </>
                     ) : (
-                      <span className="text-sm text-[var(--color-ink-subtle)]">Unassigned</span>
+                      <span className="text-sm text-[var(--color-ink-subtle)]">Без ответственного</span>
                     )}
                   </div>
 
@@ -145,7 +146,7 @@ export default async function CasesPage({
 
       {cases.pageCount > 1 ? (
         <p className="mt-4 text-sm text-[var(--color-ink-muted)]">
-          Page {cases.page} of {cases.pageCount} · {cases.total} cases
+          Страница {cases.page} из {cases.pageCount} · {countOf(cases.total, 'дело', 'дела', 'дел')}
         </p>
       ) : null}
     </>

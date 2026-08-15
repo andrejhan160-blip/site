@@ -25,7 +25,7 @@ export class SessionGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request & { auth?: AuthContext }>();
     const token = this.extractToken(request);
-    if (!token) throw new UnauthorizedException('Authentication required');
+    if (!token) throw new UnauthorizedException('Требуется вход');
 
     request.auth = await this.sessions.resolve(token);
     return true;

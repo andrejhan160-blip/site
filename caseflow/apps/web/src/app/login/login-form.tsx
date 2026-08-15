@@ -15,18 +15,18 @@ export function LoginForm() {
     return (
       <div className="space-y-4">
         <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-success-soft)] px-4 py-3">
-          <p className="text-sm font-medium text-[var(--color-success)]">Check your inbox</p>
+          <p className="text-sm font-medium text-[var(--color-success)]">Проверьте почту</p>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-            If an account exists for that address, a sign-in link is on its way. It expires in 15 minutes.
+            Если аккаунт с таким адресом существует, ссылка для входа уже отправлена. Она действует 15 минут.
           </p>
         </div>
         {state.devLink ? (
           <div className="rounded-xl border border-dashed border-[var(--color-border-strong)] px-4 py-3">
             <p className="text-xs font-medium uppercase tracking-wide text-[var(--color-ink-subtle)]">
-              Development mode
+              Режим разработки
             </p>
             <Link href={state.devLink} className="mt-1 block text-sm font-medium break-all text-[var(--color-accent)]">
-              Open the sign-in link
+              Открыть ссылку для входа
             </Link>
           </div>
         ) : null}
@@ -36,17 +36,17 @@ export function LoginForm() {
 
   return (
     <form action={formAction} className="space-y-4">
-      <Field label="Work email">
-        <Input name="email" type="email" required placeholder="you@company.com" autoComplete="email" autoFocus />
+      <Field label="Рабочая почта">
+        <Input name="email" type="email" required placeholder="vy@company.ru" autoComplete="email" autoFocus />
       </Field>
       {state.status === 'error' && state.message ? (
         <p className="text-sm text-[var(--color-danger)]">{state.message}</p>
       ) : null}
-      <SubmitButton className="w-full" size="lg" pendingLabel="Sending link…">
-        Send sign-in link
+      <SubmitButton className="w-full" size="lg" pendingLabel="Отправляем ссылку…">
+        Получить ссылку для входа
       </SubmitButton>
       <p className="text-center text-xs text-[var(--color-ink-muted)]">
-        We email you a one-time link — no password to remember or leak.
+        Отправим одноразовую ссылку на почту — пароль не нужен: его нечего забывать и нечего украсть.
       </p>
     </form>
   );

@@ -11,8 +11,8 @@ export function ArchiveWorkflowButton({ templateId }: { templateId: string }) {
   return (
     <form action={formAction} className="flex items-center gap-2">
       <input type="hidden" name="templateId" value={templateId} />
-      <SubmitButton variant="ghost" pendingLabel="Archiving…">
-        Archive
+      <SubmitButton variant="ghost" pendingLabel="Архивируем…">
+        В архив
       </SubmitButton>
       {!state.ok && state.message ? (
         <span className="text-xs text-[var(--color-danger)]">{state.message}</span>

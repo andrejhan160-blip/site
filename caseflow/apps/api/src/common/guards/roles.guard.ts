@@ -26,10 +26,10 @@ export class RolesGuard implements CanActivate {
       STAFF_ROLES;
 
     const request = context.switchToHttp().getRequest<Request & { auth?: AuthContext }>();
-    if (!request.auth) throw new ForbiddenException('Authentication required');
+    if (!request.auth) throw new ForbiddenException('Требуется вход');
 
     if (!required.includes(request.auth.role)) {
-      throw new ForbiddenException('Your role does not allow this action');
+      throw new ForbiddenException('Ваша роль не позволяет это действие');
     }
     return true;
   }

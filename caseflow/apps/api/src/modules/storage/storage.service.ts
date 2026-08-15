@@ -49,18 +49,18 @@ export class StorageService {
 
   /** Validates size, MIME type and extension before anything touches storage. */
   validate(file: { originalname: string; mimetype: string; size: number }): void {
-    if (file.size <= 0) throw new BadRequestException('File is empty');
+    if (file.size <= 0) throw new BadRequestException('Файл пустой');
     if (file.size > this.maxBytes) {
       throw new PayloadTooLargeException(
-        `File exceeds the ${Math.round(this.maxBytes / (1024 * 1024))} MB limit`,
+        `Файл больше допустимых ${Math.round(this.maxBytes / (1024 * 1024))} МБ`,
       );
     }
     if (!this.allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException(`File type ${file.mimetype} is not allowed`);
+      throw new BadRequestException(`Тип файла ${file.mimetype} не разрешён`);
     }
     const extension = extname(file.originalname).toLowerCase();
     if (!SAFE_EXTENSIONS.has(extension)) {
-      throw new BadRequestException(`File extension ${extension || '(none)'} is not allowed`);
+      throw new BadRequestException(`Расширение ${extension || '(нет)'} не разрешено`);
     }
   }
 

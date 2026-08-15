@@ -134,7 +134,7 @@ export class CrmService {
         where: { id: { in: templateStageIds }, template: { organizationId: auth.organizationId } },
       });
       if (owned !== new Set(templateStageIds).size) {
-        throw new NotFoundException('One or more workflow stages do not belong to your organization');
+        throw new NotFoundException('Один или несколько этапов не принадлежат вашей организации');
       }
     }
 
@@ -152,7 +152,7 @@ export class CrmService {
     const connection = await this.prisma.crmConnection.findFirst({
       where: { id: connectionId, organizationId },
     });
-    if (!connection) throw new NotFoundException('CRM connection not found');
+    if (!connection) throw new NotFoundException('Подключение к CRM не найдено');
     return connection;
   }
 

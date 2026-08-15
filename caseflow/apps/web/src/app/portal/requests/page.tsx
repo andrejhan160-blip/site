@@ -6,19 +6,20 @@ import { DeadlineBadge, RequestStatusBadge } from '@/components/ui/status';
 import { api } from '@/lib/api';
 import { requireClient } from '@/lib/session';
 import type { ClientRequestRecord, PortalRequests } from '@/lib/types';
-import { formatDate, titleCase } from '@/lib/utils';
+import { REQUEST_TYPE_LABELS } from '@/lib/i18n';
+import { formatDate } from '@/lib/utils';
 import { CompleteRequestButton } from '../complete-request-button';
 
-export const metadata: Metadata = { title: 'Requests' };
+export const metadata: Metadata = { title: 'Запросы' };
 
 export default async function PortalRequestsPage() {
   await requireClient();
   const requests = await api<PortalRequests>('/portal/requests');
 
   const groups: Array<{ key: string; title: string; items: ClientRequestRecord[]; description?: string }> = [
-    { key: 'overdue', title: 'Overdue', items: requests.overdue, description: 'These are past their deadline.' },
-    { key: 'open', title: 'Open', items: requests.open },
-    { key: 'completed', title: 'Completed', items: requests.completed },
+    { key: 'overdue', title: 'Просрочено', items: requests.overdue, description: 'Срок по ним уже прошёл.' },
+    { key: 'open', title: 'Открытые', items: requests.open },
+    { key: 'completed', title: 'Выполненные', items: requests.completed },
   ];
 
   const total = requests.open.length + requests.overdue.length + requests.completed.length;
@@ -26,15 +27,15 @@ export default async function PortalRequestsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Запросы</h1>
         <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-          Everything your case team has asked you for.
+          Всё, о чём вас просила команда по вашему делу.
         </p>
       </div>
 
       {total === 0 ? (
         <Card>
-          <EmptyState title="Nothing requested" description="You are all caught up." />
+          <EmptyState title="Запросов нет" description="Всё, что от вас требовалось, вы сделали." />
         </Card>
       ) : (
         groups
@@ -66,13 +67,13 @@ export default async function PortalRequestsPage() {
                           />
                           <RequestStatusBadge status={request.status} />
                           <span className="text-xs text-[var(--color-ink-subtle)]">
-                            {titleCase(request.type)}
-                            {request.completedAt ? ` · done ${formatDate(request.completedAt)}` : ''}
+                            {REQUEST_TYPE_LABELS[request.type]}
+                            {request.completedAt ? ` · выполнено ${formatDate(request.completedAt)}` : ''}
                           </span>
                         </div>
                         {request.requirement ? (
                           <p className="mt-2 text-sm text-[var(--color-ink-muted)]">
-                            Action: upload <span className="font-medium">{request.requirement.name}</span>
+                            Что сделать: загрузить <span className="font-medium">{request.requirement.name}</span>
                           </p>
                         ) : null}
                       </div>
@@ -83,7 +84,7 @@ export default async function PortalRequestsPage() {
                             caseId={request.caseId}
                             requirementId={request.requirement.id}
                             portal
-                            label="Upload"
+                            label="Загрузить"
                           />
                         ) : (
                           <CompleteRequestButton requestId={request.id} />

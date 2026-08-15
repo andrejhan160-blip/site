@@ -40,7 +40,7 @@ export function DialogContent({
           </div>
           <DialogPrimitive.Close className="rounded-md p-1 text-[var(--color-ink-subtle)] transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-ink)]">
             <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">Закрыть</span>
           </DialogPrimitive.Close>
         </div>
         <div className="max-h-[70vh] overflow-y-auto px-6 py-5">{children}</div>

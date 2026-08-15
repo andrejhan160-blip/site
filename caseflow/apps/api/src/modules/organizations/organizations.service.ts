@@ -32,7 +32,7 @@ export class OrganizationsService {
       const taken = await this.prisma.organization.findFirst({
         where: { customDomain: input.customDomain, id: { not: auth.organizationId } },
       });
-      if (taken) throw new ConflictException('That domain is already in use');
+      if (taken) throw new ConflictException('Этот домен уже занят');
     }
     await this.prisma.organization.update({ where: { id: auth.organizationId }, data: input });
     return this.get(auth);
@@ -59,7 +59,7 @@ export class OrganizationsService {
     const existing = await this.prisma.user.findFirst({
       where: { organizationId: auth.organizationId, email: input.email },
     });
-    if (existing) throw new ConflictException('This email already belongs to a member of your team');
+    if (existing) throw new ConflictException('Эта почта уже принадлежит сотруднику вашей команды');
 
     return this.prisma.user.create({
       data: { ...input, organizationId: auth.organizationId },
@@ -71,14 +71,14 @@ export class OrganizationsService {
     const user = await this.prisma.user.findFirst({
       where: { id: userId, organizationId: auth.organizationId },
     });
-    if (!user) throw new NotFoundException('Team member not found');
-    if (user.role === Role.CLIENT) throw new BadRequestException('Client accounts are managed from the Clients screen');
+    if (!user) throw new NotFoundException('Сотрудник не найден');
+    if (user.role === Role.CLIENT) throw new BadRequestException('Учётные записи клиентов создаются на экране «Клиенты»');
 
     if (user.role === Role.OWNER && input.role && input.role !== Role.OWNER) {
       const owners = await this.prisma.user.count({
         where: { organizationId: auth.organizationId, role: Role.OWNER, isActive: true },
       });
-      if (owners <= 1) throw new BadRequestException('An organization must keep at least one owner');
+      if (owners <= 1) throw new BadRequestException('В организации должен остаться хотя бы один владелец');
     }
 
     return this.prisma.user.update({

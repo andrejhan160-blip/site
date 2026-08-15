@@ -12,8 +12,8 @@ export function CancelRequestButton({ requestId, caseId }: { requestId: string; 
     <form action={formAction}>
       <input type="hidden" name="requestId" value={requestId} />
       <input type="hidden" name="caseId" value={caseId} />
-      <SubmitButton variant="ghost" size="sm" pendingLabel="Cancelling…">
-        Cancel
+      <SubmitButton variant="ghost" size="sm" pendingLabel="Отменяем…">
+        Отменить
       </SubmitButton>
       {!state.ok && state.message ? (
         <span className="ml-2 text-xs text-[var(--color-danger)]">{state.message}</span>

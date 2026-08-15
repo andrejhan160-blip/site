@@ -6,7 +6,7 @@ import { api } from '@/lib/api';
 import { requireClient } from '@/lib/session';
 import type { PortalDocuments } from '@/lib/types';
 
-export const metadata: Metadata = { title: 'Documents' };
+export const metadata: Metadata = { title: 'Документы' };
 
 export default async function PortalDocumentsPage() {
   await requireClient();
@@ -15,31 +15,31 @@ export default async function PortalDocumentsPage() {
   const groups = [
     {
       key: 'required',
-      title: 'Still needed',
-      description: 'Upload these to keep your application moving.',
+      title: 'Нужно загрузить',
+      description: 'Без них дело не движется дальше.',
       items: documents.required,
     },
     {
       key: 'underReview',
-      title: 'Under review',
-      description: 'We have them — no action needed from you.',
+      title: 'На проверке',
+      description: 'Документы у нас — от вас ничего не требуется.',
       items: documents.underReview,
     },
-    { key: 'approved', title: 'Approved', items: documents.approved },
+    { key: 'approved', title: 'Принято', items: documents.approved },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Documents</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Документы</h1>
         <p className="mt-1 text-sm text-[var(--color-ink-muted)]">
-          Everything we need, everything you have sent, and what happened to it.
+          Что нужно нам, что вы уже прислали и что с этим стало.
         </p>
       </div>
 
       {documents.all.length === 0 ? (
         <Card>
-          <EmptyState title="No documents requested yet" description="We will let you know when we need something." />
+          <EmptyState title="Документы пока не запрашивали" description="Мы напишем, когда что-то понадобится." />
         </Card>
       ) : (
         groups

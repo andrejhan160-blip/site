@@ -7,7 +7,7 @@ import type { Organization } from '@/lib/types';
 import { BrandingForm } from './branding-form';
 import { SettingsNav } from './settings-nav';
 
-export const metadata: Metadata = { title: 'Settings' };
+export const metadata: Metadata = { title: 'Настройки' };
 
 export default async function SettingsPage() {
   const profile = await requireStaff();
@@ -15,15 +15,15 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <PageHeader title="Settings" description="How your company appears to clients." />
+      <PageHeader title="Настройки" description="Как ваша компания выглядит для клиентов." />
       <SettingsNav />
 
       <Card className="max-w-3xl">
         <CardHeader>
           <div>
-            <CardTitle>Branding</CardTitle>
+            <CardTitle>Оформление</CardTitle>
             <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
-              Applied to the client portal, the employee app and outbound email.
+              Применяется в кабинете клиента, в приложении сотрудника и в письмах.
             </p>
           </div>
         </CardHeader>
@@ -32,7 +32,7 @@ export default async function SettingsPage() {
             <BrandingForm organization={organization} />
           ) : (
             <p className="text-sm text-[var(--color-ink-muted)]">
-              Only owners and admins can change branding. Ask an admin if something here needs updating.
+              Менять оформление могут владелец и администратор. Если нужно что-то поправить — обратитесь к администратору.
             </p>
           )}
         </CardContent>

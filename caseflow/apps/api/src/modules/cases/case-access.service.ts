@@ -55,14 +55,14 @@ export class CaseAccessService {
     if (!found) {
       // Deliberately indistinguishable from "does not exist" — a caller must not
       // be able to probe for the existence of another tenant's case.
-      throw new NotFoundException('Case not found');
+      throw new NotFoundException('Дело не найдено');
     }
     return found;
   }
 
   assertStaff(auth: AuthContext): void {
     if (auth.role === Role.CLIENT) {
-      throw new ForbiddenException('This action is not available in the client portal');
+      throw new ForbiddenException('Это действие недоступно в кабинете клиента');
     }
   }
 }

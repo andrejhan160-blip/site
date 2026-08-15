@@ -23,7 +23,7 @@ export function NotificationBell({
             {unread > 9 ? '9+' : unread}
           </span>
         ) : null}
-        <span className="sr-only">Notifications</span>
+        <span className="sr-only">Уведомления</span>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
@@ -33,11 +33,11 @@ export function NotificationBell({
           className="z-50 w-[min(22rem,calc(100vw-2rem))] rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] card-shadow-lg"
         >
           <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
-            <p className="text-sm font-semibold">Notifications</p>
+            <p className="text-sm font-semibold">Уведомления</p>
             {unread > 0 ? (
               <form action={markNotificationsRead}>
                 <button type="submit" className="text-xs font-medium text-[var(--color-accent)]">
-                  Mark all read
+                  Прочитать все
                 </button>
               </form>
             ) : null}
@@ -46,7 +46,7 @@ export function NotificationBell({
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-4 py-8 text-center text-sm text-[var(--color-ink-muted)]">
-                Nothing new right now.
+                Пока ничего нового.
               </p>
             ) : (
               notifications.map((notification) => {

@@ -143,17 +143,17 @@ export class CasesService {
       }),
     ]);
 
-    if (!client) throw new NotFoundException('Client not found');
-    if (!template) throw new NotFoundException('Workflow template not found');
+    if (!client) throw new NotFoundException('Клиент не найден');
+    if (!template) throw new NotFoundException('Воркфлоу не найден');
     if (template.stages.length === 0) {
-      throw new BadRequestException('This workflow template has no stages');
+      throw new BadRequestException('В этом воркфлоу нет этапов');
     }
 
     if (input.assignedUserId) {
       const assignee = await this.prisma.user.findFirst({
         where: { id: input.assignedUserId, organizationId: auth.organizationId, role: { not: Role.CLIENT } },
       });
-      if (!assignee) throw new BadRequestException('Assigned employee not found');
+      if (!assignee) throw new BadRequestException('Сотрудник не найден');
     }
 
     const startDate = input.startDate ?? new Date();
@@ -235,7 +235,7 @@ export class CasesService {
       const assignee = await this.prisma.user.findFirst({
         where: { id: input.assignedUserId, organizationId: auth.organizationId, role: { not: Role.CLIENT } },
       });
-      if (!assignee) throw new BadRequestException('Assigned employee not found');
+      if (!assignee) throw new BadRequestException('Сотрудник не найден');
     }
 
     const updated = await this.prisma.case.update({
@@ -273,7 +273,7 @@ export class CasesService {
     await this.access.assertAccess(auth, caseId);
 
     const target = await this.prisma.caseStage.findFirst({ where: { id: input.stageId, caseId } });
-    if (!target) throw new NotFoundException('Stage not found on this case');
+    if (!target) throw new NotFoundException('У этого дела нет такого этапа');
 
     const stages = await this.prisma.caseStage.findMany({ where: { caseId }, orderBy: { position: 'asc' } });
     const previous = stages.find((stage) => stage.status === StageStatus.ACTIVE);

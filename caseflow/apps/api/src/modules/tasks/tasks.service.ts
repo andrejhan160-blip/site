@@ -22,7 +22,7 @@ export class TasksService {
       const assignee = await this.prisma.user.findFirst({
         where: { id: input.assignedToId, organizationId: auth.organizationId, role: { not: Role.CLIENT } },
       });
-      if (!assignee) throw new BadRequestException('Assigned employee not found');
+      if (!assignee) throw new BadRequestException('Сотрудник не найден');
     }
 
     const task = await this.prisma.task.create({
@@ -51,7 +51,7 @@ export class TasksService {
     const task = await this.prisma.task.findFirst({
       where: { id: taskId, organizationId: auth.organizationId },
     });
-    if (!task) throw new NotFoundException('Task not found');
+    if (!task) throw new NotFoundException('Задача не найдена');
     await this.access.assertAccess(auth, task.caseId);
 
     // A client may only tick off a task that was shared with them.
@@ -60,7 +60,7 @@ export class TasksService {
         task.visibility !== TaskVisibility.INTERNAL &&
         Object.keys(input).length === 1 &&
         input.status === TaskStatus.COMPLETED;
-      if (!clientMayComplete) throw new BadRequestException('This task cannot be changed from the portal');
+      if (!clientMayComplete) throw new BadRequestException('Эту задачу нельзя изменить из кабинета клиента');
     }
 
     const completing = input.status === TaskStatus.COMPLETED && task.status !== TaskStatus.COMPLETED;

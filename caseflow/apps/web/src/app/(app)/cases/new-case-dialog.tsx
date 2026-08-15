@@ -5,6 +5,7 @@ import { FormDialog } from '@/components/forms/form-dialog';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { createCase } from '@/lib/actions';
+import { countOf } from '@/lib/i18n';
 import type { ClientListRow, TeamMember, WorkflowTemplateSummary } from '@/lib/types';
 
 export function NewCaseDialog({
@@ -21,19 +22,19 @@ export function NewCaseDialog({
       trigger={
         <Button>
           <Plus />
-          New case
+          Новое дело
         </Button>
       }
-      title="Open a case"
-      description="The workflow is copied into the case. Later edits to the template leave this case untouched."
+      title="Новое дело"
+      description="Воркфлоу копируется в дело. Правки шаблона это дело уже не затронут."
       action={createCase}
-      submitLabel="Open case"
-      pendingLabel="Opening…"
+      submitLabel="Открыть дело"
+      pendingLabel="Открываем…"
     >
-      <Field label="Client">
+      <Field label="Клиент">
         <Select name="clientId" required defaultValue="">
           <option value="" disabled>
-            Choose a client
+            Выберите клиента
           </option>
           {clients.map((client) => (
             <option key={client.id} value={client.id}>
@@ -43,29 +44,29 @@ export function NewCaseDialog({
         </Select>
       </Field>
 
-      <Field label="Workflow">
+      <Field label="Воркфлоу">
         <Select name="workflowTemplateId" required defaultValue="">
           <option value="" disabled>
-            Choose a workflow
+            Выберите воркфлоу
           </option>
           {templates
             .filter((template) => template.isActive)
             .map((template) => (
               <option key={template.id} value={template.id}>
-                {template.name} ({template.stages.length} stages)
+                {template.name} ({countOf(template.stages.length, 'этап', 'этапа', 'этапов')})
               </option>
             ))}
         </Select>
       </Field>
 
-      <Field label="Case title" hint="Defaults to the workflow name.">
-        <Input name="title" placeholder="e.g. France Residence Permit — Ivan Petrov" />
+      <Field label="Название дела" hint="По умолчанию — название воркфлоу.">
+        <Input name="title" placeholder="Например: ВНЖ Франции — Иван Петров" />
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Assigned to">
+        <Field label="Ответственный">
           <Select name="assignedUserId" defaultValue="">
-            <option value="">Me</option>
+            <option value="">Я</option>
             {team.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name}
@@ -73,12 +74,12 @@ export function NewCaseDialog({
             ))}
           </Select>
         </Field>
-        <Field label="CRM deal ID" hint="Links this case to a Bitrix24 deal.">
+        <Field label="ID сделки в CRM" hint="Свяжет дело со сделкой в Битрикс24.">
           <Input name="externalCrmEntityId" />
         </Field>
       </div>
 
-      <Field label="Description">
+      <Field label="Описание">
         <Textarea name="description" rows={3} />
       </Field>
     </FormDialog>

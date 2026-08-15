@@ -49,18 +49,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
       if (exception.code === 'P2002') {
         return {
           statusCode: HttpStatus.CONFLICT,
-          message: 'A record with these values already exists',
+          message: 'Запись с такими значениями уже существует',
           path: request.url,
         };
       }
       if (exception.code === 'P2025') {
-        return { statusCode: HttpStatus.NOT_FOUND, message: 'Record not found', path: request.url };
+        return { statusCode: HttpStatus.NOT_FOUND, message: 'Запись не найдена', path: request.url };
       }
     }
 
     return {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: 'Внутренняя ошибка сервера',
       path: request.url,
     };
   }

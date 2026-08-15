@@ -21,26 +21,26 @@ export default function GlobalError({
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-center card-shadow">
-        <h1 className="text-lg font-semibold">Something went wrong</h1>
+        <h1 className="text-lg font-semibold">Что-то пошло не так</h1>
         <p className="mt-2 text-sm text-[var(--color-ink-muted)]">
-          The page could not be loaded. This is usually temporary — try again in a moment.
+          Страница не загрузилась. Обычно это временно — попробуйте ещё раз.
         </p>
         <div className="mt-6 flex justify-center gap-2">
           <button
             onClick={reset}
             className="inline-flex h-10 items-center rounded-lg bg-[var(--color-accent)] px-4 text-sm font-medium text-white"
           >
-            Try again
+            Повторить
           </button>
           <Link
             href="/"
             className="inline-flex h-10 items-center rounded-lg border border-[var(--color-border-strong)] px-4 text-sm font-medium"
           >
-            Go back
+            На главную
           </Link>
         </div>
         {error.digest ? (
-          <p className="mt-4 text-xs text-[var(--color-ink-subtle)]">Reference: {error.digest}</p>
+          <p className="mt-4 text-xs text-[var(--color-ink-subtle)]">Код ошибки: {error.digest}</p>
         ) : null}
       </div>
     </main>

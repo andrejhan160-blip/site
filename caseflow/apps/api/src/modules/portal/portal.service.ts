@@ -19,7 +19,7 @@ export class PortalService {
 
   private clientId(auth: AuthContext): string {
     if (auth.role !== Role.CLIENT || !auth.clientId) {
-      throw new ForbiddenException('This area is only available to client accounts');
+      throw new ForbiddenException('Этот раздел доступен только клиентам');
     }
     return auth.clientId;
   }
@@ -186,7 +186,7 @@ export class PortalService {
         },
       },
     });
-    if (cases.length === 0) throw new NotFoundException('No cases found');
+    if (cases.length === 0) throw new NotFoundException('Дела не найдены');
     return cases;
   }
 }

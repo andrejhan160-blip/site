@@ -71,14 +71,14 @@ export class Bitrix24Provider implements CrmProvider {
   async connect(context: CrmConnectionContext): Promise<CrmConnectionCheck> {
     try {
       const profile = await this.call<Record<string, unknown>>(context, 'profile', {});
-      if (!profile) return { ok: false, detail: 'Bitrix24 rejected the webhook credentials' };
+      if (!profile) return { ok: false, detail: 'Битрикс24 отклонил доступы вебхука' };
       return {
         ok: true,
-        detail: 'Connected',
+        detail: 'Подключено',
         account: readString(profile, 'NAME') ?? readString(profile, 'ID'),
       };
     } catch (error) {
-      return { ok: false, detail: error instanceof Error ? error.message : 'Connection failed' };
+      return { ok: false, detail: error instanceof Error ? error.message : 'Не удалось подключиться' };
     }
   }
 

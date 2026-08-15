@@ -11,8 +11,8 @@ export function CompleteRequestButton({ requestId }: { requestId: string }) {
   return (
     <form action={formAction} className="flex flex-col items-end gap-1">
       <input type="hidden" name="requestId" value={requestId} />
-      <SubmitButton size="sm" variant="secondary" pendingLabel="Saving…">
-        Mark as done
+      <SubmitButton size="sm" variant="secondary" pendingLabel="Сохраняем…">
+        Отметить выполненным
       </SubmitButton>
       {!state.ok && state.message ? (
         <span className="text-right text-xs text-[var(--color-danger)]">{state.message}</span>

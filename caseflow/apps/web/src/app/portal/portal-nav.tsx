@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const TABS = [
-  { href: '/portal', label: 'Overview' },
-  { href: '/portal/documents', label: 'Documents' },
-  { href: '/portal/requests', label: 'Requests' },
-  { href: '/portal/messages', label: 'Messages' },
+  { href: '/portal', label: 'Обзор' },
+  { href: '/portal/documents', label: 'Документы' },
+  { href: '/portal/requests', label: 'Запросы' },
+  { href: '/portal/messages', label: 'Сообщения' },
 ];
 
 export function PortalNav() {

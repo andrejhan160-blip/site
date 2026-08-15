@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { api, ApiError } from '@/lib/api';
 import { canAdminister, requireStaff } from '@/lib/session';
+import { countOf } from '@/lib/i18n';
 import type { WorkflowTemplateDetail } from '@/lib/types';
 import { ArchiveWorkflowButton } from './archive-button';
 
-export const metadata: Metadata = { title: 'Workflow' };
+export const metadata: Metadata = { title: 'Воркфлоу' };
 
 export default async function WorkflowDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const profile = await requireStaff();
@@ -27,7 +28,7 @@ export default async function WorkflowDetailPage({ params }: { params: Promise<{
   return (
     <>
       <Link href="/workflows" className="text-sm text-[var(--color-ink-muted)] hover:text-[var(--color-ink)]">
-        ← All workflows
+        ← Все воркфлоу
       </Link>
       <div className="mt-3">
         <PageHeader
@@ -37,7 +38,7 @@ export default async function WorkflowDetailPage({ params }: { params: Promise<{
             canAdminister(profile.role) ? (
               <>
                 <Button asChild variant="secondary">
-                  <Link href={`/workflows/${template.id}/edit`}>Edit workflow</Link>
+                  <Link href={`/workflows/${template.id}/edit`}>Редактировать</Link>
                 </Button>
                 {template.isActive ? <ArchiveWorkflowButton templateId={template.id} /> : null}
               </>
@@ -62,7 +63,7 @@ export default async function WorkflowDetailPage({ params }: { params: Promise<{
                 </div>
               </div>
               <Badge tone="neutral">
-                {stage.requirements.length} document{stage.requirements.length === 1 ? '' : 's'}
+                {countOf(stage.requirements.length, 'документ', 'документа', 'документов')}
               </Badge>
             </CardHeader>
             {stage.requirements.length > 0 ? (
@@ -73,9 +74,9 @@ export default async function WorkflowDetailPage({ params }: { params: Promise<{
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <p className="text-sm font-medium">{requirement.name}</p>
                         <div className="flex items-center gap-2">
-                          {!requirement.required ? <Badge tone="neutral">Optional</Badge> : null}
+                          {!requirement.required ? <Badge tone="neutral">По желанию</Badge> : null}
                           {requirement.deadlineDays !== null ? (
-                            <Badge tone="neutral">Due {requirement.deadlineDays}d after start</Badge>
+                            <Badge tone="neutral">Срок: {requirement.deadlineDays} дн. от старта</Badge>
                           ) : null}
                         </div>
                       </div>

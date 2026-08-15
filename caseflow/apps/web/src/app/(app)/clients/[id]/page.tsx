@@ -13,7 +13,7 @@ import { requireStaff } from '@/lib/session';
 import type { ClientDetail } from '@/lib/types';
 import { formatDate, formatRelative } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Client' };
+export const metadata: Metadata = { title: 'Клиент' };
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
@@ -36,29 +36,29 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
       <div className="grid gap-5 lg:grid-cols-3">
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle>Details</CardTitle>
+            <CardTitle>Данные</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
               <Avatar name={fullName} size="lg" />
               <div>
                 <p className="font-medium">{fullName}</p>
-                <p className="text-sm text-[var(--color-ink-muted)]">Client since {formatDate(client.createdAt)}</p>
+                <p className="text-sm text-[var(--color-ink-muted)]">Клиент с {formatDate(client.createdAt)}</p>
               </div>
             </div>
             <dl className="space-y-3 text-sm">
-              <Detail label="Email" value={client.email} />
-              <Detail label="Phone" value={client.phone ?? '—'} />
+              <Detail label="Почта" value={client.email} />
+              <Detail label="Телефон" value={client.phone ?? '—'} />
               <Detail label="Telegram" value={client.telegramId ?? '—'} />
-              <Detail label="CRM contact" value={client.externalCrmContactId ?? '—'} />
+              <Detail label="Контакт в CRM" value={client.externalCrmContactId ?? '—'} />
               <Detail
-                label="Portal access"
+                label="Доступ в кабинет"
                 value={
                   client.portalUser
                     ? client.portalUser.lastLoginAt
-                      ? `Active · last sign-in ${formatRelative(client.portalUser.lastLoginAt)}`
-                      : 'Invited · has not signed in yet'
-                    : 'No portal account'
+                      ? `Активен · вход ${formatRelative(client.portalUser.lastLoginAt)}`
+                      : 'Приглашён · ещё не входил'
+                    : 'Кабинета нет'
                 }
               />
             </dl>
@@ -73,11 +73,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         <div className="space-y-5 lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Active cases</CardTitle>
+              <CardTitle>Дела в работе</CardTitle>
             </CardHeader>
             <CardContent className="p-0 pb-2">
               {client.activeCases.length === 0 ? (
-                <EmptyState title="No active cases" description="This client has nothing in progress." />
+                <EmptyState title="Дел в работе нет" description="У этого клиента сейчас ничего не идёт." />
               ) : (
                 <CaseList cases={client.activeCases} />
               )}
@@ -87,7 +87,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           {client.completedCases.length > 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>Completed cases</CardTitle>
+                <CardTitle>Завершённые дела</CardTitle>
               </CardHeader>
               <CardContent className="p-0 pb-2">
                 <CaseList cases={client.completedCases} />
@@ -97,7 +97,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
           <Card>
             <CardHeader>
-              <CardTitle>Recent activity</CardTitle>
+              <CardTitle>Последние события</CardTitle>
             </CardHeader>
             <CardContent>
               <ActivityFeed events={client.recentActivity} showCase />
@@ -130,7 +130,7 @@ function CaseList({ cases }: { cases: ClientDetail['activeCases'] }) {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{item.title}</p>
               <p className="mt-0.5 text-xs text-[var(--color-ink-muted)]">
-                {item.currentStage?.name ?? 'No stage'} · {item.assignedUser?.name ?? 'Unassigned'}
+                {item.currentStage?.name ?? 'Без этапа'} · {item.assignedUser?.name ?? 'Без ответственного'}
               </p>
             </div>
             <CaseStatusBadge status={item.status} />

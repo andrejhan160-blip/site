@@ -33,14 +33,14 @@ export function MessageThread({
       <div className="space-y-4">
         {messages.length === 0 ? (
           <p className="py-8 text-center text-sm text-[var(--color-ink-muted)]">
-            No messages yet. Anything written here is visible to both sides.
+            Сообщений пока нет. Всё написанное здесь видят обе стороны.
           </p>
         ) : (
           messages.map((message) => {
             const mine = message.sender?.id === currentUserId;
             return (
               <div key={message.id} className={cn('flex gap-3', mine && 'flex-row-reverse')}>
-                <Avatar name={message.sender?.name ?? 'System'} size="sm" />
+                <Avatar name={message.sender?.name ?? 'Система'} size="sm" />
                 <div className={cn('max-w-[min(34rem,80%)]', mine && 'text-right')}>
                   <div
                     className={cn(
@@ -53,7 +53,7 @@ export function MessageThread({
                     {message.body}
                   </div>
                   <p className="mt-1 text-[11px] text-[var(--color-ink-subtle)]">
-                    {message.sender?.name ?? 'System'} · {formatDateTime(message.createdAt)}
+                    {message.sender?.name ?? 'Система'} · {formatDateTime(message.createdAt)}
                   </p>
                 </div>
               </div>
@@ -77,12 +77,12 @@ export function MessageThread({
             <p className="text-sm text-[var(--color-danger)]">{state.message}</p>
           ) : (
             <span className="text-xs text-[var(--color-ink-subtle)]">
-              Replies appear on refresh — no live connection needed.
+              Ответы появляются при обновлении — постоянное соединение не нужно.
             </span>
           )}
-          <SubmitButton pendingLabel="Sending…">
+          <SubmitButton pendingLabel="Отправляем…">
             <Send />
-            Send
+            Отправить
           </SubmitButton>
         </div>
       </form>
@@ -91,5 +91,5 @@ export function MessageThread({
 }
 
 function placeholderFor(portal: boolean): string {
-  return portal ? 'Write to your case manager…' : 'Write to the client…';
+  return portal ? 'Написать вашему специалисту…' : 'Написать клиенту…';
 }

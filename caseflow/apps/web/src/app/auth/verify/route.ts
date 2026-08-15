@@ -14,13 +14,13 @@ export async function GET(request: Request): Promise<NextResponse> {
   const origin = new URL(request.url).origin;
 
   if (!token) {
-    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('This sign-in link is incomplete.')}`);
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('Ссылка для входа неполная.')}`);
   }
 
   try {
     const { data, setCookie } = await apiPublic<{ user: Profile; expiresAt: string }>('/auth/verify', { token });
     const sessionToken = readSessionToken(setCookie);
-    if (!sessionToken) throw new Error('The API did not return a session');
+    if (!sessionToken) throw new Error('API не вернул сессию');
 
     const destination = data.user.role === 'CLIENT' ? '/portal' : '/dashboard';
     const response = NextResponse.redirect(`${origin}${destination}`);
@@ -36,7 +36,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     return response;
   } catch (error) {
     const message =
-      error instanceof ApiError ? error.message : 'This sign-in link is invalid or has already been used.';
+      error instanceof ApiError ? error.message : 'Ссылка для входа недействительна или уже использована.';
     return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(message)}`);
   }
 }

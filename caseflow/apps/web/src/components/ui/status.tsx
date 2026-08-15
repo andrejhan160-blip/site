@@ -6,7 +6,14 @@ import type {
   StageStatus,
   TaskStatus,
 } from '@/lib/types';
-import { titleCase } from '@/lib/utils';
+import {
+  CASE_STATUS_LABELS,
+  DOCUMENT_STATUS_LABELS,
+  REQUEST_STATUS_LABELS,
+  REQUIREMENT_STATUS_LABELS,
+  STAGE_STATUS_LABELS,
+  TASK_STATUS_LABELS,
+} from '@/lib/i18n';
 import { Badge } from './badge';
 
 type Tone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info';
@@ -57,52 +64,43 @@ const TASK_TONES: Record<TaskStatus, Tone> = {
   CANCELLED: 'neutral',
 };
 
-const LABELS: Record<string, string> = {
-  PENDING: 'Not uploaded',
-  UNDER_REVIEW: 'Under review',
-  ON_HOLD: 'On hold',
-  IN_PROGRESS: 'In progress',
-};
-
-function label(status: string): string {
-  return LABELS[status] ?? titleCase(status);
-}
-
 export function CaseStatusBadge({ status }: { status: CaseStatus }) {
-  return <Badge tone={CASE_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={CASE_TONES[status]}>{CASE_STATUS_LABELS[status]}</Badge>;
 }
 
 export function StageStatusBadge({ status }: { status: StageStatus }) {
-  return <Badge tone={STAGE_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={STAGE_TONES[status]}>{STAGE_STATUS_LABELS[status]}</Badge>;
 }
 
 export function RequirementStatusBadge({ status }: { status: RequirementStatus }) {
-  return <Badge tone={REQUIREMENT_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={REQUIREMENT_TONES[status]}>{REQUIREMENT_STATUS_LABELS[status]}</Badge>;
 }
 
 export function DocumentStatusBadge({ status }: { status: DocumentStatus }) {
-  return <Badge tone={DOCUMENT_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={DOCUMENT_TONES[status]}>{DOCUMENT_STATUS_LABELS[status]}</Badge>;
 }
 
 export function RequestStatusBadge({ status }: { status: RequestStatus }) {
-  return <Badge tone={REQUEST_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={REQUEST_TONES[status]}>{REQUEST_STATUS_LABELS[status]}</Badge>;
 }
 
 export function TaskStatusBadge({ status }: { status: TaskStatus }) {
-  return <Badge tone={TASK_TONES[status]}>{label(status)}</Badge>;
+  return <Badge tone={TASK_TONES[status]}>{TASK_STATUS_LABELS[status]}</Badge>;
 }
 
 /**
- * A deadline only matters while the item is still outstanding: once it has been
- * approved or completed, the date is history and must not read as "overdue".
+ * Срок показывается только пока по нему есть работа: у принятого документа или
+ * закрытого запроса дата — это история, а не проблема.
  */
 export function DeadlineBadge({ deadline, settled = false }: { deadline: string | null; settled?: boolean }) {
   if (!deadline || settled) return null;
+
   const date = new Date(deadline);
   const days = Math.ceil((date.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
-  const text = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(date);
+  const text = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' }).format(date);
 
-  if (days < 0) return <Badge tone="danger">Overdue · {text}</Badge>;
-  if (days <= 2) return <Badge tone="warning">Due {days === 0 ? 'today' : `in ${days}d`} · {text}</Badge>;
-  return <Badge tone="neutral">Due {text}</Badge>;
+  if (days < 0) return <Badge tone="danger">Просрочено · {text}</Badge>;
+  if (days === 0) return <Badge tone="warning">Сегодня · {text}</Badge>;
+  if (days <= 2) return <Badge tone="warning">Через {days} дн. · {text}</Badge>;
+  return <Badge tone="neutral">До {text}</Badge>;
 }

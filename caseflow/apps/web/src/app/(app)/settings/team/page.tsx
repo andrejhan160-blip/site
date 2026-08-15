@@ -6,11 +6,12 @@ import { Card } from '@/components/ui/card';
 import { api } from '@/lib/api';
 import { canAdminister, requireStaff } from '@/lib/session';
 import type { TeamMember } from '@/lib/types';
-import { formatRelative, titleCase } from '@/lib/utils';
+import { ROLE_LABELS, countOf } from '@/lib/i18n';
+import { formatRelative } from '@/lib/utils';
 import { SettingsNav } from '../settings-nav';
 import { InviteMemberDialog, MemberRoleForm } from './team-forms';
 
-export const metadata: Metadata = { title: 'Team' };
+export const metadata: Metadata = { title: 'Команда' };
 
 export default async function TeamPage() {
   const profile = await requireStaff();
@@ -20,8 +21,8 @@ export default async function TeamPage() {
   return (
     <>
       <PageHeader
-        title="Settings"
-        description="Who works in your organization and what they can reach."
+        title="Настройки"
+        description="Кто работает в организации и что каждому доступно."
         actions={admin ? <InviteMemberDialog /> : undefined}
       />
       <SettingsNav />
@@ -38,12 +39,13 @@ export default async function TeamPage() {
                 <div className="min-w-0">
                   <p className="flex items-center gap-2 font-medium">
                     {member.name}
-                    {!member.isActive ? <Badge tone="neutral">Deactivated</Badge> : null}
+                    {!member.isActive ? <Badge tone="neutral">Отключён</Badge> : null}
                   </p>
                   <p className="truncate text-sm text-[var(--color-ink-muted)]">{member.email}</p>
                   <p className="mt-0.5 text-xs text-[var(--color-ink-subtle)]">
-                    {titleCase(member.role)} · {member._count.assignedCases} cases ·{' '}
-                    {member.lastLoginAt ? `last sign-in ${formatRelative(member.lastLoginAt)}` : 'never signed in'}
+                    {ROLE_LABELS[member.role]} ·{' '}
+                    {countOf(member._count.assignedCases, 'дело', 'дела', 'дел')} ·{' '}
+                    {member.lastLoginAt ? `вход ${formatRelative(member.lastLoginAt)}` : 'ни разу не входил'}
                   </p>
                 </div>
               </div>
@@ -56,7 +58,7 @@ export default async function TeamPage() {
                   disabled={member.id === profile.id}
                 />
               ) : (
-                <Badge tone="neutral">{titleCase(member.role)}</Badge>
+                <Badge tone="neutral">{ROLE_LABELS[member.role]}</Badge>
               )}
             </li>
           ))}

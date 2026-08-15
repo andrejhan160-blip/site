@@ -9,10 +9,11 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { api } from '@/lib/api';
 import { canManage, requireStaff } from '@/lib/session';
 import type { ClientListRow, Paginated } from '@/lib/types';
+import { countOf } from '@/lib/i18n';
 import { formatRelative } from '@/lib/utils';
 import { NewClientDialog } from './new-client-dialog';
 
-export const metadata: Metadata = { title: 'Clients' };
+export const metadata: Metadata = { title: 'Клиенты' };
 
 const STATUS_TONES = { ACTIVE: 'accent', COMPLETED: 'success', NEW: 'neutral' } as const;
 
@@ -33,23 +34,23 @@ export default async function ClientsPage({
   return (
     <>
       <PageHeader
-        title="Clients"
-        description="Everyone your team is running a process for."
+        title="Клиенты"
+        description="Все, чьи дела ведёт ваша команда."
         actions={canManage(profile.role) ? <NewClientDialog /> : undefined}
       />
 
       <div className="mb-4">
-        <SearchField placeholder="Search name, email or phone" />
+        <SearchField placeholder="Поиск по имени, почте или телефону" />
       </div>
 
       <Card className="overflow-hidden">
         {clients.items.length === 0 ? (
           <EmptyState
-            title="No clients yet"
+            title="Клиентов пока нет"
             description={
               params.search
-                ? 'No client matches that search.'
-                : 'Create your first client to open a case for them.'
+                ? 'По этому запросу никого не нашлось.'
+                : 'Создайте первого клиента, чтобы открыть для него дело.'
             }
           />
         ) : (
@@ -57,11 +58,11 @@ export default async function ClientsPage({
             <table className="w-full min-w-[720px] text-sm">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-left text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">
-                  <th className="px-6 py-3 font-medium">Client</th>
-                  <th className="px-6 py-3 font-medium">Active cases</th>
-                  <th className="px-6 py-3 font-medium">Assigned to</th>
-                  <th className="px-6 py-3 font-medium">Latest activity</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
+                  <th className="px-6 py-3 font-medium">Клиент</th>
+                  <th className="px-6 py-3 font-medium">Дел в работе</th>
+                  <th className="px-6 py-3 font-medium">Ответственный</th>
+                  <th className="px-6 py-3 font-medium">Последняя активность</th>
+                  <th className="px-6 py-3 font-medium">Статус</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,7 +98,7 @@ export default async function ClientsPage({
                     </td>
                     <td className="px-6 py-3.5">
                       <Badge tone={STATUS_TONES[client.status]}>
-                        {client.status === 'NEW' ? 'No cases' : client.status === 'ACTIVE' ? 'Active' : 'Completed'}
+                        {client.status === 'NEW' ? 'Без дел' : client.status === 'ACTIVE' ? 'В работе' : 'Завершены'}
                       </Badge>
                     </td>
                   </tr>
@@ -110,7 +111,7 @@ export default async function ClientsPage({
 
       {clients.pageCount > 1 ? (
         <p className="mt-4 text-sm text-[var(--color-ink-muted)]">
-          Page {clients.page} of {clients.pageCount} · {clients.total} clients
+          Страница {clients.page} из {clients.pageCount} · {countOf(clients.total, 'клиент', 'клиента', 'клиентов')}
         </p>
       ) : null}
     </>

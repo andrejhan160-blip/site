@@ -6,7 +6,7 @@ export const updateOrganizationSchema = z.object({
   logoUrl: z.string().url().nullable().optional(),
   primaryColor: z
     .string()
-    .regex(/^#[0-9a-fA-F]{6}$/, 'Use a hex colour such as #1F6FEB')
+    .regex(/^#[0-9a-fA-F]{6}$/, 'Укажите цвет в hex-формате, например #1F6FEB')
     .optional(),
   supportEmail: z.string().email().nullable().optional(),
   portalWelcomeText: z.string().trim().max(1000).nullable().optional(),
@@ -19,7 +19,7 @@ export const inviteUserSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.string().email().transform((value) => value.toLowerCase()),
   role: z.nativeEnum(Role).refine((role) => role !== Role.CLIENT, {
-    message: 'Client accounts are created from the Clients screen',
+    message: 'Учётные записи клиентов создаются на экране «Клиенты»',
   }),
 });
 

@@ -63,7 +63,7 @@ export class RequestsService {
       where: { id: requestId, organizationId: auth.organizationId },
       include: { case: { select: { id: true, title: true, assignedUserId: true } } },
     });
-    if (!request) throw new NotFoundException('Request not found');
+    if (!request) throw new NotFoundException('Запрос не найден');
     await this.access.assertAccess(auth, request.caseId);
 
     if (request.requirementId) {
@@ -72,7 +72,7 @@ export class RequestsService {
         select: { status: true },
       });
       if (requirement && requirement.status !== RequirementStatus.APPROVED) {
-        throw new ForbiddenException('Upload and get the document approved to complete this request');
+        throw new ForbiddenException('Чтобы закрыть запрос, загрузите документ и дождитесь его приёмки');
       }
     }
 
@@ -105,7 +105,7 @@ export class RequestsService {
     const request = await this.prisma.clientRequest.findFirst({
       where: { id: requestId, organizationId: auth.organizationId },
     });
-    if (!request) throw new NotFoundException('Request not found');
+    if (!request) throw new NotFoundException('Запрос не найден');
     await this.access.assertAccess(auth, request.caseId);
 
     const updated = await this.prisma.clientRequest.update({
@@ -123,7 +123,7 @@ export class RequestsService {
   }
 
   async listForClient(auth: AuthContext) {
-    if (auth.role !== Role.CLIENT || !auth.clientId) throw new ForbiddenException('Client portal only');
+    if (auth.role !== Role.CLIENT || !auth.clientId) throw new ForbiddenException('Только для кабинета клиента');
     return this.prisma.clientRequest.findMany({
       where: { organizationId: auth.organizationId, clientId: auth.clientId },
       orderBy: [{ status: 'asc' }, { deadline: 'asc' }],

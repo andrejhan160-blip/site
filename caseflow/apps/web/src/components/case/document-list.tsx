@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DeadlineBadge, DocumentStatusBadge, RequirementStatusBadge } from '@/components/ui/status';
 import type { Requirement } from '@/lib/types';
+import { countOf } from '@/lib/i18n';
 import { formatBytes, formatDateTime } from '@/lib/utils';
 import { ReviewActions } from './review-actions';
 import { UploadForm } from './upload-form';
@@ -17,7 +18,7 @@ export function DocumentList({
   canReview,
   canUpload,
   portal = false,
-  emptyLabel = 'No documents requested yet.',
+  emptyLabel = 'Документы пока не запрашивались.',
 }: {
   requirements: Requirement[];
   caseId: string;
@@ -44,7 +45,7 @@ export function DocumentList({
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-medium">{requirement.name}</p>
                   {!requirement.required ? (
-                    <span className="text-xs text-[var(--color-ink-subtle)]">optional</span>
+                    <span className="text-xs text-[var(--color-ink-subtle)]">по желанию</span>
                   ) : null}
                   <RequirementStatusBadge status={requirement.status} />
                   <DeadlineBadge
@@ -67,7 +68,7 @@ export function DocumentList({
                   requirementId={requirement.id}
                   portal={portal}
                   variant={requirement.status === 'REJECTED' ? 'primary' : 'secondary'}
-                  label={requirement.documents.length > 0 ? 'Upload replacement' : 'Upload'}
+                  label={requirement.documents.length > 0 ? 'Загрузить замену' : 'Загрузить'}
                 />
               ) : null}
             </div>
@@ -80,7 +81,7 @@ export function DocumentList({
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{latest.filename}</p>
                       <p className="text-xs text-[var(--color-ink-muted)]">
-                        v{latest.version} · {formatBytes(latest.fileSize)} · uploaded{' '}
+                        в. {latest.version} · {formatBytes(latest.fileSize)} · загружен{' '}
                         {formatDateTime(latest.createdAt)}
                       </p>
                     </div>
@@ -95,7 +96,7 @@ export function DocumentList({
                       className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 text-[13px] font-medium hover:bg-[var(--color-surface-muted)]"
                     >
                       <Download className="h-3.5 w-3.5" />
-                      Download
+                      Скачать
                     </Link>
                     {canReview && latest.status === 'UNDER_REVIEW' ? (
                       <ReviewActions documentId={latest.id} caseId={targetCaseId} filename={latest.filename} />
@@ -105,14 +106,14 @@ export function DocumentList({
 
                 {latest.status === 'REJECTED' && latest.rejectionReason ? (
                   <p className="mt-3 rounded-lg bg-[var(--color-danger-soft)] px-3 py-2 text-sm text-[var(--color-danger)]">
-                    <span className="font-medium">Rejected:</span> {latest.rejectionReason}
+                    <span className="font-medium">Отклонён:</span> {latest.rejectionReason}
                   </p>
                 ) : null}
 
                 {latest.status === 'APPROVED' && latest.reviewedAt ? (
                   <p className="mt-2 text-xs text-[var(--color-success)]">
-                    Approved {formatDateTime(latest.reviewedAt)}
-                    {latest.reviewedBy && 'name' in latest.reviewedBy ? ` by ${latest.reviewedBy.name}` : ''}
+                    Принят {formatDateTime(latest.reviewedAt)}
+                    {latest.reviewedBy && 'name' in latest.reviewedBy ? `, ${latest.reviewedBy.name}` : ''}
                   </p>
                 ) : null}
               </div>
@@ -121,7 +122,7 @@ export function DocumentList({
             {history.length > 0 ? (
               <details className="mt-2">
                 <summary className="cursor-pointer text-xs text-[var(--color-ink-muted)]">
-                  {history.length} earlier version{history.length > 1 ? 's' : ''}
+                  {countOf(history.length, 'предыдущая версия', 'предыдущие версии', 'предыдущих версий')}
                 </summary>
                 <ul className="mt-2 space-y-1.5">
                   {history.map((document) => (
@@ -130,12 +131,12 @@ export function DocumentList({
                       className="flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-[var(--color-ink-muted)]"
                     >
                       <span className="truncate">
-                        v{document.version} · {document.filename} · {formatDateTime(document.createdAt)}
+                        в. {document.version} · {document.filename} · {formatDateTime(document.createdAt)}
                       </span>
                       <span className="flex items-center gap-2">
                         <DocumentStatusBadge status={document.status} />
                         <Link href={`/download/${document.id}`} prefetch={false} className="text-[var(--color-accent)]">
-                          Download
+                          Скачать
                         </Link>
                       </span>
                     </li>

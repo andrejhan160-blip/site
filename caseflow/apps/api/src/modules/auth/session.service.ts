@@ -57,7 +57,7 @@ export class SessionService {
 
   async resolve(rawToken: string): Promise<AuthContext> {
     const separator = rawToken.lastIndexOf('.');
-    if (separator === -1) throw new UnauthorizedException('Malformed session token');
+    if (separator === -1) throw new UnauthorizedException('Повреждён токен сессии');
 
     const jwtPart = rawToken.slice(0, separator);
     const opaquePart = rawToken.slice(separator + 1);
@@ -66,7 +66,7 @@ export class SessionService {
     try {
       payload = await this.jwt.verifyAsync<SessionTokenPayload>(jwtPart);
     } catch {
-      throw new UnauthorizedException('Invalid session');
+      throw new UnauthorizedException('Недействительная сессия');
     }
 
     const session = await this.prisma.session.findUnique({
@@ -81,7 +81,7 @@ export class SessionService {
       session.tokenHash !== hashToken(opaquePart) ||
       !session.user.isActive
     ) {
-      throw new UnauthorizedException('Session expired');
+      throw new UnauthorizedException('Сессия истекла');
     }
 
     return {

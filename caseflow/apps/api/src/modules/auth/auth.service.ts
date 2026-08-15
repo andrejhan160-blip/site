@@ -77,14 +77,14 @@ export class AuthService {
   }
 
   async consumeMagicLink(token: string): Promise<{ userId: string; organizationId: string }> {
-    if (!token) throw new BadRequestException('Token is required');
+    if (!token) throw new BadRequestException('Не передан токен');
 
     const record = await this.prisma.magicLinkToken.findUnique({
       where: { tokenHash: hashToken(token) },
     });
 
     if (!record || record.consumedAt || record.expiresAt.getTime() < Date.now()) {
-      throw new UnauthorizedException('This sign-in link is invalid or has expired');
+      throw new UnauthorizedException('Ссылка для входа недействительна или истекла');
     }
 
     const consumed = await this.prisma.magicLinkToken.updateMany({
@@ -92,13 +92,13 @@ export class AuthService {
       data: { consumedAt: new Date() },
     });
     if (consumed.count === 0) {
-      throw new UnauthorizedException('This sign-in link has already been used');
+      throw new UnauthorizedException('Эта ссылка для входа уже использована');
     }
 
     const user = await this.prisma.user.findFirst({
       where: { email: record.email, organizationId: record.organizationId, isActive: true },
     });
-    if (!user) throw new UnauthorizedException('Account is no longer active');
+    if (!user) throw new UnauthorizedException('Учётная запись отключена');
 
     await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
 

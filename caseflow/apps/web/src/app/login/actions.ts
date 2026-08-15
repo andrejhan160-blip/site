@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { ApiError, apiPublic } from '@/lib/api';
 
 const schema = z.object({
-  email: z.string().email('Enter a valid email address'),
+  email: z.string().email('Введите корректный адрес почты'),
 });
 
 export interface LoginState {
@@ -17,7 +17,7 @@ export interface LoginState {
 export async function requestMagicLink(_prev: LoginState, formData: FormData): Promise<LoginState> {
   const parsed = schema.safeParse({ email: formData.get('email') });
   if (!parsed.success) {
-    return { status: 'error', message: parsed.error.issues[0]?.message ?? 'Invalid email' };
+    return { status: 'error', message: parsed.error.issues[0]?.message ?? 'Некорректный адрес' };
   }
 
   try {
@@ -27,8 +27,8 @@ export async function requestMagicLink(_prev: LoginState, formData: FormData): P
     return { status: 'sent', devLink: data.devLink };
   } catch (error) {
     if (error instanceof ApiError && error.status === 429) {
-      return { status: 'error', message: 'Too many attempts. Try again in a minute.' };
+      return { status: 'error', message: 'Слишком много попыток. Повторите через минуту.' };
     }
-    return { status: 'error', message: 'Could not send the link. Please try again.' };
+    return { status: 'error', message: 'Не удалось отправить ссылку. Попробуйте ещё раз.' };
   }
 }

@@ -8,9 +8,10 @@ import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { api } from '@/lib/api';
 import { canAdminister, requireStaff } from '@/lib/session';
+import { countOf } from '@/lib/i18n';
 import type { WorkflowTemplateSummary } from '@/lib/types';
 
-export const metadata: Metadata = { title: 'Workflows' };
+export const metadata: Metadata = { title: 'Воркфлоу' };
 
 export default async function WorkflowsPage() {
   const profile = await requireStaff();
@@ -19,14 +20,14 @@ export default async function WorkflowsPage() {
   return (
     <>
       <PageHeader
-        title="Workflows"
-        description="Reusable process templates. Opening a case copies the template — editing a template never changes a case that already exists."
+        title="Воркфлоу"
+        description="Шаблоны процессов многоразового пользования. При открытии дела шаблон копируется — правки шаблона уже существующие дела не меняют."
         actions={
           canAdminister(profile.role) ? (
             <Button asChild>
               <Link href="/workflows/new">
                 <Plus />
-                New workflow
+                Новый воркфлоу
               </Link>
             </Button>
           ) : undefined
@@ -36,12 +37,12 @@ export default async function WorkflowsPage() {
       {templates.length === 0 ? (
         <Card>
           <EmptyState
-            title="No workflows yet"
-            description="Create a workflow to open cases from it."
+            title="Воркфлоу пока нет"
+            description="Создайте воркфлоу, чтобы открывать по нему дела."
             action={
               canAdminister(profile.role) ? (
                 <Button asChild>
-                  <Link href="/workflows/new">Create a workflow</Link>
+                  <Link href="/workflows/new">Создать воркфлоу</Link>
                 </Button>
               ) : undefined
             }
@@ -55,18 +56,23 @@ export default async function WorkflowsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="font-semibold">{template.name}</h2>
                   {template.isActive ? (
-                    <Badge tone="success">Active</Badge>
+                    <Badge tone="success">Активен</Badge>
                   ) : (
-                    <Badge tone="neutral">Archived</Badge>
+                    <Badge tone="neutral">В архиве</Badge>
                   )}
                 </div>
                 {template.description ? (
                   <p className="mt-2 line-clamp-2 text-sm text-[var(--color-ink-muted)]">{template.description}</p>
                 ) : null}
                 <p className="mt-4 text-sm text-[var(--color-ink-muted)]">
-                  {template.stages.length} stages ·{' '}
-                  {template.stages.reduce((sum, stage) => sum + (stage._count?.requirements ?? 0), 0)} documents ·{' '}
-                  {template._count.cases} cases
+                  {countOf(template.stages.length, 'этап', 'этапа', 'этапов')} ·{' '}
+                  {countOf(
+                    template.stages.reduce((sum, stage) => sum + (stage._count?.requirements ?? 0), 0),
+                    'документ',
+                    'документа',
+                    'документов',
+                  )}{' '}
+                  · {countOf(template._count.cases, 'дело', 'дела', 'дел')}
                 </p>
                 <ol className="mt-3 flex flex-wrap gap-1.5">
                   {template.stages.slice(0, 5).map((stage) => (
@@ -79,7 +85,7 @@ export default async function WorkflowsPage() {
                   ))}
                   {template.stages.length > 5 ? (
                     <li className="px-1 py-1 text-xs text-[var(--color-ink-subtle)]">
-                      +{template.stages.length - 5} more
+                      ещё {template.stages.length - 5}
                     </li>
                   ) : null}
                 </ol>

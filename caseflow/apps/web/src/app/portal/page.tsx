@@ -12,10 +12,11 @@ import { DeadlineBadge, RequestStatusBadge } from '@/components/ui/status';
 import { api } from '@/lib/api';
 import { requireClient } from '@/lib/session';
 import type { PortalDashboard } from '@/lib/types';
+import { countOf } from '@/lib/i18n';
 import { formatDate } from '@/lib/utils';
 import { CompleteRequestButton } from './complete-request-button';
 
-export const metadata: Metadata = { title: 'Your case' };
+export const metadata: Metadata = { title: 'Ваше дело' };
 
 export default async function PortalHome() {
   await requireClient();
@@ -27,7 +28,7 @@ export default async function PortalHome() {
     <div className="space-y-6">
       <section>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Hello, {data.client.firstName}
+          Здравствуйте, {data.client.firstName}
         </h1>
         {data.organization.portalWelcomeText ? (
           <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--color-ink-muted)] text-balance">
@@ -42,7 +43,7 @@ export default async function PortalHome() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs font-medium uppercase tracking-wide text-[var(--color-ink-subtle)]">
-                  Your application
+                  Ваше дело
                 </p>
                 <h2 className="mt-1 text-lg font-semibold">{activeCase.title}</h2>
               </div>
@@ -50,7 +51,7 @@ export default async function PortalHome() {
                 href={`/portal/cases/${activeCase.id}`}
                 className="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-accent)]"
               >
-                Full timeline
+                Все этапы
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -61,15 +62,15 @@ export default async function PortalHome() {
 
             <dl className="mt-5 grid gap-4 sm:grid-cols-3">
               <div>
-                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Current stage</dt>
+                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Текущий этап</dt>
                 <dd className="mt-1 font-medium">{activeCase.currentStage?.name ?? '—'}</dd>
               </div>
               <div>
-                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Next stage</dt>
-                <dd className="mt-1 font-medium text-[var(--color-ink-muted)]">{data.nextStage?.name ?? 'Final stage'}</dd>
+                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Следующий этап</dt>
+                <dd className="mt-1 font-medium text-[var(--color-ink-muted)]">{data.nextStage?.name ?? 'Последний этап'}</dd>
               </div>
               <div>
-                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Your case manager</dt>
+                <dt className="text-xs uppercase tracking-wide text-[var(--color-ink-subtle)]">Ваш специалист</dt>
                 <dd className="mt-1 font-medium">{activeCase.assignedUser?.name ?? '—'}</dd>
               </div>
             </dl>
@@ -77,15 +78,17 @@ export default async function PortalHome() {
         </Card>
       ) : (
         <Card>
-          <EmptyState title="No case yet" description="Your case will appear here as soon as it is opened." />
+          <EmptyState title="Дела пока нет" description="Оно появится здесь, как только его откроют." />
         </Card>
       )}
 
       {data.openRequests.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Waiting on you</CardTitle>
-            <span className="text-sm text-[var(--color-ink-muted)]">{data.openRequests.length} open</span>
+            <CardTitle>Ждём от вас</CardTitle>
+            <span className="text-sm text-[var(--color-ink-muted)]">
+              {countOf(data.openRequests.length, 'открыт', 'открыто', 'открыто')}
+            </span>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             <ul>
@@ -104,7 +107,7 @@ export default async function PortalHome() {
                     </div>
 
                     {request.requirement ? (
-                      <UploadForm caseId={request.caseId} requirementId={request.requirement.id} portal label="Upload" />
+                      <UploadForm caseId={request.caseId} requirementId={request.requirement.id} portal label="Загрузить" />
                     ) : (
                       <CompleteRequestButton requestId={request.id} />
                     )}
@@ -119,7 +122,7 @@ export default async function PortalHome() {
       {data.tasks.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Things to prepare</CardTitle>
+            <CardTitle>Что подготовить</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             <ul>
@@ -148,7 +151,7 @@ export default async function PortalHome() {
       {data.deadlines.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Upcoming deadlines</CardTitle>
+            <CardTitle>Ближайшие сроки</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             <ul>
@@ -160,7 +163,7 @@ export default async function PortalHome() {
                   <div className="min-w-0">
                     <p className="text-sm font-medium">{requirement.name}</p>
                     <p className="text-xs text-[var(--color-ink-muted)]">
-                      {requirement.deadline ? `Due ${formatDate(requirement.deadline)}` : ''}
+                      {requirement.deadline ? `До ${formatDate(requirement.deadline)}` : ''}
                     </p>
                   </div>
                   <DeadlineBadge deadline={requirement.deadline} />
@@ -174,7 +177,7 @@ export default async function PortalHome() {
       {activeCase ? (
         <Card>
           <CardHeader>
-            <CardTitle>Where your case stands</CardTitle>
+            <CardTitle>Где сейчас ваше дело</CardTitle>
           </CardHeader>
           <CardContent>
             <StageTimeline stages={activeCase.stages} />
@@ -184,10 +187,10 @@ export default async function PortalHome() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Latest activity</CardTitle>
+          <CardTitle>Последние события</CardTitle>
         </CardHeader>
         <CardContent>
-          <ActivityFeed events={data.activity} emptyLabel="Nothing has happened on your case yet." />
+          <ActivityFeed events={data.activity} emptyLabel="По вашему делу пока ничего не происходило." />
         </CardContent>
       </Card>
     </div>

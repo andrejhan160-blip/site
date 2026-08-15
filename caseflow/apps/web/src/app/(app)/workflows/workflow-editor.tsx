@@ -114,20 +114,20 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
 
       <Card>
         <CardContent className="space-y-4 pt-6">
-          <Field label="Workflow name">
+          <Field label="Название воркфлоу">
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
               required
-              placeholder="e.g. France Residence Permit"
+              placeholder="Например: ВНЖ Франции"
             />
           </Field>
-          <Field label="Description">
+          <Field label="Описание">
             <Textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               rows={2}
-              placeholder="What this process covers, in one sentence."
+              placeholder="Одним предложением: что это за процесс."
             />
           </Field>
           <label className="flex items-center gap-2 text-sm">
@@ -137,7 +137,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
               onChange={(event) => setIsActive(event.target.checked)}
               className="h-4 w-4 rounded"
             />
-            Available when opening a new case
+            Доступен при открытии нового дела
           </label>
         </CardContent>
       </Card>
@@ -152,7 +152,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
               <Input
                 value={stage.name}
                 onChange={(event) => updateStage(stage.key, { name: event.target.value })}
-                placeholder="Stage name"
+                placeholder="Название этапа"
                 required
                 className="max-w-sm"
               />
@@ -164,7 +164,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                 size="icon"
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
-                aria-label="Move stage up"
+                aria-label="Поднять этап"
               >
                 <GripVertical className="rotate-180" />
               </Button>
@@ -174,7 +174,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                 size="icon"
                 onClick={() => move(index, 1)}
                 disabled={index === stages.length - 1}
-                aria-label="Move stage down"
+                aria-label="Опустить этап"
               >
                 <GripVertical />
               </Button>
@@ -184,7 +184,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                 size="icon"
                 onClick={() => setStages((current) => current.filter((item) => item.key !== stage.key))}
                 disabled={stages.length === 1}
-                aria-label="Remove stage"
+                aria-label="Удалить этап"
               >
                 <Trash2 />
               </Button>
@@ -196,7 +196,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
               value={stage.description}
               onChange={(event) => updateStage(stage.key, { description: event.target.value })}
               rows={2}
-              placeholder="What happens in this stage (shown to the client)."
+              placeholder="Что происходит на этом этапе — текст видит клиент."
             />
 
             {stage.requirements.length > 0 ? (
@@ -210,7 +210,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                           onChange={(event) =>
                             updateRequirement(stage.key, requirement.key, { name: event.target.value })
                           }
-                          placeholder="Document name"
+                          placeholder="Название документа"
                           required
                         />
                         <Textarea
@@ -219,7 +219,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                             updateRequirement(stage.key, requirement.key, { instructions: event.target.value })
                           }
                           rows={2}
-                          placeholder="Instructions the client sees verbatim."
+                          placeholder="Инструкция, которую клиент увидит дословно."
                         />
                         <div className="flex flex-wrap items-center gap-4">
                           <label className="flex items-center gap-2 text-sm">
@@ -231,10 +231,10 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                               }
                               className="h-4 w-4 rounded"
                             />
-                            Required
+                            Обязательный
                           </label>
                           <label className="flex items-center gap-2 text-sm text-[var(--color-ink-muted)]">
-                            Due
+                            Срок
                             <Input
                               type="number"
                               min={0}
@@ -245,7 +245,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                               placeholder="—"
                               className="h-9 w-20"
                             />
-                            days after the case opens
+                            дн. после открытия дела
                           </label>
                         </div>
                       </div>
@@ -258,7 +258,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
                             requirements: stage.requirements.filter((item) => item.key !== requirement.key),
                           })
                         }
-                        aria-label="Remove document"
+                        aria-label="Удалить документ"
                       >
                         <Trash2 />
                       </Button>
@@ -277,7 +277,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
               }
             >
               <Plus />
-              Add document
+              Добавить документ
             </Button>
           </CardContent>
         </Card>
@@ -289,7 +289,7 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
         onClick={() => setStages((current) => [...current, emptyStage()])}
       >
         <Plus />
-        Add stage
+        Добавить этап
       </Button>
 
       {!state.ok && state.message ? (
@@ -299,11 +299,11 @@ export function WorkflowEditor({ template }: { template?: WorkflowTemplateDetail
       ) : null}
 
       <div className="flex items-center gap-3 border-t border-[var(--color-border)] pt-5">
-        <SubmitButton pendingLabel="Saving…">
-          {template ? 'Save workflow' : 'Create workflow'}
+        <SubmitButton pendingLabel="Сохраняем…">
+          {template ? 'Сохранить воркфлоу' : 'Создать воркфлоу'}
         </SubmitButton>
         <p className="text-sm text-[var(--color-ink-muted)]">
-          Cases already open keep their own copy — saving never changes them.
+          У уже открытых дел своя копия — сохранение их не затрагивает.
         </p>
       </div>
     </form>

@@ -7,7 +7,7 @@ import { canAdminister, requireStaff } from '@/lib/session';
 import type { WorkflowTemplateDetail } from '@/lib/types';
 import { WorkflowEditor } from '../../workflow-editor';
 
-export const metadata: Metadata = { title: 'Edit workflow' };
+export const metadata: Metadata = { title: 'Редактирование воркфлоу' };
 
 export default async function EditWorkflowPage({ params }: { params: Promise<{ id: string }> }) {
   const profile = await requireStaff();
@@ -32,8 +32,8 @@ export default async function EditWorkflowPage({ params }: { params: Promise<{ i
       </Link>
       <div className="mt-3">
         <PageHeader
-          title="Edit workflow"
-          description="Changes apply to cases opened from now on. Existing cases keep the stages and documents they were created with."
+          title="Редактирование воркфлоу"
+          description="Изменения повлияют только на дела, открытые после сохранения. У существующих дел останутся те этапы и документы, с которыми они были созданы."
         />
       </div>
       <WorkflowEditor template={template} />

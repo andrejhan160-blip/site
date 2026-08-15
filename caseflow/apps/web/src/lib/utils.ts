@@ -18,24 +18,24 @@ export function formatRelative(value: string | Date | null | undefined): string 
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
   const diff = date.getTime() - Date.now();
-  const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const formatter = new Intl.RelativeTimeFormat('ru', { numeric: 'auto' });
 
   for (const [unit, ms] of RELATIVE_UNITS) {
     if (Math.abs(diff) >= ms) return formatter.format(Math.round(diff / ms), unit);
   }
-  return 'just now';
+  return 'только что';
 }
 
 export function formatDate(value: string | Date | null | undefined): string {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
-  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+  return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
 }
 
 export function formatDateTime(value: string | Date | null | undefined): string {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;
-  return new Intl.DateTimeFormat('en-GB', {
+  return new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
@@ -44,9 +44,9 @@ export function formatDateTime(value: string | Date | null | undefined): string 
 }
 
 export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1024) return `${bytes} Б`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} КБ`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`;
 }
 
 export function initials(name: string): string {
@@ -68,10 +68,3 @@ export function daysUntil(deadline: string | Date): number {
   return Math.ceil(diff / (24 * 60 * 60 * 1000));
 }
 
-export function titleCase(value: string): string {
-  return value
-    .toLowerCase()
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}

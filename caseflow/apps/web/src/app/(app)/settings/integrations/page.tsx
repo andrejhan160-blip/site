@@ -9,7 +9,7 @@ import { formatRelative } from '@/lib/utils';
 import { SettingsNav } from '../settings-nav';
 import { ConnectionForm, StageMappingForm, TestConnectionButton } from './integration-forms';
 
-export const metadata: Metadata = { title: 'Integrations' };
+export const metadata: Metadata = { title: 'Интеграции' };
 
 export default async function IntegrationsPage() {
   const profile = await requireStaff();
@@ -17,11 +17,11 @@ export default async function IntegrationsPage() {
   if (!canAdminister(profile.role)) {
     return (
       <>
-        <PageHeader title="Settings" />
+        <PageHeader title="Настройки" />
         <SettingsNav />
         <Card className="max-w-3xl px-6 py-8">
           <p className="text-sm text-[var(--color-ink-muted)]">
-            Integrations are managed by owners and admins.
+            Интеграциями управляют владелец и администратор.
           </p>
         </Card>
       </>
@@ -43,8 +43,8 @@ export default async function IntegrationsPage() {
   return (
     <>
       <PageHeader
-        title="Settings"
-        description="CaseFlow stays the source of truth for the portal, documents and history. Only the fields you map are read from the CRM."
+        title="Настройки"
+        description="CaseFlow остаётся источником правды для кабинета, документов и истории. Из CRM читаются только те поля, которые вы сопоставили."
       />
       <SettingsNav />
 
@@ -54,14 +54,14 @@ export default async function IntegrationsPage() {
             <div>
               <CardTitle>Bitrix24</CardTitle>
               <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
-                Deal stage changes flow into CaseFlow; documents and client-facing history stay here.
+                Смена стадии сделки приходит в CaseFlow; документы и история для клиента остаются здесь.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {bitrix?.isActive ? <Badge tone="success">Active</Badge> : <Badge tone="neutral">Not connected</Badge>}
+              {bitrix?.isActive ? <Badge tone="success">Подключено</Badge> : <Badge tone="neutral">Не подключено</Badge>}
               {bitrix?.lastSyncedAt ? (
                 <span className="text-xs text-[var(--color-ink-subtle)]">
-                  synced {formatRelative(bitrix.lastSyncedAt)}
+                  синхронизация {formatRelative(bitrix.lastSyncedAt)}
                 </span>
               ) : null}
             </div>
@@ -77,19 +77,19 @@ export default async function IntegrationsPage() {
             <Card>
               <CardHeader>
                 <div>
-                  <CardTitle>Outbound webhook</CardTitle>
+                  <CardTitle>Исходящий вебхук</CardTitle>
                   <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
-                    In Bitrix24 create an outbound webhook for <code>ONCRMDEALUPDATE</code> pointing at this URL, and
-                    use the token below as the application token.
+                    В Битрикс24 создайте исходящий вебхук на событие <code>ONCRMDEALUPDATE</code> с этим адресом,
+                    а токен ниже укажите как токен приложения.
                   </p>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Row label="Handler URL" value={webhookUrl} />
-                <Row label="Application token" value={bitrix.webhookSecret ?? '—'} />
+                <Row label="Адрес обработчика" value={webhookUrl} />
+                <Row label="Токен приложения" value={bitrix.webhookSecret ?? '—'} />
                 <p className="text-xs text-[var(--color-ink-subtle)]">
-                  The token identifies your organization on every delivery. Repeated deliveries of the same event are
-                  recorded once, so a Bitrix retry never duplicates activity or notifications.
+                  По токену определяется ваша организация при каждой доставке. Повторные доставки одного события
+                  записываются один раз, поэтому ретраи Битрикса не задваивают историю и уведомления.
                 </p>
               </CardContent>
             </Card>
@@ -97,9 +97,9 @@ export default async function IntegrationsPage() {
             <Card>
               <CardHeader>
                 <div>
-                  <CardTitle>Stage mapping</CardTitle>
+                  <CardTitle>Сопоставление стадий</CardTitle>
                   <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
-                    Map each Bitrix pipeline stage to the CaseFlow stage a case should move to.
+                    Укажите, на какой этап CaseFlow переводить дело при каждой стадии воронки Битрикса.
                   </p>
                 </div>
               </CardHeader>

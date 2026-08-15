@@ -23,8 +23,8 @@ export function TaskToggle({
       <input type="hidden" name="taskId" value={taskId} />
       {caseId ? <input type="hidden" name="caseId" value={caseId} /> : null}
       <input type="hidden" name="status" value={next} />
-      <SubmitButton variant="ghost" size="sm" pendingLabel="Saving…">
-        {status === 'COMPLETED' ? 'Reopen' : 'Mark done'}
+      <SubmitButton variant="ghost" size="sm" pendingLabel="Сохраняем…">
+        {status === 'COMPLETED' ? 'Вернуть в работу' : 'Отметить выполненной'}
       </SubmitButton>
       {!state.ok && state.message ? (
         <span className="text-xs text-[var(--color-danger)]">{state.message}</span>

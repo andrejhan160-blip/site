@@ -17,7 +17,7 @@ export class NoCrmProvider implements CrmProvider {
   readonly kind = CrmProviderKind.NONE;
 
   async connect(): Promise<CrmConnectionCheck> {
-    return { ok: true, detail: 'No CRM integration configured' };
+    return { ok: true, detail: 'Интеграция с CRM не настроена' };
   }
 
   async disconnect(): Promise<void> {}

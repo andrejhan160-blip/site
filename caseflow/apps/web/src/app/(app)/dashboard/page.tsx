@@ -12,7 +12,7 @@ import { requireStaff } from '@/lib/session';
 import type { DashboardData } from '@/lib/types';
 import { formatBytes, formatRelative } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Dashboard' };
+export const metadata: Metadata = { title: 'Рабочий стол' };
 
 export default async function DashboardPage() {
   const profile = await requireStaff();
@@ -23,21 +23,21 @@ export default async function DashboardPage() {
   return (
     <>
       <PageHeader
-        title={`Good to see you, ${firstName}`}
-        description="What needs a decision from you today, in order of urgency."
+        title={`Здравствуйте, ${firstName}`}
+        description="Что требует вашего решения сегодня — по срочности."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Metric label="Active cases" value={data.metrics.activeCases} icon={<Inbox className="h-4 w-4" />} />
-        <Metric label="Assigned to me" value={data.metrics.myCases} icon={<FileCheck2 className="h-4 w-4" />} />
+        <Metric label="Дел в работе" value={data.metrics.activeCases} icon={<Inbox className="h-4 w-4" />} />
+        <Metric label="Мои дела" value={data.metrics.myCases} icon={<FileCheck2 className="h-4 w-4" />} />
         <Metric
-          label="Documents to review"
+          label="Документов на проверку"
           value={data.metrics.documentsForReview}
           icon={<FileCheck2 className="h-4 w-4" />}
           tone={data.metrics.documentsForReview > 0 ? 'accent' : 'neutral'}
         />
         <Metric
-          label="Overdue requests"
+          label="Просроченных запросов"
           value={data.metrics.overdueRequests}
           icon={<AlertTriangle className="h-4 w-4" />}
           tone={data.metrics.overdueRequests > 0 ? 'danger' : 'neutral'}
@@ -48,18 +48,18 @@ export default async function DashboardPage() {
         <Card className="xl:col-span-2">
           <CardHeader>
             <div>
-              <CardTitle>Cases needing attention</CardTitle>
+              <CardTitle>Дела, требующие внимания</CardTitle>
               <p className="mt-0.5 text-sm text-[var(--color-ink-muted)]">
-                Overdue requests, documents waiting for review, or no movement for a week.
+                Просроченные запросы, документы на проверке или неделя без движения.
               </p>
             </div>
             <Link href="/cases" className="text-sm font-medium text-[var(--color-accent)]">
-              All cases
+              Все дела
             </Link>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.needsAttention.length === 0 ? (
-              <EmptyState title="Everything is on track" description="No case is waiting on your team right now." />
+              <EmptyState title="Всё идёт по плану" description="Ни одно дело сейчас не ждёт действий команды." />
             ) : (
               <ul>
                 {data.needsAttention.map((item) => (
@@ -73,7 +73,7 @@ export default async function DashboardPage() {
                         <p className="mt-0.5 truncate text-xs text-[var(--color-ink-muted)]">
                           {item.client.firstName} {item.client.lastName}
                           {item.currentStage ? ` · ${item.currentStage.name}` : ''}
-                          {` · last activity ${formatRelative(item.lastActivityAt)}`}
+                          {` · активность ${formatRelative(item.lastActivityAt)}`}
                         </p>
                       </div>
                       <div className="w-32 shrink-0">
@@ -89,11 +89,11 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Documents waiting for review</CardTitle>
+            <CardTitle>Документы на проверке</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.documentsForReview.length === 0 ? (
-              <EmptyState title="Review queue is empty" />
+              <EmptyState title="Очередь проверки пуста" />
             ) : (
               <ul>
                 {data.documentsForReview.slice(0, 6).map((document) => (
@@ -117,11 +117,11 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Overdue requests</CardTitle>
+            <CardTitle>Просроченные запросы</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.overdueRequests.length === 0 ? (
-              <EmptyState title="Nothing overdue" />
+              <EmptyState title="Просрочек нет" />
             ) : (
               <ul>
                 {data.overdueRequests.slice(0, 6).map((request) => (
@@ -148,11 +148,11 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Deadlines within 48 hours</CardTitle>
+            <CardTitle>Сроки в ближайшие 48 часов</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.deadlines.length === 0 ? (
-              <EmptyState title="No deadlines in the next two days" />
+              <EmptyState title="На два дня вперёд сроков нет" />
             ) : (
               <ul>
                 {data.deadlines.slice(0, 6).map((deadline) => (
@@ -179,11 +179,11 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>No activity for 7+ days</CardTitle>
+            <CardTitle>Без движения 7+ дней</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.staleCases.length === 0 ? (
-              <EmptyState title="Every case moved this week" />
+              <EmptyState title="За неделю сдвинулись все дела" />
             ) : (
               <ul>
                 {data.staleCases.slice(0, 6).map((item) => (
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{item.title}</p>
                         <p className="mt-0.5 truncate text-xs text-[var(--color-ink-muted)]">
-                          {item.assignedUser?.name ?? 'Unassigned'}
+                          {item.assignedUser?.name ?? 'Без ответственного'}
                         </p>
                       </div>
                       <Badge tone="warning">
@@ -212,11 +212,11 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Recent uploads</CardTitle>
+            <CardTitle>Последние загрузки</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pb-2">
             {data.recentUploads.length === 0 ? (
-              <EmptyState title="No uploads yet" />
+              <EmptyState title="Загрузок пока нет" />
             ) : (
               <ul>
                 {data.recentUploads.slice(0, 6).map((document) => (

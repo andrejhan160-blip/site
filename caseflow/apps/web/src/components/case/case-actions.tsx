@@ -5,6 +5,7 @@ import { FormDialog } from '@/components/forms/form-dialog';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
 import { changeStage, createRequest, createTask, requestDocument, updateCase } from '@/lib/actions';
+import { REQUEST_TYPE_LABELS, TASK_VISIBILITY_LABELS } from '@/lib/i18n';
 import type { CaseStatus, Stage, TeamMember } from '@/lib/types';
 
 export function ChangeStageDialog({
@@ -21,27 +22,27 @@ export function ChangeStageDialog({
       trigger={
         <Button variant="secondary">
           <GitBranch />
-          Change stage
+          Сменить этап
         </Button>
       }
-      title="Change stage"
-      description="Earlier stages are marked complete; the client is notified of the new stage."
+      title="Смена этапа"
+      description="Предыдущие этапы отмечаются завершёнными, клиент получает уведомление о новом."
       action={changeStage}
-      submitLabel="Move case"
-      pendingLabel="Moving…"
+      submitLabel="Перевести дело"
+      pendingLabel="Переводим…"
     >
       <input type="hidden" name="caseId" value={caseId} />
-      <Field label="Move to">
+      <Field label="Перевести на этап">
         <Select name="stageId" required defaultValue={currentStageId ?? ''}>
           {stages.map((stage) => (
             <option key={stage.id} value={stage.id}>
               {stage.position + 1}. {stage.name}
-              {stage.id === currentStageId ? ' (current)' : ''}
+              {stage.id === currentStageId ? ' (текущий)' : ''}
             </option>
           ))}
         </Select>
       </Field>
-      <Field label="Internal note" hint="Stored on the activity log; the client does not see it.">
+      <Field label="Внутренняя заметка" hint="Попадёт в историю дела; клиент её не увидит.">
         <Textarea name="note" rows={2} />
       </Field>
     </FormDialog>
@@ -54,22 +55,22 @@ export function RequestDocumentDialog({ caseId, stages }: { caseId: string; stag
       trigger={
         <Button>
           <FilePlus2 />
-          Request document
+          Запросить документ
         </Button>
       }
-      title="Request a document"
-      description="Creates the requirement and a client request, and notifies the client."
+      title="Запрос документа"
+      description="Создаёт требование и запрос клиенту, отправляет уведомление."
       action={requestDocument}
-      submitLabel="Send request"
-      pendingLabel="Sending…"
+      submitLabel="Отправить запрос"
+      pendingLabel="Отправляем…"
     >
       <input type="hidden" name="caseId" value={caseId} />
-      <Field label="Document">
-        <Input name="name" required autoFocus placeholder="e.g. Health insurance policy" />
+      <Field label="Документ">
+        <Input name="name" required autoFocus placeholder="Например: полис медицинского страхования" />
       </Field>
-      <Field label="Stage">
+      <Field label="Этап">
         <Select name="stageId" defaultValue="">
-          <option value="">Current stage</option>
+          <option value="">Текущий этап</option>
           {stages.map((stage) => (
             <option key={stage.id} value={stage.id}>
               {stage.position + 1}. {stage.name}
@@ -77,25 +78,25 @@ export function RequestDocumentDialog({ caseId, stages }: { caseId: string; stag
           ))}
         </Select>
       </Field>
-      <Field label="Instructions" hint="What exactly the client must upload — they see this verbatim.">
+      <Field label="Инструкция" hint="Что именно загрузить — клиент увидит этот текст дословно.">
         <Textarea
           name="instructions"
           rows={3}
-          placeholder="Colour scan, all pages, issued within the last 3 months."
+          placeholder="Цветной скан, все страницы, выдан не более 3 месяцев назад."
         />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Deadline">
+        <Field label="Срок">
           <Input name="deadline" type="date" />
         </Field>
         <div className="flex flex-col justify-end gap-2 pb-1">
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="required" defaultChecked className="h-4 w-4 rounded" />
-            Required document
+            Обязательный документ
           </label>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="notifyClient" defaultChecked className="h-4 w-4 rounded" />
-            Notify the client
+            Уведомить клиента
           </label>
         </div>
       </div>
@@ -109,37 +110,37 @@ export function CreateRequestDialog({ caseId }: { caseId: string }) {
       trigger={
         <Button variant="secondary">
           <MessageSquarePlus />
-          New request
+          Новый запрос
         </Button>
       }
-      title="Ask the client for something"
-      description="Use this for information, confirmations or actions that are not a document."
+      title="Запрос клиенту"
+      description="Для информации, подтверждений и действий, которые не являются документом."
       action={createRequest}
-      submitLabel="Send request"
-      pendingLabel="Sending…"
+      submitLabel="Отправить запрос"
+      pendingLabel="Отправляем…"
     >
       <input type="hidden" name="caseId" value={caseId} />
-      <Field label="Title">
-        <Input name="title" required autoFocus placeholder="e.g. Confirm your travel dates" />
+      <Field label="Заголовок">
+        <Input name="title" required autoFocus placeholder="Например: подтвердите даты поездки" />
       </Field>
-      <Field label="Type">
+      <Field label="Тип">
         <Select name="type" defaultValue="INFORMATION">
-          <option value="INFORMATION">Information</option>
-          <option value="ACTION">Action</option>
-          <option value="APPOINTMENT">Appointment</option>
-          <option value="PAYMENT_CONFIRMATION">Payment confirmation</option>
+          <option value="INFORMATION">{REQUEST_TYPE_LABELS.INFORMATION}</option>
+          <option value="ACTION">{REQUEST_TYPE_LABELS.ACTION}</option>
+          <option value="APPOINTMENT">{REQUEST_TYPE_LABELS.APPOINTMENT}</option>
+          <option value="PAYMENT_CONFIRMATION">{REQUEST_TYPE_LABELS.PAYMENT_CONFIRMATION}</option>
         </Select>
       </Field>
-      <Field label="Description">
+      <Field label="Описание">
         <Textarea name="description" rows={3} />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Deadline">
+        <Field label="Срок">
           <Input name="deadline" type="date" />
         </Field>
         <label className="flex items-end gap-2 pb-2.5 text-sm">
           <input type="checkbox" name="notifyClient" defaultChecked className="h-4 w-4 rounded" />
-          Notify the client
+          Уведомить клиента
         </label>
       </div>
     </FormDialog>
@@ -152,26 +153,26 @@ export function CreateTaskDialog({ caseId, team }: { caseId: string; team: TeamM
       trigger={
         <Button variant="secondary">
           <ListPlus />
-          New task
+          Новая задача
         </Button>
       }
-      title="Create a task"
-      description="Internal tasks stay with your team. Client-visible tasks appear in their portal."
+      title="Новая задача"
+      description="Внутренние задачи видит только команда. Клиентские появляются в его кабинете."
       action={createTask}
-      submitLabel="Create task"
-      pendingLabel="Creating…"
+      submitLabel="Создать задачу"
+      pendingLabel="Создаём…"
     >
       <input type="hidden" name="caseId" value={caseId} />
-      <Field label="Title">
+      <Field label="Заголовок">
         <Input name="title" required autoFocus />
       </Field>
-      <Field label="Description">
+      <Field label="Описание">
         <Textarea name="description" rows={3} />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Assign to">
+        <Field label="Исполнитель">
           <Select name="assignedToId" defaultValue="">
-            <option value="">Me</option>
+            <option value="">Я</option>
             {team.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name}
@@ -179,15 +180,15 @@ export function CreateTaskDialog({ caseId, team }: { caseId: string; team: TeamM
             ))}
           </Select>
         </Field>
-        <Field label="Deadline">
+        <Field label="Срок">
           <Input name="deadline" type="date" />
         </Field>
       </div>
-      <Field label="Visibility">
+      <Field label="Кому видно">
         <Select name="visibility" defaultValue="INTERNAL">
-          <option value="INTERNAL">Internal only</option>
-          <option value="CLIENT">Client only</option>
-          <option value="BOTH">Both</option>
+          <option value="INTERNAL">{TASK_VISIBILITY_LABELS.INTERNAL}</option>
+          <option value="CLIENT">{TASK_VISIBILITY_LABELS.CLIENT}</option>
+          <option value="BOTH">{TASK_VISIBILITY_LABELS.BOTH}</option>
         </Select>
       </Field>
     </FormDialog>
@@ -210,24 +211,24 @@ export function CaseSettingsDialog({
   return (
     <FormDialog
       trigger={
-        <Button variant="ghost" size="icon" aria-label="Case settings">
+        <Button variant="ghost" size="icon" aria-label="Настройки дела">
           <Settings2 />
         </Button>
       }
-      title="Case settings"
-      description="Reassign the case, rename it, or put it on hold."
+      title="Настройки дела"
+      description="Переименовать, сменить ответственного или приостановить дело."
       action={updateCase}
-      submitLabel="Save changes"
-      pendingLabel="Saving…"
+      submitLabel="Сохранить"
+      pendingLabel="Сохраняем…"
     >
       <input type="hidden" name="caseId" value={caseId} />
-      <Field label="Case title">
+      <Field label="Название дела">
         <Input name="title" defaultValue={title} required />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Assigned to">
+        <Field label="Ответственный">
           <Select name="assignedUserId" defaultValue={assignedUserId ?? ''}>
-            <option value="">Leave unchanged</option>
+            <option value="">Не менять</option>
             {team.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name}
@@ -235,12 +236,12 @@ export function CaseSettingsDialog({
             ))}
           </Select>
         </Field>
-        <Field label="Status">
+        <Field label="Статус">
           <Select name="status" defaultValue={status}>
-            <option value="ACTIVE">Active</option>
-            <option value="ON_HOLD">On hold</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELLED">Cancelled</option>
+            <option value="ACTIVE">В работе</option>
+            <option value="ON_HOLD">Приостановлено</option>
+            <option value="COMPLETED">Завершено</option>
+            <option value="CANCELLED">Отменено</option>
           </Select>
         </Field>
       </div>

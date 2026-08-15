@@ -3,13 +3,13 @@ import type { Stage } from '@/lib/types';
 import { cn, formatDate } from '@/lib/utils';
 
 const STATUS_META = {
-  COMPLETED: { icon: Check, ring: 'bg-[var(--color-success)] text-white', label: 'Completed' },
-  ACTIVE: { icon: CircleDot, ring: 'bg-[var(--color-accent)] text-white', label: 'Current stage' },
-  BLOCKED: { icon: Lock, ring: 'bg-[var(--color-danger)] text-white', label: 'Blocked' },
+  COMPLETED: { icon: Check, ring: 'bg-[var(--color-success)] text-white', label: 'Завершён' },
+  ACTIVE: { icon: CircleDot, ring: 'bg-[var(--color-accent)] text-white', label: 'Текущий этап' },
+  BLOCKED: { icon: Lock, ring: 'bg-[var(--color-danger)] text-white', label: 'Заблокирован' },
   PENDING: {
     icon: Circle,
     ring: 'bg-[var(--color-surface-muted)] text-[var(--color-ink-subtle)]',
-    label: 'Upcoming',
+    label: 'Предстоит',
   },
 } as const;
 
@@ -61,7 +61,7 @@ export function StageTimeline({
                 </p>
                 <span className="text-xs text-[var(--color-ink-subtle)]">
                   {stage.status === 'COMPLETED' && stage.completedAt
-                    ? `Completed ${formatDate(stage.completedAt)}`
+                    ? `Завершён ${formatDate(stage.completedAt)}`
                     : meta.label}
                 </span>
               </div>
@@ -89,7 +89,7 @@ export function StageTimeline({
                       />
                       <span className="text-[var(--color-ink-muted)]">{requirement.name}</span>
                       {!requirement.required ? (
-                        <span className="text-xs text-[var(--color-ink-subtle)]">(optional)</span>
+                        <span className="text-xs text-[var(--color-ink-subtle)]">(по желанию)</span>
                       ) : null}
                     </li>
                   ))}

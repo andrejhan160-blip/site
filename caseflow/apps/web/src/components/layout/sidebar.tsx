@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/cases', label: 'Cases', icon: FolderKanban },
-  { href: '/clients', label: 'Clients', icon: Users },
-  { href: '/workflows', label: 'Workflows', icon: Workflow },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard', label: 'Рабочий стол', icon: LayoutDashboard },
+  { href: '/cases', label: 'Дела', icon: FolderKanban },
+  { href: '/clients', label: 'Клиенты', icon: Users },
+  { href: '/workflows', label: 'Воркфлоу', icon: Workflow },
+  { href: '/settings', label: 'Настройки', icon: Settings },
 ];
 
 export function Sidebar({ organizationName, logoUrl }: { organizationName: string; logoUrl: string | null }) {
@@ -58,7 +58,7 @@ export function Sidebar({ organizationName, logoUrl }: { organizationName: strin
       <div className="border-t border-[var(--color-border)] px-5 py-4">
         <p className="flex items-center gap-2 text-xs text-[var(--color-ink-subtle)]">
           <Building2 className="h-3.5 w-3.5" />
-          Client operations
+          Клиентские процессы
         </p>
       </div>
     </aside>

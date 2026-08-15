@@ -26,17 +26,17 @@ export class FilesController {
   @Get('download')
   async download(@Query(zodPipe(downloadQuery)) query: z.infer<typeof downloadQuery>, @Res() res: Response) {
     if (!(this.driver instanceof LocalStorageDriver)) {
-      throw new NotFoundException('Not available for this storage driver');
+      throw new NotFoundException('Недоступно для этого драйвера хранилища');
     }
     if (!this.driver.verifySignature(query.key, query.expires, query.signature)) {
-      throw new ForbiddenException('This download link is invalid or has expired');
+      throw new ForbiddenException('Ссылка на скачивание недействительна или истекла');
     }
 
     let body: Buffer;
     try {
       body = await this.driver.get(query.key);
     } catch {
-      throw new NotFoundException('File not found');
+      throw new NotFoundException('Файл не найден');
     }
 
     res.setHeader('Content-Type', 'application/octet-stream');

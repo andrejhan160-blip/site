@@ -33,7 +33,7 @@ export default async function PortalLayout({ children }: { children: React.React
 
           <div className="flex items-center gap-1">
             <NotificationBell notifications={notifications.items} unread={notifications.unread} />
-            <UserMenu name={profile.name} email={profile.email} role="Client" />
+            <UserMenu name={profile.name} email={profile.email} role="CLIENT" />
           </div>
         </div>
         <PortalNav />

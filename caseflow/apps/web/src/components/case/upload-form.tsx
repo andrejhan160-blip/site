@@ -14,7 +14,7 @@ export function UploadForm({
   caseId,
   requirementId,
   portal = false,
-  label = 'Upload',
+  label = 'Загрузить',
   variant = 'primary',
   size = 'sm',
 }: {

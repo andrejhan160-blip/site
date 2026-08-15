@@ -33,15 +33,15 @@ export function ReviewActions({
         <input type="hidden" name="documentId" value={documentId} />
         <input type="hidden" name="caseId" value={caseId} />
         <input type="hidden" name="decision" value="APPROVE" />
-        <SubmitButton variant="success" size="sm" pendingLabel="Approving…">
+        <SubmitButton variant="success" size="sm" pendingLabel="Принимаем…">
           <Check />
-          Approve
+          Принять
         </SubmitButton>
       </form>
 
       <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
         <X />
-        Reject
+        Отклонить
       </Button>
 
       {!approveState.ok && approveState.message ? (
@@ -50,20 +50,20 @@ export function ReviewActions({
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
-          title="Reject document"
-          description={`${filename} — the client sees this reason and uploads a replacement.`}
+          title="Отклонить документ"
+          description={`${filename} — клиент увидит эту причину и загрузит замену.`}
         >
           <form action={rejectAction} className="space-y-4">
             <input type="hidden" name="documentId" value={documentId} />
             <input type="hidden" name="caseId" value={caseId} />
             <input type="hidden" name="decision" value="REJECT" />
-            <Field label="Reason for rejection" hint="Be specific about what to fix — this is the whole message.">
+            <Field label="Причина отказа" hint="Напишите конкретно, что не так — клиент увидит только это.">
               <Textarea
                 name="rejectionReason"
                 required
                 rows={4}
                 autoFocus
-                placeholder="e.g. The policy expires before the end of the requested stay. Please upload one covering the full 12 months."
+                placeholder="Например: полис истекает раньше конца запрошенного срока. Загрузите полис на все 12 месяцев."
               />
             </Field>
             {!rejectState.ok && rejectState.message ? (
@@ -73,10 +73,10 @@ export function ReviewActions({
             ) : null}
             <div className="flex justify-end gap-2">
               <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-                Cancel
+                Отмена
               </Button>
-              <SubmitButton variant="danger" pendingLabel="Rejecting…">
-                Reject document
+              <SubmitButton variant="danger" pendingLabel="Отклоняем…">
+                Отклонить документ
               </SubmitButton>
             </div>
           </form>

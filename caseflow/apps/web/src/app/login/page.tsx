@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getProfile } from '@/lib/session';
 import { LoginForm } from './login-form';
 
-export const metadata: Metadata = { title: 'Sign in' };
+export const metadata: Metadata = { title: 'Вход' };
 
 export default async function LoginPage({
   searchParams,
@@ -20,9 +20,9 @@ export default async function LoginPage({
           <div className="mx-auto mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-accent)] text-lg font-semibold text-white">
             C
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Sign in to CaseFlow</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Вход в CaseFlow</h1>
           <p className="mt-2 text-sm text-[var(--color-ink-muted)]">
-            Client operations for teams that run long processes.
+            Клиентские процессы для команд, которые ведут долгие дела.
           </p>
         </div>
         <div className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 card-shadow">

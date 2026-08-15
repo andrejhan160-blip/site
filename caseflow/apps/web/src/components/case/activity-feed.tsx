@@ -3,23 +3,25 @@ import type { ActivityEvent } from '@/lib/types';
 import { formatDateTime, formatRelative } from '@/lib/utils';
 
 const EVENT_COPY: Record<string, (payload: Record<string, unknown>) => string> = {
-  CASE_CREATED: (p) => `Case created from "${String(p.templateName ?? 'a workflow')}"`,
-  CASE_UPDATED: () => 'Case details updated',
-  CASE_STATUS_CHANGED: () => 'Case status changed',
-  STAGE_CHANGED: (p) => `Stage moved${p.from ? ` from ${String(p.from)}` : ''} to ${String(p.to ?? '—')}`,
-  STAGE_COMPLETED: (p) => `Stage "${String(p.name ?? '')}" completed`,
-  DOCUMENT_REQUESTED: (p) => `Requested "${String(p.name ?? 'a document')}"`,
-  DOCUMENT_UPLOADED: (p) => `Uploaded ${String(p.filename ?? 'a document')}${p.version ? ` (v${String(p.version)})` : ''}`,
-  DOCUMENT_APPROVED: (p) => `Approved ${String(p.filename ?? 'a document')}`,
-  DOCUMENT_REJECTED: (p) => `Rejected ${String(p.filename ?? 'a document')}`,
-  REQUEST_CREATED: (p) => `New request: ${String(p.title ?? '')}`,
-  REQUEST_COMPLETED: (p) => `Request completed: ${String(p.title ?? '')}`,
-  REQUEST_CANCELLED: (p) => `Request cancelled: ${String(p.title ?? '')}`,
-  TASK_CREATED: (p) => `Task created: ${String(p.title ?? '')}`,
-  TASK_COMPLETED: (p) => `Task completed: ${String(p.title ?? '')}`,
-  MESSAGE_SENT: (p) => `Message: "${String(p.excerpt ?? '')}"`,
-  DEADLINE_MISSED: (p) => `Deadline missed: ${String(p.title ?? '')}`,
-  CRM_SYNCED: (p) => `Synced from CRM (${String(p.event ?? 'update')})`,
+  CASE_CREATED: (p) => `Дело создано по воркфлоу «${String(p.templateName ?? 'без шаблона')}»`,
+  CASE_UPDATED: () => 'Данные дела изменены',
+  CASE_STATUS_CHANGED: () => 'Статус дела изменён',
+  STAGE_CHANGED: (p) =>
+    `Этап изменён${p.from ? ` с «${String(p.from)}»` : ''} на «${String(p.to ?? '—')}»`,
+  STAGE_COMPLETED: (p) => `Этап «${String(p.name ?? '')}» завершён`,
+  DOCUMENT_REQUESTED: (p) => `Запрошен документ «${String(p.name ?? '')}»`,
+  DOCUMENT_UPLOADED: (p) =>
+    `Загружен файл ${String(p.filename ?? '')}${p.version ? ` (в. ${String(p.version)})` : ''}`,
+  DOCUMENT_APPROVED: (p) => `Принят документ ${String(p.filename ?? '')}`,
+  DOCUMENT_REJECTED: (p) => `Отклонён документ ${String(p.filename ?? '')}`,
+  REQUEST_CREATED: (p) => `Новый запрос: ${String(p.title ?? '')}`,
+  REQUEST_COMPLETED: (p) => `Запрос выполнен: ${String(p.title ?? '')}`,
+  REQUEST_CANCELLED: (p) => `Запрос отменён: ${String(p.title ?? '')}`,
+  TASK_CREATED: (p) => `Создана задача: ${String(p.title ?? '')}`,
+  TASK_COMPLETED: (p) => `Задача выполнена: ${String(p.title ?? '')}`,
+  MESSAGE_SENT: (p) => `Сообщение: «${String(p.excerpt ?? '')}»`,
+  DEADLINE_MISSED: (p) => `Пропущен срок: ${String(p.title ?? '')}`,
+  CRM_SYNCED: (p) => `Синхронизация с CRM (${String(p.event ?? 'обновление')})`,
 };
 
 const ACTOR_DOT: Record<string, string> = {
@@ -37,7 +39,7 @@ export function describeEvent(event: ActivityEvent): string {
 export function ActivityFeed({
   events,
   showCase = false,
-  emptyLabel = 'Nothing has happened yet.',
+  emptyLabel = 'Пока ничего не происходило.',
 }: {
   events: ActivityEvent[];
   showCase?: boolean;
@@ -60,7 +62,8 @@ export function ActivityFeed({
           />
           <p className="text-sm">{describeEvent(event)}</p>
           <p className="mt-0.5 text-xs text-[var(--color-ink-subtle)]">
-            {event.actorLabel ?? 'System'} · <time dateTime={event.createdAt}>{formatDateTime(event.createdAt)}</time>{' '}
+            {event.actorLabel ?? 'Система'} ·{' '}
+            <time dateTime={event.createdAt}>{formatDateTime(event.createdAt)}</time>{' '}
             <span className="text-[var(--color-ink-subtle)]">({formatRelative(event.createdAt)})</span>
             {showCase && event.case ? (
               <>

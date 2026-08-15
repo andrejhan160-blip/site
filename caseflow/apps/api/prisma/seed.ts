@@ -1,7 +1,7 @@
 /**
- * Demo seed: a realistic immigration-consulting organization with one case far
- * enough along to exercise every screen. Idempotent — running it again resets
- * the demo organization rather than duplicating it.
+ * Демо-данные: миграционная компания с делом, продвинутым достаточно далеко,
+ * чтобы задействовать все экраны. Идемпотентно — повторный запуск пересоздаёт
+ * демо-организацию, а не плодит копии.
  */
 import {
   ActorType,
@@ -30,139 +30,139 @@ const daysAhead = (days: number) => new Date(now.getTime() + days * DAY);
 
 const ORG_SLUG = 'global-migration';
 
-/** Stage blueprint for the France Residence Permit workflow. */
+/** Схема этапов воркфлоу «ВНЖ Франции». */
 const FRANCE_WORKFLOW = [
   {
-    name: 'Contract',
-    description: 'Service agreement signed and the engagement opened.',
+    name: 'Договор',
+    description: 'Договор на сопровождение подписан, дело открыто.',
     requirements: [
       {
-        name: 'Signed service agreement',
-        instructions: 'Sign every page and upload the scan as a single PDF.',
+        name: 'Подписанный договор',
+        instructions: 'Подпишите каждую страницу и загрузите скан одним PDF-файлом.',
         deadlineDays: 3,
       },
     ],
   },
   {
-    name: 'Questionnaire',
-    description: 'Client profile, family situation and travel history collected.',
+    name: 'Анкета',
+    description: 'Собраны данные о заявителе, семье и поездках.',
     requirements: [
       {
-        name: 'Completed client questionnaire',
-        instructions: 'Fill in every section. Leave nothing blank — write "N/A" where a question does not apply.',
+        name: 'Заполненная анкета',
+        instructions: 'Заполните все разделы. Не оставляйте пустых полей — где неприменимо, напишите «нет».',
         deadlineDays: 7,
       },
     ],
   },
   {
-    name: 'Document collection',
-    description: 'Civil status, financial and accommodation evidence gathered.',
+    name: 'Сбор документов',
+    description: 'Документы о статусе, финансах и жилье собраны.',
     requirements: [
-      { name: 'Passport (all pages)', instructions: 'Colour scan of every page, including empty ones.', deadlineDays: 14 },
-      { name: 'Birth certificate', instructions: 'Issued within the last 3 months, with apostille.', deadlineDays: 14 },
-      { name: 'Marriage certificate', instructions: 'Original with apostille.', deadlineDays: 14 },
-      { name: 'Proof of accommodation in France', instructions: 'Lease agreement or attestation d’hébergement.', deadlineDays: 21 },
-      { name: 'Bank statements (last 3 months)', instructions: 'Stamped by the bank, showing the account holder name.', deadlineDays: 21 },
-      { name: 'Employment contract', instructions: 'Signed by both parties, all annexes included.', deadlineDays: 21 },
-      { name: 'Health insurance policy', instructions: 'Must cover France for the full stay, minimum €30,000.', deadlineDays: 21 },
-      { name: 'Passport photographs', instructions: 'Two identical photos, 35×45 mm, white background, taken within 6 months.', deadlineDays: 21 },
+      { name: 'Загранпаспорт (все страницы)', instructions: 'Цветной скан всех страниц, включая пустые.', deadlineDays: 14 },
+      { name: 'Свидетельство о рождении', instructions: 'Выдано не более 3 месяцев назад, с апостилем.', deadlineDays: 14 },
+      { name: 'Свидетельство о браке', instructions: 'Оригинал с апостилем.', deadlineDays: 14 },
+      { name: 'Подтверждение жилья во Франции', instructions: 'Договор аренды или attestation d’hébergement.', deadlineDays: 21 },
+      { name: 'Выписка по счёту за 3 месяца', instructions: 'С печатью банка и фамилией владельца счёта.', deadlineDays: 21 },
+      { name: 'Трудовой договор', instructions: 'Подписан обеими сторонами, со всеми приложениями.', deadlineDays: 21 },
+      { name: 'Полис медицинского страхования', instructions: 'Покрытие Франции на весь срок пребывания, не менее 30 000 €.', deadlineDays: 21 },
+      { name: 'Фотографии на документы', instructions: 'Две одинаковые фотографии 35×45 мм на белом фоне, снятые не ранее 6 месяцев назад.', deadlineDays: 21 },
     ],
   },
   {
-    name: 'Legal review',
-    description: 'Lawyer checks the file for completeness and legal risk.',
+    name: 'Юридическая проверка',
+    description: 'Юрист проверяет комплектность дела и правовые риски.',
     requirements: [
-      { name: 'Criminal record certificate', instructions: 'From every country of residence in the last 5 years.', deadlineDays: 30 },
-      { name: 'Diploma with apostille', instructions: 'Higher education diploma, apostilled and legible.', deadlineDays: 30 },
-      { name: 'Proof of ties to home country', instructions: 'Property deed, business registration or similar.', deadlineDays: 35 },
-      { name: 'Family civil status book', instructions: 'Livret de famille or equivalent, all filled pages.', required: false, deadlineDays: 35 },
+      { name: 'Справка о несудимости', instructions: 'Из каждой страны проживания за последние 5 лет.', deadlineDays: 30 },
+      { name: 'Диплом с апостилем', instructions: 'Диплом о высшем образовании, с апостилем, читаемый скан.', deadlineDays: 30 },
+      { name: 'Подтверждение связей с родиной', instructions: 'Свидетельство о собственности, регистрация бизнеса или аналог.', deadlineDays: 35 },
+      { name: 'Свидетельства о составе семьи', instructions: 'Livret de famille или аналог, все заполненные страницы.', required: false, deadlineDays: 35 },
     ],
   },
   {
-    name: 'Translation',
-    description: 'Sworn translation of every non-French document.',
+    name: 'Перевод',
+    description: 'Присяжный перевод всех нефранцузских документов.',
     requirements: [
-      { name: 'Sworn translation set', instructions: 'Prepared by our partner translator; you only confirm the spelling of names.', deadlineDays: 45 },
+      { name: 'Комплект присяжного перевода', instructions: 'Готовит наш партнёр-переводчик; от вас нужно только подтвердить написание имён.', deadlineDays: 45 },
     ],
   },
   {
-    name: 'Application preparation',
-    description: 'Forms filled, dossier assembled and checked twice.',
+    name: 'Подготовка заявления',
+    description: 'Формы заполнены, досье собрано и дважды проверено.',
     requirements: [
-      { name: 'Signed CERFA application form', instructions: 'We prepare it, you sign and return it.', deadlineDays: 55 },
+      { name: 'Подписанная форма CERFA', instructions: 'Мы заполняем, вы подписываете и возвращаете.', deadlineDays: 55 },
     ],
   },
   {
-    name: 'Submission',
-    description: 'Dossier submitted at the consulate or prefecture.',
+    name: 'Подача',
+    description: 'Досье подано в консульство или префектуру.',
     requirements: [],
   },
   {
-    name: 'Processing',
-    description: 'Waiting for the authority to process the application.',
+    name: 'Рассмотрение',
+    description: 'Ожидание решения ведомства.',
     requirements: [],
   },
   {
-    name: 'Decision',
-    description: 'Decision received and the residence permit handed over.',
+    name: 'Решение',
+    description: 'Решение получено, вид на жительство выдан.',
     requirements: [],
   },
 ];
 
 /**
- * Demo state for Ivan Petrov's case: 16 requirements — 12 approved, 1 under
- * review, 1 rejected, 2 still missing (13 of 16 received).
+ * Состояние демо-дела Ивана Петрова: 16 требований — 12 принято, 1 на проверке,
+ * 1 отклонён, 2 не загружено (получено 13 из 16).
  */
 const DEMO_REQUIREMENT_STATE: Record<string, RequirementStatus> = {
-  'Signed service agreement': RequirementStatus.APPROVED,
-  'Completed client questionnaire': RequirementStatus.APPROVED,
-  'Passport (all pages)': RequirementStatus.APPROVED,
-  'Birth certificate': RequirementStatus.APPROVED,
-  'Marriage certificate': RequirementStatus.APPROVED,
-  'Proof of accommodation in France': RequirementStatus.APPROVED,
-  'Bank statements (last 3 months)': RequirementStatus.APPROVED,
-  'Employment contract': RequirementStatus.APPROVED,
-  'Health insurance policy': RequirementStatus.REJECTED,
-  'Passport photographs': RequirementStatus.APPROVED,
-  'Criminal record certificate': RequirementStatus.APPROVED,
-  'Diploma with apostille': RequirementStatus.APPROVED,
-  'Proof of ties to home country': RequirementStatus.UNDER_REVIEW,
-  'Family civil status book': RequirementStatus.APPROVED,
-  'Sworn translation set': RequirementStatus.PENDING,
-  'Signed CERFA application form': RequirementStatus.PENDING,
+  'Подписанный договор': RequirementStatus.APPROVED,
+  'Заполненная анкета': RequirementStatus.APPROVED,
+  'Загранпаспорт (все страницы)': RequirementStatus.APPROVED,
+  'Свидетельство о рождении': RequirementStatus.APPROVED,
+  'Свидетельство о браке': RequirementStatus.APPROVED,
+  'Подтверждение жилья во Франции': RequirementStatus.APPROVED,
+  'Выписка по счёту за 3 месяца': RequirementStatus.APPROVED,
+  'Трудовой договор': RequirementStatus.APPROVED,
+  'Полис медицинского страхования': RequirementStatus.REJECTED,
+  'Фотографии на документы': RequirementStatus.APPROVED,
+  'Справка о несудимости': RequirementStatus.APPROVED,
+  'Диплом с апостилем': RequirementStatus.APPROVED,
+  'Подтверждение связей с родиной': RequirementStatus.UNDER_REVIEW,
+  'Свидетельства о составе семьи': RequirementStatus.APPROVED,
+  'Комплект присяжного перевода': RequirementStatus.PENDING,
+  'Подписанная форма CERFA': RequirementStatus.PENDING,
 };
 
 const FILENAMES: Record<string, string> = {
-  'Signed service agreement': 'service-agreement-signed.pdf',
-  'Completed client questionnaire': 'client-questionnaire.pdf',
-  'Passport (all pages)': 'passport-petrov.pdf',
-  'Birth certificate': 'birth-certificate-apostille.pdf',
-  'Marriage certificate': 'marriage-certificate.pdf',
-  'Proof of accommodation in France': 'lease-lyon-rue-victor-hugo.pdf',
-  'Bank statements (last 3 months)': 'bank-statements-q2.pdf',
-  'Employment contract': 'employment-contract-signed.pdf',
-  'Health insurance policy': 'health-insurance-policy.pdf',
-  'Passport photographs': 'photos-35x45.png',
-  'Criminal record certificate': 'criminal-record-certificate.pdf',
-  'Diploma with apostille': 'diploma-apostille.pdf',
-  'Proof of ties to home country': 'property-deed.pdf',
-  'Family civil status book': 'family-book.pdf',
+  'Подписанный договор': 'dogovor-podpisan.pdf',
+  'Заполненная анкета': 'anketa-klienta.pdf',
+  'Загранпаспорт (все страницы)': 'zagranpasport-petrov.pdf',
+  'Свидетельство о рождении': 'svidetelstvo-o-rozhdenii-apostil.pdf',
+  'Свидетельство о браке': 'svidetelstvo-o-brake.pdf',
+  'Подтверждение жилья во Франции': 'dogovor-arendy-lyon.pdf',
+  'Выписка по счёту за 3 месяца': 'vypiska-po-schetu.pdf',
+  'Трудовой договор': 'trudovoy-dogovor.pdf',
+  'Полис медицинского страхования': 'medstrahovka-polis.pdf',
+  'Фотографии на документы': 'foto-35x45.png',
+  'Справка о несудимости': 'spravka-o-nesudimosti.pdf',
+  'Диплом с апостилем': 'diplom-apostil.pdf',
+  'Подтверждение связей с родиной': 'svidetelstvo-sobstvennosti.pdf',
+  'Свидетельства о составе семьи': 'sostav-semyi.pdf',
 };
 
 async function main(): Promise<void> {
-  console.info('Seeding CaseFlow demo data…');
+  console.info('Заполняем демо-данные CaseFlow…');
 
   await prisma.organization.deleteMany({ where: { slug: ORG_SLUG } });
 
   const organization = await prisma.organization.create({
     data: {
-      name: 'Global Migration',
+      name: 'Глобал Миграция',
       slug: ORG_SLUG,
       primaryColor: '#1F6FEB',
       timezone: 'Europe/Paris',
       supportEmail: 'support@globalmigration.example',
       portalWelcomeText:
-        'Welcome to your Global Migration portal. Everything about your application lives here: what we need from you, what we are working on, and where your file stands right now.',
+        'Здесь всё о вашем деле: что нужно от вас, над чем работаем мы и на каком этапе сейчас ваши документы.',
     },
   });
 
@@ -170,7 +170,7 @@ async function main(): Promise<void> {
     prisma.user.create({
       data: {
         organizationId: organization.id,
-        name: 'Elena Sokolova',
+        name: 'Елена Соколова',
         email: 'elena@globalmigration.example',
         role: Role.OWNER,
       },
@@ -178,7 +178,7 @@ async function main(): Promise<void> {
     prisma.user.create({
       data: {
         organizationId: organization.id,
-        name: 'Marc Dubois',
+        name: 'Марк Дюбуа',
         email: 'marc@globalmigration.example',
         role: Role.MANAGER,
       },
@@ -186,7 +186,7 @@ async function main(): Promise<void> {
     prisma.user.create({
       data: {
         organizationId: organization.id,
-        name: 'Amélie Laurent',
+        name: 'Амели Лоран',
         email: 'amelie@globalmigration.example',
         role: Role.SPECIALIST,
       },
@@ -196,9 +196,9 @@ async function main(): Promise<void> {
   const template = await prisma.workflowTemplate.create({
     data: {
       organizationId: organization.id,
-      name: 'France Residence Permit',
+      name: 'ВНЖ Франции',
       description:
-        'Standard nine-stage process for a French residence permit application, from contract to decision.',
+        'Стандартный процесс из девяти этапов: от договора до решения по виду на жительство во Франции.',
       stages: {
         create: FRANCE_WORKFLOW.map((stage, stageIndex) => ({
           name: stage.name,
@@ -222,19 +222,19 @@ async function main(): Promise<void> {
   const client = await prisma.client.create({
     data: {
       organizationId: organization.id,
-      firstName: 'Ivan',
-      lastName: 'Petrov',
+      firstName: 'Иван',
+      lastName: 'Петров',
       email: 'ivan.petrov@example.com',
       phone: '+33 6 12 34 56 78',
       externalCrmContactId: '1042',
-      notes: 'Relocating with spouse. Employer in Lyon has already issued the work contract.',
+      notes: 'Переезжает с супругой. Работодатель в Лионе уже выдал трудовой договор.',
     },
   });
 
   await prisma.user.create({
     data: {
       organizationId: organization.id,
-      name: 'Ivan Petrov',
+      name: 'Иван Петров',
       email: client.email,
       role: Role.CLIENT,
       clientId: client.id,
@@ -249,9 +249,9 @@ async function main(): Promise<void> {
       clientId: client.id,
       assignedUserId: specialist.id,
       workflowTemplateId: template.id,
-      title: 'France Residence Permit — Ivan Petrov',
+      title: 'ВНЖ Франции — Иван Петров',
       description:
-        'Talent-passport route. Employer: Lumen Robotics SAS (Lyon). Spouse joins on a family reunification application handled separately.',
+        'Категория «паспорт таланта». Работодатель: Lumen Robotics SAS (Лион). Супруга подаёт отдельно по воссоединению семьи.',
       status: CaseStatus.ACTIVE,
       crmProvider: CrmProviderKind.BITRIX24,
       externalCrmEntityId: '4021',
@@ -262,7 +262,7 @@ async function main(): Promise<void> {
     },
   });
 
-  // Copy the template into the case: stages 1–3 completed, Legal review active.
+  // Копируем шаблон в дело: этапы 1–3 завершены, «Юридическая проверка» активна.
   const activePosition = 3;
   const stageIdByName = new Map<string, string>();
 
@@ -284,7 +284,7 @@ async function main(): Promise<void> {
     stageIdByName.set(templateStage.name, stage.id);
   }
 
-  const currentStageId = stageIdByName.get('Legal review')!;
+  const currentStageId = stageIdByName.get('Юридическая проверка')!;
   await prisma.case.update({ where: { id: kase.id }, data: { currentStageId } });
 
   let uploadedAt = daysAgo(40);
@@ -329,8 +329,8 @@ async function main(): Promise<void> {
           uploadedByType: ActorType.CLIENT,
           version: 1,
           filename,
-          // Demo documents have no bytes behind them; the storage key follows the
-          // production layout so download links resolve and fail cleanly.
+          // За демо-документами нет байтов; ключ хранилища имеет боевой формат,
+          // поэтому ссылки на скачивание отрабатывают и корректно возвращают 404.
           storageKey: `org/${organization.id}/cases/${kase.id}/${randomUUID()}.pdf`,
           mimeType: filename.endsWith('.png') ? 'image/png' : 'application/pdf',
           fileSize: 180_000 + Math.round(Math.abs(Math.sin(requirement.name.length)) * 900_000),
@@ -338,7 +338,7 @@ async function main(): Promise<void> {
           status: documentStatus,
           rejectionReason:
             documentStatus === DocumentStatus.REJECTED
-              ? 'The policy expires on 30 September, before the end of the requested stay. Please upload a policy that covers the full 12 months with at least €30,000 of cover.'
+              ? 'Полис заканчивается 30 сентября — раньше конца запрошенного срока пребывания. Загрузите полис на все 12 месяцев с покрытием не менее 30 000 €.'
               : null,
           createdAt: uploadedAt,
           reviewedAt: documentStatus === DocumentStatus.UNDER_REVIEW ? null : new Date(uploadedAt.getTime() + DAY),
@@ -349,7 +349,7 @@ async function main(): Promise<void> {
       documentsByRequirement.set(requirement.name, { id: document.id, status: documentStatus });
 
       if (documentStatus === DocumentStatus.REJECTED) {
-        // The rejected item goes back into the client's request queue.
+        // Отклонённый документ возвращается в очередь запросов клиента.
         await prisma.clientRequest.create({
           data: {
             organizationId: organization.id,
@@ -357,9 +357,9 @@ async function main(): Promise<void> {
             clientId: client.id,
             requirementId: requirement.id,
             type: RequestType.DOCUMENT,
-            title: 'Replace: Health insurance policy',
+            title: 'Заменить: полис медицинского страхования',
             description:
-              'Your current policy expires before the end of the requested stay. Please upload a policy covering the full 12 months with at least €30,000 of cover.',
+              'Текущий полис заканчивается раньше конца срока пребывания. Загрузите полис на все 12 месяцев с покрытием не менее 30 000 €.',
             deadline: daysAhead(2),
             status: RequestStatus.OPEN,
             createdById: specialist.id,
@@ -370,16 +370,16 @@ async function main(): Promise<void> {
     }
   }
 
-  // An open request the client must act on, plus one already completed.
+  // Открытый запрос, по которому клиент должен действовать, и один уже закрытый.
   await prisma.clientRequest.create({
     data: {
       organizationId: organization.id,
       caseId: kase.id,
       clientId: client.id,
       type: RequestType.INFORMATION,
-      title: 'Confirm the spelling of your name for the sworn translation',
+      title: 'Подтвердите написание имени для присяжного перевода',
       description:
-        'The translator needs the exact Latin transliteration as it appears in your passport, including middle name. Reply in the messages tab or complete this request once you have checked.',
+        'Переводчику нужна точная латинская транслитерация, как в загранпаспорте, включая отчество. Напишите в сообщениях или отметьте запрос выполненным, когда проверите.',
       deadline: daysAhead(1),
       status: RequestStatus.OPEN,
       createdById: specialist.id,
@@ -393,8 +393,8 @@ async function main(): Promise<void> {
       caseId: kase.id,
       clientId: client.id,
       type: RequestType.APPOINTMENT,
-      title: 'Confirm availability for the consulate appointment window',
-      description: 'We hold slots between 12 and 20 October. Tell us which dates do not work for you.',
+      title: 'Подтвердите даты для записи в консульство',
+      description: 'У нас забронированы слоты с 12 по 20 октября. Скажите, какие даты вам не подходят.',
       status: RequestStatus.COMPLETED,
       createdById: manager.id,
       createdAt: daysAgo(12),
@@ -408,8 +408,8 @@ async function main(): Promise<void> {
         organizationId: organization.id,
         caseId: kase.id,
         assignedToId: specialist.id,
-        title: 'Review the property deed against the ties-to-home-country criteria',
-        description: 'Check that the ownership share and the issue date satisfy the consulate guidance.',
+        title: 'Проверить свидетельство о собственности по критерию связей с родиной',
+        description: 'Убедиться, что доля собственности и дата выдачи соответствуют требованиям консульства.',
         deadline: daysAhead(1),
         status: TaskStatus.IN_PROGRESS,
         visibility: TaskVisibility.INTERNAL,
@@ -418,7 +418,7 @@ async function main(): Promise<void> {
         organizationId: organization.id,
         caseId: kase.id,
         assignedToId: manager.id,
-        title: 'Brief the sworn translator on the file',
+        title: 'Передать дело присяжному переводчику',
         deadline: daysAhead(4),
         status: TaskStatus.OPEN,
         visibility: TaskVisibility.INTERNAL,
@@ -427,8 +427,8 @@ async function main(): Promise<void> {
         organizationId: organization.id,
         caseId: kase.id,
         assignedToId: specialist.id,
-        title: 'Prepare two passport photographs for the consulate visit',
-        description: 'Bring the printed originals to the appointment — scans are not accepted at the counter.',
+        title: 'Подготовить две фотографии для визита в консульство',
+        description: 'Принесите напечатанные оригиналы на приём — сканы в окне не принимают.',
         deadline: daysAhead(9),
         status: TaskStatus.OPEN,
         visibility: TaskVisibility.CLIENT,
@@ -447,7 +447,7 @@ async function main(): Promise<void> {
         caseId: kase.id,
         senderId: specialist.id,
         senderType: ActorType.USER,
-        body: 'Good news, Ivan — your criminal record certificate and diploma both passed legal review. We are now down to the insurance policy and the translation set.',
+        body: 'Иван, хорошие новости: справка о несудимости и диплом прошли юридическую проверку. Остались полис и комплект перевода.',
         createdAt: daysAgo(4),
         readByClientAt: daysAgo(4),
       },
@@ -456,7 +456,7 @@ async function main(): Promise<void> {
         caseId: kase.id,
         senderId: clientUser.id,
         senderType: ActorType.CLIENT,
-        body: 'Thank you! My broker says the new policy will be issued on Thursday. Is that early enough?',
+        body: 'Спасибо! Брокер говорит, новый полис выпустят в четверг. Успеваем?',
         createdAt: daysAgo(3),
         readByStaffAt: daysAgo(3),
       },
@@ -465,7 +465,7 @@ async function main(): Promise<void> {
         caseId: kase.id,
         senderId: specialist.id,
         senderType: ActorType.USER,
-        body: 'Thursday works. Please upload it the same day so I can review it before the translator starts — the policy number goes into the translated set.',
+        body: 'Четверг подходит. Загрузите в тот же день, чтобы я успела проверить до начала перевода — номер полиса войдёт в комплект.',
         createdAt: daysAgo(3),
       },
       {
@@ -473,7 +473,7 @@ async function main(): Promise<void> {
         caseId: kase.id,
         senderId: clientUser.id,
         senderType: ActorType.CLIENT,
-        body: 'Understood. One question about the translation: should my middle name be included the way it appears in the passport?',
+        body: 'Понял. Вопрос по переводу: отчество писать так же, как в загранпаспорте?',
         createdAt: daysAgo(1),
       },
     ],
@@ -501,7 +501,7 @@ async function main(): Promise<void> {
       actorType: ActorType.USER,
       actorId: specialist.id,
       actorLabel: specialist.name,
-      payload: { from: 'Contract', to: 'Questionnaire' },
+      payload: { from: 'Договор', to: 'Анкета' },
     },
     {
       eventType: EventType.STAGE_CHANGED,
@@ -509,15 +509,15 @@ async function main(): Promise<void> {
       actorType: ActorType.USER,
       actorId: specialist.id,
       actorLabel: specialist.name,
-      payload: { from: 'Questionnaire', to: 'Document collection' },
+      payload: { from: 'Анкета', to: 'Сбор документов' },
     },
     {
       eventType: EventType.DOCUMENT_UPLOADED,
       createdAt: daysAgo(20),
       actorType: ActorType.CLIENT,
       actorId: clientUser.id,
-      actorLabel: 'Ivan Petrov',
-      payload: { filename: 'passport-petrov.pdf', version: 1 },
+      actorLabel: 'Иван Петров',
+      payload: { filename: 'zagranpasport-petrov.pdf', version: 1 },
     },
     {
       eventType: EventType.DOCUMENT_APPROVED,
@@ -525,14 +525,14 @@ async function main(): Promise<void> {
       actorType: ActorType.USER,
       actorId: specialist.id,
       actorLabel: specialist.name,
-      payload: { filename: 'passport-petrov.pdf', version: 1 },
+      payload: { filename: 'zagranpasport-petrov.pdf', version: 1 },
     },
     {
       eventType: EventType.STAGE_CHANGED,
       createdAt: daysAgo(12),
       actorType: ActorType.INTEGRATION,
       actorLabel: 'BITRIX24',
-      payload: { from: 'Document collection', to: 'Legal review', source: 'BITRIX24', externalStageId: 'C0:PREPARATION' },
+      payload: { from: 'Сбор документов', to: 'Юридическая проверка', source: 'BITRIX24', externalStageId: 'C0:PREPARATION' },
     },
     {
       eventType: EventType.DOCUMENT_REJECTED,
@@ -541,9 +541,9 @@ async function main(): Promise<void> {
       actorId: specialist.id,
       actorLabel: specialist.name,
       payload: {
-        filename: 'health-insurance-policy.pdf',
+        filename: 'medstrahovka-polis.pdf',
         version: 1,
-        rejectionReason: 'Policy expires before the end of the requested stay.',
+        rejectionReason: 'Полис заканчивается раньше конца срока пребывания.',
       },
     },
     {
@@ -552,23 +552,23 @@ async function main(): Promise<void> {
       actorType: ActorType.USER,
       actorId: specialist.id,
       actorLabel: specialist.name,
-      payload: { name: 'Replace: Health insurance policy', deadline: daysAhead(2).toISOString() },
+      payload: { name: 'Заменить: полис медицинского страхования', deadline: daysAhead(2).toISOString() },
     },
     {
       eventType: EventType.DOCUMENT_UPLOADED,
       createdAt: daysAgo(2),
       actorType: ActorType.CLIENT,
       actorId: clientUser.id,
-      actorLabel: 'Ivan Petrov',
-      payload: { filename: 'property-deed.pdf', version: 1 },
+      actorLabel: 'Иван Петров',
+      payload: { filename: 'svidetelstvo-sobstvennosti.pdf', version: 1 },
     },
     {
       eventType: EventType.MESSAGE_SENT,
       createdAt: daysAgo(1),
       actorType: ActorType.CLIENT,
       actorId: clientUser.id,
-      actorLabel: 'Ivan Petrov',
-      payload: { excerpt: 'One question about the translation…' },
+      actorLabel: 'Иван Петров',
+      payload: { excerpt: 'Вопрос по переводу…' },
     },
   ];
 
@@ -587,12 +587,12 @@ async function main(): Promise<void> {
     });
   }
 
-  // A second client and case so list screens are not single-row.
+  // Второй клиент и дело, чтобы списки не состояли из одной строки.
   const secondClient = await prisma.client.create({
     data: {
       organizationId: organization.id,
-      firstName: 'Marta',
-      lastName: 'Kowalski',
+      firstName: 'Марта',
+      lastName: 'Ковальская',
       email: 'marta.kowalski@example.com',
       phone: '+48 601 222 333',
     },
@@ -601,7 +601,7 @@ async function main(): Promise<void> {
   await prisma.user.create({
     data: {
       organizationId: organization.id,
-      name: 'Marta Kowalski',
+      name: 'Марта Ковальская',
       email: secondClient.email,
       role: Role.CLIENT,
       clientId: secondClient.id,
@@ -614,7 +614,7 @@ async function main(): Promise<void> {
       clientId: secondClient.id,
       assignedUserId: manager.id,
       workflowTemplateId: template.id,
-      title: 'France Residence Permit — Marta Kowalski',
+      title: 'ВНЖ Франции — Марта Ковальская',
       status: CaseStatus.ACTIVE,
       createdAt: daysAgo(11),
       lastActivityAt: daysAgo(9),
@@ -671,8 +671,8 @@ async function main(): Promise<void> {
     },
   });
 
-  // Bitrix24 connection with pipeline/stage mapping, ready to be pointed at a
-  // real portal by pasting an inbound webhook URL in Settings → Integrations.
+  // Подключение к Битрикс24 с сопоставлением стадий: чтобы связать с реальным
+  // порталом, достаточно вставить адрес входящего вебхука в «Настройки → Интеграции».
   const connection = await prisma.crmConnection.create({
     data: {
       organizationId: organization.id,
@@ -686,11 +686,11 @@ async function main(): Promise<void> {
   });
 
   const mappings: Array<[string, string, string]> = [
-    ['C0:NEW', 'New lead', 'Contract'],
-    ['C0:PREPARATION', 'Docs received', 'Legal review'],
-    ['C0:EXECUTING', 'In translation', 'Translation'],
-    ['C0:FINAL_INVOICE', 'Submitted', 'Submission'],
-    ['C0:WON', 'Approved', 'Decision'],
+    ['C0:NEW', 'Новый лид', 'Договор'],
+    ['C0:PREPARATION', 'Документы получены', 'Юридическая проверка'],
+    ['C0:EXECUTING', 'В переводе', 'Перевод'],
+    ['C0:FINAL_INVOICE', 'Подано', 'Подача'],
+    ['C0:WON', 'Одобрено', 'Решение'],
   ];
 
   for (const [externalStageId, externalStageName, stageName] of mappings) {
@@ -699,7 +699,7 @@ async function main(): Promise<void> {
       data: {
         connectionId: connection.id,
         pipelineId: '0',
-        pipelineName: 'Residence permits',
+        pipelineName: 'Виды на жительство',
         externalStageId,
         externalStageName,
         templateStageId: templateStage?.id ?? null,
@@ -707,7 +707,7 @@ async function main(): Promise<void> {
     });
   }
 
-  // Progress is computed from the seeded state, never written by hand.
+  // Прогресс считается из состояния дела, а не проставляется руками.
   for (const target of [kase.id, secondCase.id]) {
     const stages = await prisma.caseStage.findMany({
       where: { caseId: target },
@@ -720,19 +720,19 @@ async function main(): Promise<void> {
   const demoCase = await prisma.case.findUniqueOrThrow({ where: { id: kase.id } });
 
   console.info(`
-Demo organization ready: ${organization.name} (/${organization.slug})
+Демо-организация готова: ${organization.name} (/${organization.slug})
 
-  Employees   ${owner.email} (OWNER)
-              ${manager.email} (MANAGER)
-              ${specialist.email} (SPECIALIST)
-  Client      ${client.email} (CLIENT portal)
+  Сотрудники  ${owner.email} (владелец)
+              ${manager.email} (менеджер)
+              ${specialist.email} (специалист)
+  Клиент      ${client.email} (кабинет клиента)
 
-  Case        ${demoCase.title}
-              stage "Legal review", progress ${demoCase.progress}%
-              16 document requirements — 12 approved, 1 under review, 1 rejected, 2 outstanding
+  Дело        ${demoCase.title}
+              этап «Юридическая проверка», прогресс ${demoCase.progress}%
+              16 требований к документам — 12 принято, 1 на проверке, 1 отклонён, 2 не загружено
 
-Sign in from the login screen: enter one of the addresses above and open the
-magic link printed in the API log.
+Вход: на экране входа введите один из адресов выше и откройте ссылку,
+напечатанную в логе API.
 `);
 }
 

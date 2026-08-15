@@ -46,7 +46,7 @@ export class DocumentsService {
 
     if (input.stageId) {
       const stage = await this.prisma.caseStage.findFirst({ where: { id: input.stageId, caseId } });
-      if (!stage) throw new BadRequestException('Stage does not belong to this case');
+      if (!stage) throw new BadRequestException('Этап не принадлежит этому делу');
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
@@ -129,7 +129,7 @@ export class DocumentsService {
       requirement = await this.prisma.documentRequirement.findFirst({
         where: { id: requirementId, caseId },
       });
-      if (!requirement) throw new NotFoundException('Document requirement not found');
+      if (!requirement) throw new NotFoundException('Требование к документу не найдено');
     }
 
     const previousVersions = requirementId
@@ -219,11 +219,11 @@ export class DocumentsService {
       where: { id: documentId, organizationId: auth.organizationId },
       include: { case: { select: { id: true, title: true, clientId: true } } },
     });
-    if (!document) throw new NotFoundException('Document not found');
+    if (!document) throw new NotFoundException('Документ не найден');
     await this.access.assertAccess(auth, document.caseId);
 
     if (input.decision === 'REJECT' && !input.rejectionReason?.trim()) {
-      throw new BadRequestException('A rejection reason is required');
+      throw new BadRequestException('Укажите причину отказа');
     }
 
     const approved = input.decision === 'APPROVE';
@@ -301,7 +301,7 @@ export class DocumentsService {
       where: { id: documentId, organizationId: auth.organizationId },
       select: { id: true, caseId: true, filename: true, storageKey: true },
     });
-    if (!document) throw new NotFoundException('Document not found');
+    if (!document) throw new NotFoundException('Документ не найден');
     await this.access.assertAccess(auth, document.caseId);
 
     const url = await this.storage.signedUrl(document.storageKey, document.filename);
@@ -327,7 +327,7 @@ export class DocumentsService {
 
   async listForClient(auth: AuthContext) {
     if (auth.role !== Role.CLIENT || !auth.clientId) {
-      throw new ForbiddenException('Client portal only');
+      throw new ForbiddenException('Только для кабинета клиента');
     }
     return this.prisma.documentRequirement.findMany({
       where: { case: { organizationId: auth.organizationId, clientId: auth.clientId } },
