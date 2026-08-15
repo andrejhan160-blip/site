@@ -288,6 +288,67 @@ export async function sendMessage(_prev: ActionState, formData: FormData): Promi
   });
 }
 
+// --- Workflow templates ------------------------------------------------------
+
+const templateSchema = z.object({
+  name: z.string().trim().min(1, 'Give the workflow a name'),
+  description: z.string().trim().optional(),
+  isActive: z.boolean(),
+  stages: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1, 'Every stage needs a name'),
+        description: z.string().trim().optional(),
+        requirements: z.array(
+          z.object({
+            name: z.string().trim().min(1, 'Every document needs a name'),
+            instructions: z.string().trim().optional(),
+            required: z.boolean(),
+            deadlineDays: z.number().int().min(0).max(3650).nullable(),
+          }),
+        ),
+      }),
+    )
+    .min(1, 'A workflow needs at least one stage'),
+});
+
+export async function saveWorkflowTemplate(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  let parsed;
+  try {
+    parsed = templateSchema.parse(JSON.parse(String(formData.get('template'))));
+  } catch (error) {
+    const message =
+      error instanceof z.ZodError ? error.issues[0].message : 'The workflow could not be read';
+    return { ok: false, message };
+  }
+
+  const templateId = optional(formData.get('templateId'));
+  let savedId = templateId;
+
+  const result = await run(async () => {
+    if (templateId) {
+      await api(`/workflow-templates/${templateId}`, { method: 'PATCH', body: parsed });
+    } else {
+      const created = await api<{ id: string }>('/workflow-templates', { method: 'POST', body: parsed });
+      savedId = created.id;
+    }
+    revalidatePath('/workflows');
+    if (savedId) revalidatePath(`/workflows/${savedId}`);
+  });
+
+  if (result.ok && savedId) redirect(`/workflows/${savedId}`);
+  return result;
+}
+
+export async function archiveWorkflowTemplate(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const templateId = String(formData.get('templateId'));
+  return run(async () => {
+    await api(`/workflow-templates/${templateId}`, { method: 'DELETE' });
+    revalidatePath('/workflows');
+    revalidatePath(`/workflows/${templateId}`);
+  }, 'Workflow archived');
+}
+
 // --- Settings ----------------------------------------------------------------
 
 export async function updateOrganization(_prev: ActionState, formData: FormData): Promise<ActionState> {

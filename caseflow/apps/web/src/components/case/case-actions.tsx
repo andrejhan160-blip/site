@@ -1,11 +1,11 @@
 'use client';
 
-import { FilePlus2, GitBranch, ListPlus, MessageSquarePlus } from 'lucide-react';
+import { FilePlus2, GitBranch, ListPlus, MessageSquarePlus, Settings2 } from 'lucide-react';
 import { FormDialog } from '@/components/forms/form-dialog';
 import { Button } from '@/components/ui/button';
 import { Field, Input, Select, Textarea } from '@/components/ui/input';
-import { changeStage, createRequest, createTask, requestDocument } from '@/lib/actions';
-import type { Stage, TeamMember } from '@/lib/types';
+import { changeStage, createRequest, createTask, requestDocument, updateCase } from '@/lib/actions';
+import type { CaseStatus, Stage, TeamMember } from '@/lib/types';
 
 export function ChangeStageDialog({
   caseId,
@@ -190,6 +190,60 @@ export function CreateTaskDialog({ caseId, team }: { caseId: string; team: TeamM
           <option value="BOTH">Both</option>
         </Select>
       </Field>
+    </FormDialog>
+  );
+}
+
+export function CaseSettingsDialog({
+  caseId,
+  title,
+  status,
+  assignedUserId,
+  team,
+}: {
+  caseId: string;
+  title: string;
+  status: CaseStatus;
+  assignedUserId: string | null;
+  team: TeamMember[];
+}) {
+  return (
+    <FormDialog
+      trigger={
+        <Button variant="ghost" size="icon" aria-label="Case settings">
+          <Settings2 />
+        </Button>
+      }
+      title="Case settings"
+      description="Reassign the case, rename it, or put it on hold."
+      action={updateCase}
+      submitLabel="Save changes"
+      pendingLabel="Saving…"
+    >
+      <input type="hidden" name="caseId" value={caseId} />
+      <Field label="Case title">
+        <Input name="title" defaultValue={title} required />
+      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Assigned to">
+          <Select name="assignedUserId" defaultValue={assignedUserId ?? ''}>
+            <option value="">Leave unchanged</option>
+            {team.map((member) => (
+              <option key={member.id} value={member.id}>
+                {member.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label="Status">
+          <Select name="status" defaultValue={status}>
+            <option value="ACTIVE">Active</option>
+            <option value="ON_HOLD">On hold</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+          </Select>
+        </Field>
+      </div>
     </FormDialog>
   );
 }

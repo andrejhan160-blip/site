@@ -4,14 +4,16 @@ import { notFound } from 'next/navigation';
 import { PageHeader } from '@/components/layout/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { api, ApiError } from '@/lib/api';
-import { requireStaff } from '@/lib/session';
+import { canAdminister, requireStaff } from '@/lib/session';
 import type { WorkflowTemplateDetail } from '@/lib/types';
+import { ArchiveWorkflowButton } from './archive-button';
 
 export const metadata: Metadata = { title: 'Workflow' };
 
 export default async function WorkflowDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireStaff();
+  const profile = await requireStaff();
   const { id } = await params;
 
   let template: WorkflowTemplateDetail;
@@ -28,7 +30,20 @@ export default async function WorkflowDetailPage({ params }: { params: Promise<{
         ← All workflows
       </Link>
       <div className="mt-3">
-        <PageHeader title={template.name} description={template.description ?? undefined} />
+        <PageHeader
+          title={template.name}
+          description={template.description ?? undefined}
+          actions={
+            canAdminister(profile.role) ? (
+              <>
+                <Button asChild variant="secondary">
+                  <Link href={`/workflows/${template.id}/edit`}>Edit workflow</Link>
+                </Button>
+                {template.isActive ? <ArchiveWorkflowButton templateId={template.id} /> : null}
+              </>
+            ) : undefined
+          }
+        />
       </div>
 
       <div className="space-y-4">

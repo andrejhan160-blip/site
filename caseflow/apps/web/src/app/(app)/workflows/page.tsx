@@ -1,17 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { api } from '@/lib/api';
-import { requireStaff } from '@/lib/session';
+import { canAdminister, requireStaff } from '@/lib/session';
 import type { WorkflowTemplateSummary } from '@/lib/types';
 
 export const metadata: Metadata = { title: 'Workflows' };
 
 export default async function WorkflowsPage() {
-  await requireStaff();
+  const profile = await requireStaff();
   const templates = await api<WorkflowTemplateSummary[]>('/workflow-templates');
 
   return (
@@ -19,11 +21,31 @@ export default async function WorkflowsPage() {
       <PageHeader
         title="Workflows"
         description="Reusable process templates. Opening a case copies the template — editing a template never changes a case that already exists."
+        actions={
+          canAdminister(profile.role) ? (
+            <Button asChild>
+              <Link href="/workflows/new">
+                <Plus />
+                New workflow
+              </Link>
+            </Button>
+          ) : undefined
+        }
       />
 
       {templates.length === 0 ? (
         <Card>
-          <EmptyState title="No workflows yet" description="Create a workflow to open cases from it." />
+          <EmptyState
+            title="No workflows yet"
+            description="Create a workflow to open cases from it."
+            action={
+              canAdminister(profile.role) ? (
+                <Button asChild>
+                  <Link href="/workflows/new">Create a workflow</Link>
+                </Button>
+              ) : undefined
+            }
+          />
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

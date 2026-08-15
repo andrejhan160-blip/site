@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { CreateRequestDialog, CreateTaskDialog, ChangeStageDialog, RequestDocumentDialog } from '@/components/case/case-actions';
+import {
+  CaseSettingsDialog,
+  ChangeStageDialog,
+  CreateRequestDialog,
+  CreateTaskDialog,
+  RequestDocumentDialog,
+} from '@/components/case/case-actions';
 import { ActivityFeed } from '@/components/case/activity-feed';
 import { DocumentList } from '@/components/case/document-list';
 import { MessageThread } from '@/components/case/message-thread';
@@ -88,6 +94,13 @@ export default async function CaseWorkspace({
             <CreateRequestDialog caseId={record.id} />
             <CreateTaskDialog caseId={record.id} team={team} />
             <UploadForm caseId={record.id} label="Upload" variant="secondary" size="md" />
+            <CaseSettingsDialog
+              caseId={record.id}
+              title={record.title}
+              status={record.status}
+              assignedUserId={record.assignedUser?.id ?? null}
+              team={team}
+            />
           </div>
         </div>
 
