@@ -92,8 +92,12 @@ export function TaskStatusBadge({ status }: { status: TaskStatus }) {
   return <Badge tone={TASK_TONES[status]}>{label(status)}</Badge>;
 }
 
-export function DeadlineBadge({ deadline }: { deadline: string | null }) {
-  if (!deadline) return null;
+/**
+ * A deadline only matters while the item is still outstanding: once it has been
+ * approved or completed, the date is history and must not read as "overdue".
+ */
+export function DeadlineBadge({ deadline, settled = false }: { deadline: string | null; settled?: boolean }) {
+  if (!deadline || settled) return null;
   const date = new Date(deadline);
   const days = Math.ceil((date.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
   const text = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(date);

@@ -60,7 +60,10 @@ export default async function PortalRequestsPage() {
                           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">{request.description}</p>
                         ) : null}
                         <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <DeadlineBadge deadline={request.deadline} />
+                          <DeadlineBadge
+                            deadline={request.deadline}
+                            settled={request.status === 'COMPLETED' || request.status === 'CANCELLED'}
+                          />
                           <RequestStatusBadge status={request.status} />
                           <span className="text-xs text-[var(--color-ink-subtle)]">
                             {titleCase(request.type)}

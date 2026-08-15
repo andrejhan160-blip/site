@@ -317,7 +317,10 @@ export default async function CaseWorkspace({
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <DeadlineBadge deadline={request.deadline} />
+                          <DeadlineBadge
+                            deadline={request.deadline}
+                            settled={request.status === 'COMPLETED' || request.status === 'CANCELLED'}
+                          />
                           <RequestStatusBadge status={request.status} />
                           {request.status === 'OPEN' || request.status === 'OVERDUE' ? (
                             <CancelRequestButton requestId={request.id} caseId={record.id} />
@@ -357,7 +360,10 @@ export default async function CaseWorkspace({
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <DeadlineBadge deadline={task.deadline} />
+                          <DeadlineBadge
+                            deadline={task.deadline}
+                            settled={task.status === 'COMPLETED' || task.status === 'CANCELLED'}
+                          />
                           <TaskStatusBadge status={task.status} />
                           <TaskToggle taskId={task.id} caseId={record.id} status={task.status} />
                         </div>

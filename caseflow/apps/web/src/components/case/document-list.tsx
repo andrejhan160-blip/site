@@ -47,7 +47,10 @@ export function DocumentList({
                     <span className="text-xs text-[var(--color-ink-subtle)]">optional</span>
                   ) : null}
                   <RequirementStatusBadge status={requirement.status} />
-                  <DeadlineBadge deadline={requirement.deadline} />
+                  <DeadlineBadge
+                    deadline={requirement.deadline}
+                    settled={requirement.status === 'APPROVED' || requirement.status === 'WAIVED'}
+                  />
                 </div>
 
                 {requirement.instructions ? (
