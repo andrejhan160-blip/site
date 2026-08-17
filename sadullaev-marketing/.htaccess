@@ -2,7 +2,10 @@
 
 RewriteEngine On
 
-# Всегда https и всегда без www (адрес совпадает с canonical на страницах)
+# Всегда https и всегда без www (адрес совпадает с canonical на страницах).
+# Правила срабатывают только на боевом домене, поэтому сайт можно спокойно
+# проверить на техническом адресе вроде smminsmv.beget.tech.
+RewriteCond %{HTTP_HOST} ^(www\.)?sadullaev\.pro$ [NC]
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
 
