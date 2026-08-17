@@ -1,0 +1,36 @@
+# Sadullaev Marketing — настройки Apache для Beget
+
+RewriteEngine On
+
+# Всегда https и всегда без www (адрес совпадает с canonical на страницах)
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{HTTP_HOST} ^www\.sadullaev\.pro$ [NC]
+RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
+
+# Сжатие: страницы весят мегабайты, без него загрузка заметно медленнее
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+</IfModule>
+
+# Кэширование: картинки надолго, страницы — нет, чтобы правки были видны сразу
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg            "access plus 1 year"
+  ExpiresByType image/png             "access plus 1 year"
+  ExpiresByType image/webp            "access plus 1 year"
+  ExpiresByType image/svg+xml         "access plus 1 year"
+  ExpiresByType text/html             "access plus 0 seconds"
+  ExpiresByType application/xml       "access plus 1 day"
+</IfModule>
+
+# Служебные файлы наружу не отдаём
+<FilesMatch "^(README\.md|set-domain\.sh|.*\.zip)$">
+  Require all denied
+</FilesMatch>
+
+# Кодировка по умолчанию
+AddDefaultCharset UTF-8
