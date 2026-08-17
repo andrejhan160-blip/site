@@ -1,16 +1,20 @@
 # Sadullaev Marketing — настройки Apache для Beget
+# Каждый блок обёрнут в IfModule: если модуля на сервере нет,
+# строки просто игнорируются, а не роняют сайт с ошибкой 500.
 
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
 
-# Всегда https и всегда без www (адрес совпадает с canonical на страницах).
-# Правила срабатывают только на боевом домене, поэтому сайт можно спокойно
-# проверить на техническом адресе вроде smminsmv.beget.tech.
-RewriteCond %{HTTP_HOST} ^(www\.)?sadullaev\.pro$ [NC]
-RewriteCond %{HTTPS} !=on
-RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
+  # Всегда https и всегда без www (адрес совпадает с canonical на страницах).
+  # Правила срабатывают только на боевом домене, поэтому сайт можно спокойно
+  # проверить на техническом адресе хостинга.
+  RewriteCond %{HTTP_HOST} ^(www\.)?sadullaev\.pro$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
 
-RewriteCond %{HTTP_HOST} ^www\.sadullaev\.pro$ [NC]
-RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
+  RewriteCond %{HTTP_HOST} ^www\.sadullaev\.pro$ [NC]
+  RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
+</IfModule>
 
 # Сжатие: страницы весят мегабайты, без него загрузка заметно медленнее
 <IfModule mod_deflate.c>
@@ -30,10 +34,16 @@ RewriteRule ^ https://sadullaev.pro%{REQUEST_URI} [L,R=301]
   ExpiresByType application/xml       "access plus 1 day"
 </IfModule>
 
-# Служебные файлы наружу не отдаём
+# Служебные файлы наружу не отдаём.
+# mod_authz_core — это Apache 2.4, mod_access_compat — синтаксис 2.2.
 <FilesMatch "^(README\.md|set-domain\.sh|.*\.zip)$">
-  Require all denied
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
 </FilesMatch>
 
-# Кодировка по умолчанию
 AddDefaultCharset UTF-8
