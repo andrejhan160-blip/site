@@ -1,11 +1,14 @@
 #!/bin/sh
-# Подставляет реальный домен вместо заглушки SITE_URL во всех файлах сайта.
-# Запуск из папки с сайтом:  sh set-domain.sh sadullaev.marketing
+# Меняет домен сайта во всех файлах: canonical, og:url, og:image, JSON-LD,
+# sitemap.xml, robots.txt. Текущий домен — sadullaev.pro.
+# Запуск из папки с сайтом:  sh set-domain.sh new-domain.com
 set -e
-[ -n "$1" ] || { echo "Использование: sh set-domain.sh example.com"; exit 1; }
-DOMAIN=$(printf '%s' "$1" | sed -e 's#^https\{0,1\}://##' -e 's#/$##')
+[ -n "$1" ] || { echo "Использование: sh set-domain.sh new-domain.com"; exit 1; }
+OLD="sadullaev.pro"
+NEW=$(printf '%s' "$1" | sed -e 's#^https\{0,1\}://##' -e 's#/$##')
 DIR=$(dirname "$0")
 find "$DIR" -type f \( -name '*.html' -o -name '*.xml' -o -name '*.txt' \) \
-  -exec sed -i.bak "s#https://SITE_URL#https://$DOMAIN#g" {} +
+  -exec sed -i.bak "s#https://$OLD#https://$NEW#g" {} +
 find "$DIR" -name '*.bak' -delete
-echo "Домен заменён на https://$DOMAIN"
+sed -i.bak "s#^OLD=\"$OLD\"#OLD=\"$NEW\"#" "$0" && rm -f "$0.bak"
+echo "Домен изменён: $OLD -> $NEW"
