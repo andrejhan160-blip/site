@@ -40,7 +40,7 @@
 
 # Служебные файлы наружу не отдаём.
 # mod_authz_core — это Apache 2.4, mod_access_compat — синтаксис 2.2.
-<FilesMatch "^(README\.md|set-domain\.sh|.*\.zip)$">
+<FilesMatch "^(README\.md|set-domain\.sh|img_urls\.txt|.*\.zip|.*\.md)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
