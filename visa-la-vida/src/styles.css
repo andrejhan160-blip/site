@@ -782,7 +782,9 @@ main { flex: 1; position: relative; }
   color: rgba(243, 239, 230, .45);
 }
 
-/* ------------------------------------------------------------ hub -- */
+/* ------------------------------------------------- simple centred page -- */
+/* Used by 404. The three-way chooser that also lived on these classes is
+   gone: the root now serves the flagship landing directly. */
 .hub {
   max-width: 1100px;
   margin: 0 auto;
@@ -800,36 +802,6 @@ main { flex: 1; position: relative; }
   color: rgba(243, 239, 230, .72);
   max-width: 46ch;
 }
-.hub__grid {
-  margin-top: clamp(30px, 4vw, 52px);
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
-  gap: clamp(14px, 1.6vw, 20px);
-}
-.hub__card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: clamp(22px, 2.4vw, 30px);
-  border-radius: 22px;
-  text-align: left;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .018));
-  border: 1px solid rgba(var(--acc-rgb), .2);
-  transition: transform .3s ease, border-color .3s ease;
-}
-.hub__card:hover { transform: translateY(-4px); border-color: rgba(var(--acc-rgb), .5); }
-.hub__card h2 {
-  margin: 0;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(20px, 1.9vw, 25px);
-  line-height: 1.2;
-  font-weight: 700;
-  color: var(--acc-b);
-}
-.hub__card p { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(243, 239, 230, .72); }
-.hub__card span { margin-top: auto; font-size: 14px; font-weight: 700; color: var(--acc); }
-
 /* -------------------------------------------------------- article -- */
 .article {
   max-width: 780px;

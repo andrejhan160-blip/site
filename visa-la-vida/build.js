@@ -57,7 +57,6 @@ const SEGMENTS = {
     ctaNote: 'План получения ВНЖ Испании 2026: требования, документы, расходы и сроки',
     heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
     heroCaption: 'ВНЖ Испании на 3 года',
-    hubTeaser: 'Уже есть шенгенская виза и надоело продлевать её каждый раз — посмотрите долгосрочный вариант.',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не нужно самостоятельно разбираться в требованиях и собирать документы вслепую. Сначала проверим вашу ситуацию.',
     s2Items: [
@@ -90,7 +89,6 @@ const SEGMENTS = {
     ctaNote: 'Покажем требования 2026 года, документы, расходы и предварительно проверим ваш бизнес-кейс.',
     heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
     heroCaption: 'Бизнес остаётся — меняется страна',
-    hubTeaser: 'Бизнес или удалённая работа с зарубежными клиентами уже есть — капитал замораживать не нужно.',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Подходит не только сотрудникам, но и предпринимателям и специалистам, работающим с зарубежными компаниями и клиентами.',
     s2Items: [
@@ -124,7 +122,6 @@ const SEGMENTS = {
     ctaNote: 'Разберём вашу ситуацию и определим, какой вариант ВНЖ Испании подходит именно вам.',
     heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
     heroCaption: 'Европейский статус без паузы',
-    hubTeaser: 'Текущий европейский ВНЖ подходит к концу — разберём переход без паузы в статусе.',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не ждите окончания статуса. Заранее узнайте, можете ли вы перейти к оформлению нового ВНЖ уже в Испании.',
     s2Items: [
@@ -231,7 +228,7 @@ function head(page) {
     .replace(/\{\{base\}\}/g, base);
 
   const ogImage = absolute(`/assets/og-${page.og || 'home'}.jpg`);
-  const canonical = absolute(page.pathname);
+  const canonical = absolute(page.canonicalPath || page.pathname);
 
   return `<!DOCTYPE html>
 <html lang="ru" class="no-js">
@@ -496,14 +493,20 @@ function modal(seg, page) {
 
 /* --------------------------------------------------------------- pages -- */
 
-function landingPage(seg, problems) {
+function landingPage(seg, problems, opts) {
+  const at = opts || {};
   const page = {
     kind: 'landing',
     segment: seg.key,
     hasModal: true,
     theme: seg.theme,
-    depth: 1,
-    pathname: `/${seg.dir}/`,
+    depth: at.depth === undefined ? 1 : at.depth,
+    pathname: at.pathname || `/${seg.dir}/`,
+    /* The root serves the flagship landing so a bare domain lands on the
+       offer rather than a chooser. It is the same page as /spain-visa/,
+       so it points its canonical there — one indexable URL, and the
+       address the ads already use stays the authoritative one. */
+    canonicalPath: at.canonicalPath || null,
     title: seg.title,
     ogTitle: seg.title,
     description: seg.description,
@@ -538,66 +541,6 @@ function landingPage(seg, problems) {
   </main>
   ${footer(page)}
   ${modal(seg, page)}
-</div>
-<script type="application/ld+json">${jsonForScript(schema)}</script>
-${scripts(page, problems)}`;
-}
-
-function hubPage(problems) {
-  const page = {
-    kind: 'hub',
-    segment: null,
-    theme: 'gold',
-    depth: 0,
-    pathname: '/',
-    title: `${BRAND} — ВНЖ Испании за 20 рабочих дней`,
-    description: 'Сервис оформления ВНЖ Испании: Digital Nomad и другие программы на срок до 3 лет для вас и вашей семьи, без покупки недвижимости и инвестиций.',
-    og: 'home'
-  };
-
-  const cards = SEGMENT_ORDER.map((key) => {
-    const seg = SEGMENTS[key];
-    return `<a class="hub__card" href="./${seg.dir}/">
-          <h2>${esc(seg.headline)}</h2>
-          <p>${esc(seg.hubTeaser)}</p>
-          <span>${esc(seg.ctaLabel)} →</span>
-        </a>`;
-  }).join('\n        ');
-
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: BRAND,
-    url: absolute('/'),
-    logo: absolute('/assets/logo-gold.png'),
-    description: page.description
-  };
-
-  return `${head(page)}
-<div class="shell" data-theme="gold">
-  ${header(page)}
-  <main>
-    <section class="hub">
-      ${eyebrow('ВНЖ Испании за 20 рабочих дней', true)}
-      <h1 class="h-display hub__h1">ВНЖ Испании на 3 года для вас и вашей семьи</h1>
-      <p class="hub__sub">Без покупки недвижимости и без инвестиций. Выберите ситуацию, которая ближе к вашей — и получите предварительную проверку кейса.</p>
-      <div class="hub__grid">
-        ${cards}
-      </div>
-      <div class="cta-block" style="margin-top:clamp(28px,3.6vw,44px)">
-        <div class="cta-chip">${SVG.shield}<span>Задержка = автоматическое одобрение по закону</span></div>
-        <div class="trust">
-          <picture>
-            <source srcset="./assets/expert.webp" type="image/webp">
-            <img src="./assets/expert.jpg" alt="Специалист ${esc(BRAND)}" loading="lazy" decoding="async" width="42" height="42">
-          </picture>
-          <span>3000+ клиентов · 95% одобрений с первого раза</span>
-        </div>
-      </div>
-    </section>
-    ${perksSection()}
-  </main>
-  ${footer(page)}
 </div>
 <script type="application/ld+json">${jsonForScript(schema)}</script>
 ${scripts(page, problems)}`;
@@ -740,7 +683,7 @@ function notFoundPage(problems) {
     depth: 0,
     pathname: '/404.html',
     title: 'Страница не найдена | ' + BRAND,
-    description: 'Такой страницы нет. Выберите подходящую программу ВНЖ Испании.',
+    description: 'Такой страницы нет. Вернитесь на страницу об оформлении ВНЖ Испании.',
     og: 'home',
     noindex: true
   };
@@ -751,12 +694,11 @@ function notFoundPage(problems) {
     <section class="hub">
       ${eyebrow('Ошибка 404', false)}
       <h1 class="h-display hub__h1">Такой страницы нет</h1>
-      <p class="hub__sub">Возможно, ссылка устарела. Выберите ситуацию, которая ближе к вашей.</p>
-      <div class="hub__grid">
-        ${SEGMENT_ORDER.map((key) => {
-          const seg = SEGMENTS[key];
-          return `<a class="hub__card" href="/${seg.dir}/"><h2>${esc(seg.headline)}</h2><p>${esc(seg.hubTeaser)}</p><span>Открыть →</span></a>`;
-        }).join('\n        ')}
+      <p class="hub__sub">Возможно, ссылка устарела или в адресе опечатка.</p>
+      <div class="cta-block" style="margin-top:clamp(26px,3.4vw,40px)">
+        <a class="btn-cta" href="/" style="text-decoration:none">
+          <span>Вернуться на главную</span><span class="btn-cta__arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   </main>
@@ -785,7 +727,11 @@ function main() {
 
   console.log(`\nVisa la Vida — build (origin: ${ORIGIN || 'НЕ ЗАДАН'})\n`);
 
-  write('index.html', hubPage(problems));
+  write('index.html', landingPage(SEGMENTS.visa, problems, {
+    depth: 0,
+    pathname: '/',
+    canonicalPath: `/${SEGMENTS.visa.dir}/`
+  }));
   SEGMENT_ORDER.forEach((key) => {
     const seg = SEGMENTS[key];
     write(`${seg.dir}/index.html`, landingPage(seg, problems));
@@ -796,7 +742,9 @@ function main() {
 
   write('assets/site.js', fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8'));
 
-  const urls = ['/', ...SEGMENT_ORDER.map((k) => `/${SEGMENTS[k].dir}/`), '/privacy/'];
+  /* '/' is deliberately absent: it renders the visa landing and canonicals
+     to /spain-visa/, so listing both would offer the same page twice. */
+  const urls = [...SEGMENT_ORDER.map((k) => `/${SEGMENTS[k].dir}/`), '/privacy/'];
   const today = new Date().toISOString().slice(0, 10);
   write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
