@@ -142,35 +142,62 @@
   }
 
   /* ------------------------------------------------------------ phone -- */
-  /* The original build asked ipapi.co for the visitor's dialling code on
-     every page load. That is a third-party request on the critical path,
-     rate-limited well below ad-campaign traffic (so it silently stops
-     working exactly when it matters), and it ships the visitor's IP to a
-     third party before consent. A local timezone lookup covers the
-     countries this offer targets with no request at all. */
+  /* The dialling code is filled in for the visitor rather than shown as a
+     sample number, so nobody has to work out what format we want.
+
+     Country comes from the IP, resolved in up to three steps:
+       1. geoCountryUrl from site.config.json, when the operator has an
+          endpoint of their own — '/cdn-cgi/trace' behind Cloudflare, or any
+          URL returning a country code. Same-origin, so no third party sees
+          the visitor at all. Off unless configured: probing for it blindly
+          would mean a guaranteed 404 for every visitor to a host that has
+          no such endpoint;
+       2. a public IP-geolocation API;
+       3. the browser's own timezone, which needs no request at all.
+     The answer is cached for the session, so this costs one request per
+     visitor, not one per page. Every step is optional: if all of them fail
+     the field simply stays empty and the visitor types the code. */
 
   var DIAL_BY_TZ = {
     'Europe/Madrid': '+34', 'Atlantic/Canary': '+34', 'Africa/Ceuta': '+34',
     'Europe/Moscow': '+7', 'Europe/Kaliningrad': '+7', 'Europe/Samara': '+7',
     'Asia/Yekaterinburg': '+7', 'Asia/Novosibirsk': '+7', 'Asia/Krasnoyarsk': '+7',
     'Asia/Irkutsk': '+7', 'Asia/Vladivostok': '+7', 'Asia/Almaty': '+7', 'Asia/Aqtobe': '+7',
-    'Europe/Kyiv': '+380', 'Europe/Kiev': '+380',
-    'Europe/Minsk': '+375', 'Asia/Tbilisi': '+995', 'Asia/Yerevan': '+374',
-    'Asia/Baku': '+994', 'Asia/Tashkent': '+998', 'Asia/Bishkek': '+996',
-    'Asia/Dubai': '+971', 'Asia/Istanbul': '+90', 'Europe/Istanbul': '+90',
-    'Asia/Jerusalem': '+972', 'Asia/Nicosia': '+357', 'Europe/Nicosia': '+357',
-    'Europe/Lisbon': '+351', 'Europe/Berlin': '+49', 'Europe/Paris': '+33',
-    'Europe/Rome': '+39', 'Europe/Amsterdam': '+31', 'Europe/Brussels': '+32',
-    'Europe/Vienna': '+43', 'Europe/Zurich': '+41', 'Europe/Prague': '+420',
-    'Europe/Warsaw': '+48', 'Europe/Budapest': '+36', 'Europe/Bucharest': '+40',
-    'Europe/Athens': '+30', 'Europe/Riga': '+371', 'Europe/Vilnius': '+370',
-    'Europe/Tallinn': '+372', 'Europe/Belgrade': '+381', 'Europe/Sofia': '+359',
-    'Europe/London': '+44', 'Europe/Dublin': '+353',
-    'America/New_York': '+1', 'America/Chicago': '+1', 'America/Denver': '+1',
-    'America/Los_Angeles': '+1', 'America/Toronto': '+1', 'Asia/Bangkok': '+66'
+    'Europe/Kyiv': '+380', 'Europe/Kiev': '+380', 'Europe/Minsk': '+375',
+    'Asia/Tbilisi': '+995', 'Asia/Yerevan': '+374', 'Asia/Baku': '+994',
+    'Asia/Tashkent': '+998', 'Asia/Bishkek': '+996', 'Asia/Dubai': '+971',
+    'Europe/Istanbul': '+90', 'Asia/Istanbul': '+90', 'Asia/Jerusalem': '+972',
+    'Asia/Nicosia': '+357', 'Europe/Nicosia': '+357', 'Europe/Lisbon': '+351',
+    'Europe/Berlin': '+49', 'Europe/Paris': '+33', 'Europe/Rome': '+39',
+    'Europe/Amsterdam': '+31', 'Europe/Brussels': '+32', 'Europe/Vienna': '+43',
+    'Europe/Zurich': '+41', 'Europe/Prague': '+420', 'Europe/Warsaw': '+48',
+    'Europe/Budapest': '+36', 'Europe/Bucharest': '+40', 'Europe/Athens': '+30',
+    'Europe/Riga': '+371', 'Europe/Vilnius': '+370', 'Europe/Tallinn': '+372',
+    'Europe/Belgrade': '+381', 'Europe/Sofia': '+359', 'Europe/London': '+44',
+    'Europe/Dublin': '+353', 'America/New_York': '+1', 'America/Chicago': '+1',
+    'America/Denver': '+1', 'America/Los_Angeles': '+1', 'America/Toronto': '+1',
+    'Asia/Bangkok': '+66'
   };
 
-  function localDialCode() {
+  var DIAL_BY_COUNTRY = {
+    ES: '+34', PT: '+351', FR: '+33', DE: '+49', IT: '+39', NL: '+31', BE: '+32',
+    AT: '+43', CH: '+41', GB: '+44', IE: '+353', PL: '+48', CZ: '+420', SK: '+421',
+    HU: '+36', RO: '+40', BG: '+359', GR: '+30', HR: '+385', SI: '+386', RS: '+381',
+    ME: '+382', AL: '+355', MK: '+389', BA: '+387', CY: '+357', MT: '+356',
+    LV: '+371', LT: '+370', EE: '+372', FI: '+358', SE: '+46', NO: '+47', DK: '+45',
+    IS: '+354', LU: '+352', MC: '+377', AD: '+376',
+    RU: '+7', KZ: '+7', UA: '+380', BY: '+375', MD: '+373', GE: '+995', AM: '+374',
+    AZ: '+994', UZ: '+998', KG: '+996', TJ: '+992', TM: '+993',
+    TR: '+90', IL: '+972', AE: '+971', SA: '+966', QA: '+974', KW: '+965',
+    BH: '+973', OM: '+968', JO: '+962', LB: '+961', EG: '+20', MA: '+212',
+    TN: '+216', DZ: '+213',
+    US: '+1', CA: '+1', MX: '+52', BR: '+55', AR: '+54', CL: '+56', CO: '+57',
+    PE: '+51', UY: '+598', PA: '+507', DO: '+1', CR: '+506',
+    CN: '+86', JP: '+81', KR: '+82', IN: '+91', ID: '+62', TH: '+66', VN: '+84',
+    MY: '+60', SG: '+65', PH: '+63', AU: '+61', NZ: '+64', ZA: '+27'
+  };
+
+  function dialFromTimezone() {
     try {
       var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       if (tz && DIAL_BY_TZ[tz]) return DIAL_BY_TZ[tz];
@@ -179,7 +206,59 @@
     if (lang.indexOf('ru') === 0) return '+7';
     if (lang.indexOf('uk') === 0) return '+380';
     if (lang.indexOf('es') === 0) return '+34';
-    return '+34';
+    return '';
+  }
+
+  function fetchText(url, ms) {
+    /* Nothing on the page waits for this, but a hung request should not sit
+       in the connection pool for the whole visit either. */
+    var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = window.setTimeout(function () { if (ctrl) ctrl.abort(); }, ms);
+    return fetch(url, ctrl ? { signal: ctrl.signal } : undefined)
+      .then(function (r) {
+        if (!r.ok) throw new Error(url + ' -> HTTP ' + r.status);
+        return r.text();
+      })
+      .finally(function () { window.clearTimeout(timer); });
+  }
+
+  /* Accepts both shapes an endpoint like this comes in: Cloudflare's
+     key=value trace text, and plain JSON with a country field. */
+  function parseCountry(text) {
+    var m = text.match(/^loc=([A-Z]{2})$/m);
+    if (m) return m[1];
+    try {
+      var data = JSON.parse(text);
+      var code = data && (data.country_code || data.country || data.countryCode);
+      if (typeof code === 'string' && /^[A-Za-z]{2}$/.test(code)) return code.toUpperCase();
+    } catch (e) { /* not JSON */ }
+    throw new Error('no country in response');
+  }
+
+  function countryFromOwnEndpoint() {
+    if (!CFG.geoCountryUrl) return Promise.reject(new Error('not configured'));
+    return fetchText(CFG.geoCountryUrl, 1500).then(parseCountry);
+  }
+
+  function countryFromApi() {
+    return fetchText('https://ipwho.is/?fields=country_code', 2500).then(parseCountry);
+  }
+
+  async function detectDial() {
+    var cached = null;
+    try { cached = sessionStorage.getItem('vlv_dial'); } catch (e) { /* ignore */ }
+    if (cached !== null) return cached;
+
+    var dial = '';
+    for (var lookup of [countryFromOwnEndpoint, countryFromApi]) {
+      try {
+        var country = await lookup();
+        if (DIAL_BY_COUNTRY[country]) { dial = DIAL_BY_COUNTRY[country]; break; }
+      } catch (e) { /* try the next one */ }
+    }
+    if (!dial) dial = dialFromTimezone();
+    try { sessionStorage.setItem('vlv_dial', dial); } catch (e) { /* ignore */ }
+    return dial;
   }
 
   /* Accepts an international number: optional +, 9-15 digits. Rejects the
@@ -316,8 +395,19 @@
     var formStarted = false;
     var sending = false;
 
-    var dial = localDialCode();
-    phoneInput.placeholder = dial + ' 600 000 000';
+    /* Fill the code in as the field's value, not as a sample number: a
+       greyed-out example gets read as "type it like this" and half the
+       entries come back with the example's digits still in them. Only
+       ever written into an untouched, empty field, so it can never
+       overwrite what the visitor is typing while the lookup is in
+       flight. */
+    var dial = '';
+    var phoneTouched = false;
+    detectDial().then(function (code) {
+      dial = code;
+      if (!code || phoneTouched || phoneInput.value) return;
+      phoneInput.value = code + ' ';
+    });
 
     function open(source) {
       lastFocused = document.activeElement;
@@ -374,12 +464,18 @@
       nameInput.setAttribute('aria-invalid', 'false');
     });
     phoneInput.addEventListener('input', function () {
+      phoneTouched = true;
       phoneErr.hidden = true;
       phoneInput.setAttribute('aria-invalid', 'false');
-      /* Prefill the dialling code once the visitor starts typing a bare
-         number, but never touch a value that already carries one. */
       var v = phoneInput.value;
-      if (v.length === 1 && /\d/.test(v) && v !== '0') phoneInput.value = dial + ' ' + v;
+      /* Someone who pastes or types a full international number over the
+         prefilled code would otherwise end up with two of them
+         ("+34 +7 916…"), which then fails validation for no reason the
+         visitor can see. Drop ours and keep theirs. */
+      if (/^\+\d{1,4}[\s]*\+/.test(v)) phoneInput.value = v.replace(/^\+\d{1,4}[\s]*/, '');
+      /* Typing a bare national number into an emptied field still gets the
+         code back. */
+      else if (dial && v.length === 1 && /[1-9]/.test(v)) phoneInput.value = dial + ' ' + v;
     });
 
     form.addEventListener('submit', async function (e) {

@@ -26,6 +26,9 @@
     "metaDomainVerification": "",
     "_metaDomainVerification": "Optional. The content value from Events Manager -> Settings -> Domain verification -> Meta-tag method. Needed to control your own link edits and to run Aggregated Event Measurement on iOS traffic.",
 
+    "geoCountryUrl": "",
+    "_geoCountryUrl": "Optional. URL returning the visitor's country, used to prefill the phone field's dialling code. Set it to \"/cdn-cgi/trace\" if the site is behind Cloudflare — that answers from your own domain, so no third party sees the visitor and there is no rate limit. Any endpoint of yours returning {\"country_code\":\"ES\"} works too. Leave empty and the code is resolved via the public ipwho.is service, falling back to the browser timezone.",
+
     "consentMode": "eu",
     "_consentMode": "'eu' = the pixel is initialised with consent revoked and sends nothing until the visitor accepts the banner (what GDPR requires for EU/Spain traffic). 'off' = no banner, the pixel tracks from the first paint. Only choose 'off' if you are certain none of your audience is in the EU/UK."
   },
