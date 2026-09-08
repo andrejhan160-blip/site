@@ -55,7 +55,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Получить план + проверить свой кейс',
     ctaNote: 'План получения ВНЖ Испании 2026: требования, документы, расходы и сроки',
-    heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
+    heroPosition: '50% 28%',
+    heroAlt: 'Специалист Visa la Vida на террасе с видом на побережье Испании',
     heroCaption: 'ВНЖ Испании на 3 года',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не нужно самостоятельно разбираться в требованиях и собирать документы вслепую. Сначала проверим вашу ситуацию.',
@@ -87,7 +88,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Получить план оформления ВНЖ',
     ctaNote: 'Покажем требования 2026 года, документы, расходы и предварительно проверим ваш бизнес-кейс.',
-    heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
+    heroPosition: '52% 22%',
+    heroAlt: 'Специалист Visa la Vida — консультация по ВНЖ для предпринимателей',
     heroCaption: 'Бизнес остаётся — меняется страна',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Подходит не только сотрудникам, но и предпринимателям и специалистам, работающим с зарубежными компаниями и клиентами.',
@@ -120,7 +122,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Проверить возможность оформления',
     ctaNote: 'Разберём вашу ситуацию и определим, какой вариант ВНЖ Испании подходит именно вам.',
-    heroAlt: 'Карта ВНЖ Испании — permiso de residencia',
+    heroPosition: '50% 26%',
+    heroAlt: 'Специалист Visa la Vida — жилой район на побережье Испании',
     heroCaption: 'Европейский статус без паузы',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не ждите окончания статуса. Заранее узнайте, можете ли вы перейти к оформлению нового ВНЖ уже в Испании.',
@@ -170,8 +173,10 @@ const absolute = (pathname) => (ORIGIN_SET ? ORIGIN + pathname : pathname);
    broken image where its hero should be. Drop a JPG in with that name and
    this build switches back to the framed-photo layout automatically. */
 function heroPhoto(segment) {
-  const rel = `assets/hero-${segment.key}.jpg`;
-  return fs.existsSync(path.join(ROOT, rel)) ? rel : null;
+  for (const rel of [`assets/hero-${segment.key}.jpg`, 'assets/hero.jpg']) {
+    if (fs.existsSync(path.join(ROOT, rel))) return rel;
+  }
+  return null;
 }
 
 const SVG = {
@@ -369,10 +374,10 @@ function heroSection(seg, page) {
   const base = page.depth ? '..' : '.';
   const photo = heroPhoto(seg);
   const art = photo
-    ? `<div class="hero__frame"><img src="${base}/${photo}" alt="${esc(seg.heroAlt)}" fetchpriority="high" decoding="async" width="560" height="700"></div>`
+    ? `<div class="hero__frame"><img src="${base}/${photo}" alt="${esc(seg.heroAlt)}" fetchpriority="high" decoding="async" width="560" height="700" style="object-position:${esc(seg.heroPosition || '50% 30%')}"></div>`
     : `<picture>
           <source srcset="${base}/assets/card.webp" type="image/webp">
-          <img class="hero__card" src="${base}/assets/card.png" alt="${esc(seg.heroAlt)}" fetchpriority="high" decoding="async" width="1100" height="825">
+          <img class="hero__card" src="${base}/assets/card.png" alt="Permiso de residencia España — карта ВНЖ Испании" fetchpriority="high" decoding="async" width="1100" height="825">
         </picture>`;
 
   return `<section class="hero">
