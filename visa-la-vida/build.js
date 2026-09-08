@@ -321,29 +321,7 @@ function consentBar(page) {
   </div>`;
 }
 
-/* The build knows what is still unfinished; saying so on the page beats
-   letting it reach a live campaign unnoticed. Rendered only when the site
-   is served from something that is not the configured production origin. */
-function setupWarning(problems) {
-  if (!problems.length) return '';
-  const items = problems.map((p) => `<li>${esc(p)}</li>`).join('');
-  return `<div class="setup-warn" id="setup-warn" hidden>
-    <b>Preview: сайт ещё не готов к трафику</b>
-    <ul>${items}</ul>
-  </div>
-  <script>
-  (function () {
-    // Never shown to real visitors: only on localhost, file:// or a preview host.
-    var h = location.hostname;
-    var isProd = ${ORIGIN_SET ? `location.origin === ${JSON.stringify(ORIGIN)}` : 'false'};
-    if (!isProd && (h === 'localhost' || h === '127.0.0.1' || location.protocol === 'file:' || !isProd)) {
-      document.getElementById('setup-warn').hidden = false;
-    }
-  })();
-  </script>`;
-}
-
-function scripts(page, problems) {
+function scripts(page) {
   const base = page.depth ? '..' : '.';
   const cfg = {
     page: page.kind,
@@ -360,7 +338,6 @@ function scripts(page, problems) {
     submitLabel: 'Получить план'
   };
   return `${consentBar(page)}
-  ${setupWarning(problems)}
   <script>window.VLV = ${jsonForScript(cfg)};</script>
   <script src="${base}/assets/site.js" defer></script>
 </body>
@@ -498,7 +475,7 @@ function modal(seg, page) {
 
 /* --------------------------------------------------------------- pages -- */
 
-function landingPage(seg, problems, opts) {
+function landingPage(seg, opts) {
   const at = opts || {};
   const page = {
     kind: 'landing',
@@ -548,10 +525,10 @@ function landingPage(seg, problems, opts) {
   ${modal(seg, page)}
 </div>
 <script type="application/ld+json">${jsonForScript(schema)}</script>
-${scripts(page, problems)}`;
+${scripts(page)}`;
 }
 
-function thanksPage(problems) {
+function thanksPage() {
   const page = {
     kind: 'thanks',
     segment: null,
@@ -608,10 +585,10 @@ function thanksPage(problems) {
   </main>
   ${footer(page)}
 </div>
-${scripts(page, problems)}`;
+${scripts(page)}`;
 }
 
-function privacyPage(problems) {
+function privacyPage() {
   const page = {
     kind: 'privacy',
     segment: null,
@@ -677,10 +654,10 @@ function privacyPage(problems) {
   </main>
   ${footer(page)}
 </div>
-${scripts(page, problems)}`;
+${scripts(page)}`;
 }
 
-function notFoundPage(problems) {
+function notFoundPage() {
   const page = {
     kind: 'notfound',
     segment: null,
@@ -709,7 +686,7 @@ function notFoundPage(problems) {
   </main>
   ${footer(page)}
 </div>
-${scripts(page, problems)}`;
+${scripts(page)}`;
 }
 
 /* --------------------------------------------------------------- write -- */
@@ -732,18 +709,18 @@ function main() {
 
   console.log(`\nVisa la Vida — build (origin: ${ORIGIN || 'НЕ ЗАДАН'})\n`);
 
-  write('index.html', landingPage(SEGMENTS.visa, problems, {
+  write('index.html', landingPage(SEGMENTS.visa, {
     depth: 0,
     pathname: '/',
     canonicalPath: `/${SEGMENTS.visa.dir}/`
   }));
   SEGMENT_ORDER.forEach((key) => {
     const seg = SEGMENTS[key];
-    write(`${seg.dir}/index.html`, landingPage(seg, problems));
+    write(`${seg.dir}/index.html`, landingPage(seg));
   });
-  write('thank-you/index.html', thanksPage(problems));
-  write('privacy/index.html', privacyPage(problems));
-  write('404.html', notFoundPage(problems));
+  write('thank-you/index.html', thanksPage());
+  write('privacy/index.html', privacyPage());
+  write('404.html', notFoundPage());
 
   write('assets/site.js', fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8'));
 

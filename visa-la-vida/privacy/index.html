@@ -932,31 +932,6 @@ main { flex: 1; position: relative; }
   .consent__actions { width: 100%; }
   .consent__btn { flex: 1; }
 }
-
-/* --------------------------------------------------------- notice -- */
-/* Build-time misconfiguration warning. Rendered only when the build has an
-   unfinished setting, and never on a production origin. */
-.setup-warn {
-  position: fixed;
-  left: 8px;
-  top: 8px;
-  z-index: 95;
-  /* Informational only — it must never sit between a visitor and the
-     consent banner or a CTA, which is exactly what a bottom-left overlay
-     did on a 390px viewport. Kept small and translucent so it annotates
-     the preview instead of covering it. */
-  pointer-events: none;
-  max-width: min(320px, calc(100vw - 16px));
-  padding: 7px 10px;
-  border-radius: 9px;
-  background: rgba(48, 24, 8, .82);
-  border: 1px solid rgba(183, 117, 42, .8);
-  font-size: 10.5px;
-  line-height: 1.4;
-  color: #FFD9A8;
-}
-.setup-warn b { color: #FFF; display: block; margin-bottom: 3px; }
-.setup-warn ul { margin: 0; padding-left: 14px; }
 </style>
 </head>
 <body>
@@ -1038,20 +1013,6 @@ main { flex: 1; position: relative; }
       <button type="button" class="consent__btn consent__btn--primary" id="consent-accept">Принять</button>
     </div>
   </div>
-  <div class="setup-warn" id="setup-warn" hidden>
-    <b>Preview: сайт ещё не готов к трафику</b>
-    <ul><li>site.config.json: origin всё ещё example.com — canonical, sitemap и og:image указывают в никуда.</li><li>site.config.json: не указан metaDomainVerification — домен не подтверждён в Events Manager.</li></ul>
-  </div>
-  <script>
-  (function () {
-    // Never shown to real visitors: only on localhost, file:// or a preview host.
-    var h = location.hostname;
-    var isProd = false;
-    if (!isProd && (h === 'localhost' || h === '127.0.0.1' || location.protocol === 'file:' || !isProd)) {
-      document.getElementById('setup-warn').hidden = false;
-    }
-  })();
-  </script>
   <script>window.VLV = {"page":"privacy","segment":null,"thanksUrl":"../thank-you/","telegram":"https://t.me/servis_vnj","whatsapp":"https://wa.me/34633791850","leadEndpoint":"","formsubmitEmail":"evgeniqstart@gmail.com","capiWebhook":"","videoId":"zmzZJdsweP4","submitLabel":"Получить план"};</script>
   <script src="../assets/site.js" defer></script>
 </body>

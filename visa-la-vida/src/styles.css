@@ -876,28 +876,3 @@ main { flex: 1; position: relative; }
   .consent__actions { width: 100%; }
   .consent__btn { flex: 1; }
 }
-
-/* --------------------------------------------------------- notice -- */
-/* Build-time misconfiguration warning. Rendered only when the build has an
-   unfinished setting, and never on a production origin. */
-.setup-warn {
-  position: fixed;
-  left: 8px;
-  top: 8px;
-  z-index: 95;
-  /* Informational only — it must never sit between a visitor and the
-     consent banner or a CTA, which is exactly what a bottom-left overlay
-     did on a 390px viewport. Kept small and translucent so it annotates
-     the preview instead of covering it. */
-  pointer-events: none;
-  max-width: min(320px, calc(100vw - 16px));
-  padding: 7px 10px;
-  border-radius: 9px;
-  background: rgba(48, 24, 8, .82);
-  border: 1px solid rgba(183, 117, 42, .8);
-  font-size: 10.5px;
-  line-height: 1.4;
-  color: #FFD9A8;
-}
-.setup-warn b { color: #FFF; display: block; margin-bottom: 3px; }
-.setup-warn ul { margin: 0; padding-left: 14px; }
