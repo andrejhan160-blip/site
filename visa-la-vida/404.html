@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Страница не найдена | Visa la Vida</title>
 <meta name="description" content="Такой страницы нет. Вернитесь на страницу об оформлении ВНЖ Испании.">
-<link rel="canonical" href="/404.html">
+<link rel="canonical" href="https://visalavida.pro/404.html">
 <meta name="robots" content="noindex, nofollow">
 <!-- facebook-domain-verification: add metaDomainVerification to site.config.json -->
 
@@ -14,15 +14,15 @@
 <meta property="og:locale" content="ru_RU">
 <meta property="og:title" content="Страница не найдена | Visa la Vida">
 <meta property="og:description" content="Такой страницы нет. Вернитесь на страницу об оформлении ВНЖ Испании.">
-<meta property="og:url" content="/404.html">
-<meta property="og:image" content="/assets/og-home.jpg">
+<meta property="og:url" content="https://visalavida.pro/404.html">
+<meta property="og:image" content="https://visalavida.pro/assets/og-home.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Visa la Vida — ВНЖ Испании">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Страница не найдена | Visa la Vida">
 <meta name="twitter:description" content="Такой страницы нет. Вернитесь на страницу об оформлении ВНЖ Испании.">
-<meta name="twitter:image" content="/assets/og-home.jpg">
+<meta name="twitter:image" content="https://visalavida.pro/assets/og-home.jpg">
 
 <link rel="icon" href="./assets/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
@@ -905,7 +905,8 @@ main { flex: 1; position: relative; }
   animation: omUp .5s .4s both;
 }
 .consent[hidden] { display: none; }
-.consent__text { flex: 1 1 340px; margin: 0; font-size: 13px; line-height: 1.5; color: rgba(243, 239, 230, .74); }
+.consent__text { flex: 1 1 340px; margin: 0; font-size: 13px; line-height: 1.55; color: rgba(243, 239, 230, .74); }
+.consent__text b { color: rgba(243, 239, 230, .95); font-weight: 700; }
 .consent__text a { color: var(--acc-b); text-decoration: underline; text-underline-offset: 2px; }
 .consent__actions { display: flex; gap: 8px; flex: 0 0 auto; }
 .consent__btn {
@@ -927,6 +928,7 @@ main { flex: 1; position: relative; }
   background: linear-gradient(180deg, var(--cta-top), var(--acc-d));
   color: var(--on-acc);
 }
+.consent__btn, .consent__btn--primary { min-width: 118px; }
 .consent__btn--primary:hover { filter: brightness(1.06); background: linear-gradient(180deg, var(--cta-top), var(--acc-d)); }
 @media (max-width: 430px) {
   .consent__actions { width: 100%; }
@@ -973,8 +975,10 @@ main { flex: 1; position: relative; }
   </footer>
 </div>
 <div class="consent" id="consent" role="region" aria-label="Согласие на аналитику" hidden>
-    <p class="consent__text">Мы используем cookie и пиксель Meta, чтобы понимать, какая реклама приводит заявки.
-      Подробности — в <a href="./privacy/">политике обработки персональных данных</a>.</p>
+    <p class="consent__text"><b>Мы используем cookie для аналитики и рекламы.</b><br>
+      Нажмите «Отклонить» — и мы ничего не соберём. Сайт будет работать как обычно, заявку
+      можно оставить в любом случае. Что именно собирается и зачем — в
+      <a href="./privacy/">политике обработки персональных данных</a>.</p>
     <div class="consent__actions">
       <button type="button" class="consent__btn" id="consent-decline">Отклонить</button>
       <button type="button" class="consent__btn consent__btn--primary" id="consent-accept">Принять</button>

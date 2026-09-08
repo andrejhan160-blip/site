@@ -1,7 +1,7 @@
 {
   "_readme": "Every setting the site needs at build time. Edit this file, run `node build.js`, upload. Nothing else needs touching to go live.",
 
-  "origin": "https://example.com",
+  "origin": "https://visalavida.pro",
   "_origin": "REQUIRED before running ads. The public https origin, no trailing slash — e.g. https://visalavida.es. It builds the canonical links, the sitemap and the absolute og:image URLs Meta's crawler needs for link previews. The build refuses to mark itself production-ready while this is example.com.",
 
   "brandName": "Visa la Vida",

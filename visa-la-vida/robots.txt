@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /thank-you/
 
-Sitemap: /sitemap.xml
+Sitemap: https://visalavida.pro/sitemap.xml

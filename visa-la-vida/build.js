@@ -315,8 +315,10 @@ function consentBar(page) {
   if (INT.consentMode === 'off' || !INT.metaPixelId) return '';
   const base = page.depth ? '..' : '.';
   return `<div class="consent" id="consent" role="region" aria-label="Согласие на аналитику" hidden>
-    <p class="consent__text">Мы используем cookie и пиксель Meta, чтобы понимать, какая реклама приводит заявки.
-      Подробности — в <a href="${base}/privacy/">политике обработки персональных данных</a>.</p>
+    <p class="consent__text"><b>Мы используем cookie для аналитики и рекламы.</b><br>
+      Нажмите «Отклонить» — и мы ничего не соберём. Сайт будет работать как обычно, заявку
+      можно оставить в любом случае. Что именно собирается и зачем — в
+      <a href="${base}/privacy/">политике обработки персональных данных</a>.</p>
     <div class="consent__actions">
       <button type="button" class="consent__btn" id="consent-decline">Отклонить</button>
       <button type="button" class="consent__btn consent__btn--primary" id="consent-accept">Принять</button>
