@@ -485,10 +485,9 @@
 
   function initThanks() {
     if (CFG.page !== 'thanks') return;
-    var shell = document.getElementById('shell');
     var theme = THEME_BY_SEGMENT[CFG.segment];
-    if (shell && theme) {
-      shell.setAttribute('data-theme', theme);
+    if (theme) {
+      document.body.setAttribute('data-theme', theme);
       var logo = document.querySelector('.hdr__logo img');
       if (logo) logo.src = logo.src.replace(/logo-(gold|white)\.png$/, theme === 'gold' ? 'logo-gold.png' : 'logo-white.png');
     }

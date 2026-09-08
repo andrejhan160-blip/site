@@ -55,8 +55,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Получить план + проверить свой кейс',
     ctaNote: 'План получения ВНЖ Испании 2026: требования, документы, расходы и сроки',
-    heroPosition: '50% 28%',
-    heroAlt: 'Специалист Visa la Vida на террасе с видом на побережье Испании',
+    heroPosition: '50% 50%',
+    heroAlt: 'Специалист Visa la Vida на террасе с видом на средиземноморское побережье Испании',
     heroCaption: 'ВНЖ Испании на 3 года',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не нужно самостоятельно разбираться в требованиях и собирать документы вслепую. Сначала проверим вашу ситуацию.',
@@ -88,8 +88,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Получить план оформления ВНЖ',
     ctaNote: 'Покажем требования 2026 года, документы, расходы и предварительно проверим ваш бизнес-кейс.',
-    heroPosition: '52% 22%',
-    heroAlt: 'Специалист Visa la Vida — консультация по ВНЖ для предпринимателей',
+    heroPosition: '50% 50%',
+    heroAlt: 'Специалист Visa la Vida за работой в светлом интерьере',
     heroCaption: 'Бизнес остаётся — меняется страна',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Подходит не только сотрудникам, но и предпринимателям и специалистам, работающим с зарубежными компаниями и клиентами.',
@@ -122,8 +122,8 @@ const SEGMENTS = {
     ],
     ctaLabel: 'Проверить возможность оформления',
     ctaNote: 'Разберём вашу ситуацию и определим, какой вариант ВНЖ Испании подходит именно вам.',
-    heroPosition: '50% 26%',
-    heroAlt: 'Специалист Visa la Vida — жилой район на побережье Испании',
+    heroPosition: '50% 50%',
+    heroAlt: 'Специалист Visa la Vida на фоне жилого района на побережье Испании',
     heroCaption: 'Европейский статус без паузы',
     s2Headline: 'Узнайте, какая программа подходит именно вам',
     s2Subtitle: 'Не ждите окончания статуса. Заранее узнайте, можете ли вы перейти к оформлению нового ВНЖ уже в Испании.',
@@ -174,7 +174,10 @@ const absolute = (pathname) => (ORIGIN_SET ? ORIGIN + pathname : pathname);
    this build switches back to the framed-photo layout automatically. */
 function heroPhoto(segment) {
   for (const rel of [`assets/hero-${segment.key}.jpg`, 'assets/hero.jpg']) {
-    if (fs.existsSync(path.join(ROOT, rel))) return rel;
+    if (fs.existsSync(path.join(ROOT, rel))) {
+      const webp = rel.replace(/\.jpg$/, '.webp');
+      return { jpg: rel, webp: fs.existsSync(path.join(ROOT, webp)) ? webp : null };
+    }
   }
   return null;
 }
@@ -276,7 +279,7 @@ ${pixelBootstrap()}
 <style>
 ${css}</style>
 </head>
-<body>`;
+<body data-theme="${page.theme || 'gold'}">`;
 }
 
 function header(page) {
@@ -351,7 +354,10 @@ function heroSection(seg, page) {
   const base = page.depth ? '..' : '.';
   const photo = heroPhoto(seg);
   const art = photo
-    ? `<div class="hero__frame"><img src="${base}/${photo}" alt="${esc(seg.heroAlt)}" fetchpriority="high" decoding="async" width="560" height="700" style="object-position:${esc(seg.heroPosition || '50% 30%')}"></div>`
+    ? `<div class="hero__frame"><picture>
+            ${photo.webp ? `<source srcset="${base}/${photo.webp}" type="image/webp">` : ''}
+            <img src="${base}/${photo.jpg}" alt="${esc(seg.heroAlt)}" fetchpriority="high" decoding="async" width="560" height="700" style="object-position:${esc(seg.heroPosition || '50% 50%')}">
+          </picture></div>`
     : `<picture>
           <source srcset="${base}/assets/card.webp" type="image/webp">
           <img class="hero__card" src="${base}/assets/card.png" alt="Permiso de residencia España — карта ВНЖ Испании" fetchpriority="high" decoding="async" width="1100" height="825">
@@ -493,7 +499,7 @@ function landingPage(seg, opts) {
     ogTitle: seg.title,
     description: seg.description,
     og: seg.key,
-    preload: heroPhoto(seg) || 'assets/card.webp'
+    preload: (heroPhoto(seg) || {}).webp || (heroPhoto(seg) || {}).jpg || 'assets/card.webp'
   };
 
   /* Product schema is wrong for a service; Service + a local Organization
@@ -514,7 +520,7 @@ function landingPage(seg, opts) {
   };
 
   return `${head(page)}
-<div class="shell" data-theme="${seg.theme}">
+<div class="shell">
   ${header(page)}
   <main>
     ${heroSection(seg, page)}
@@ -544,7 +550,7 @@ function thanksPage() {
   };
 
   return `${head(page)}
-<div class="shell" data-theme="gold" id="shell">
+<div class="shell">
   ${header(page)}
   <main class="thanks">
     <section class="thanks__in">
@@ -605,7 +611,7 @@ function privacyPage() {
   const updated = new Date().toISOString().slice(0, 10);
 
   return `${head(page)}
-<div class="shell" data-theme="gold">
+<div class="shell">
   ${header(page)}
   <main>
     <article class="article">
@@ -670,7 +676,7 @@ function notFoundPage() {
     noindex: true
   };
   return `${head(page)}
-<div class="shell" data-theme="gold">
+<div class="shell">
   ${header(page)}
   <main>
     <section class="hub">
